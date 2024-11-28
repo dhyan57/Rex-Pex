@@ -1,0 +1,180 @@
+
+/* General Styling */
+body {
+font-family: Arial, sans-serif;
+background-color: #f9f9f9;
+margin: 0;
+padding: 0;
+}
+
+.content-main {
+    margin-left: 306px;
+padding: 20px;
+max-width: 1200px;
+background-color: #ffffff;
+box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+border-radius: 8px;
+}
+
+.content-title {
+font-size: 24px;
+font-weight: bold;
+margin-bottom: 10px;
+color: #333333;
+}
+
+.card {
+border: 1px solid #dddddd;
+border-radius: 8px;
+margin-top: 20px;
+}
+
+.card-header {
+background-color: #f1f1f1;
+border-bottom: 1px solid #dddddd;
+padding: 15px;
+border-radius: 8px 8px 0 0;
+}
+
+.card-body {
+padding: 20px;
+}
+
+.table {
+width: 100%;
+margin-bottom: 20px;
+border-collapse: collapse;
+}
+
+.table-hover tbody tr:hover {
+background-color: #f9f9f9;
+}
+
+.table th,
+.table td {
+text-align: left;
+padding: 12px;
+border: 1px solid #dddddd;
+}
+
+.table th {
+background-color: #f5f5f5;
+font-weight: bold;
+color: #333333;
+}
+
+.error-message {
+color: red;
+font-size: 12px;
+margin-top: 5px;
+}
+
+/* Buttons */
+.btn {
+padding: 8px 12px;
+border: none;
+border-radius: 4px;
+font-size: 14px;
+cursor: pointer;
+text-align: center;
+}
+
+.btn-primary {
+background-color: #007bff;
+color: white;
+}
+
+.btn-primary:hover {
+background-color: #0056b3;
+}
+
+.btn-info {
+background-color: #17a2b8;
+color: white;
+}
+
+.btn-info:hover {
+background-color: #117a8b;
+}
+
+.btn-danger {
+background-color: #dc3545;
+color: white;
+}
+
+.btn-danger:hover {
+background-color: #bd2130;
+}
+
+.btn-success {
+background-color: #28a745;
+color: white;
+}
+
+.btn-success:hover {
+background-color: #218838;
+}
+
+.text-white {
+color: white !important;
+text-decoration: none;
+}
+
+.text-white:hover {
+text-decoration: underline;
+}
+
+/* Badge Styling */
+.badge {
+font-size: 12px;
+padding: 5px 10px;
+border-radius: 12px;
+}
+
+.alert-success {
+background-color: #28a745;
+color: white;
+}
+
+.alert-danger {
+background-color: #dc3545;
+color: white;
+}
+
+/* Input Styling */
+.form-control {
+padding: 8px 12px;
+border-radius: 4px;
+border: 1px solid #cccccc;
+font-size: 14px;
+}
+
+.form-control:focus {
+outline: none;
+border-color: #007bff;
+box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+/* Pagination */
+.pagination-container {
+display: flex;
+justify-content: center;
+margin-top: 20px;
+}
+
+.pagination-container a {
+color: #007bff;
+text-decoration: none;
+margin: 0 10px;
+font-size: 14px;
+}
+
+.pagination-container a:hover {
+text-decoration: underline;
+}
+
+.pagination-container .current-page {
+font-weight: bold;
+color: #333333;
+}
+

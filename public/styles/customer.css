@@ -1,0 +1,145 @@
+
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+h2.content-title {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+form .input-group {
+    margin: 20px auto;
+    width: 50%;
+    max-width: 500px;
+}
+
+form .input-group input {
+    border: none;
+    border-radius: 20px 0 0 20px;
+    padding: 10px 15px;
+    outline: none;
+    font-size: 14px;
+    margin-left: 44px;
+}
+
+form .input-group button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 0 20px 20px 0;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form .input-group button:hover {
+    background-color: #0056b3;
+}
+
+/* Table Styling */
+table.table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+table.table th,
+table.table td {
+    padding: 15px 10px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    margin-left: 200px;
+    padding-left: 162px;
+}
+
+table.table th {
+    background-color: #f1f1f1;
+    color: #333;
+    font-weight: bold;
+    padding-left: 159px;
+}
+
+table.table td {
+    color: #555;
+}
+
+table.table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Action Buttons */
+button.btn {
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.btn a {
+    text-decoration: none;
+    color: white;
+}
+
+button.btn-danger {
+    background-color: #dc3545;
+}
+
+button.btn-danger:hover {
+    background-color: #c82333;
+}
+
+button.btn-success {
+    background-color: #28a745;
+}
+
+button.btn-success:hover {
+    background-color: #218838;
+}
+
+/* Pagination */
+ul.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+    margin: 20px 0;
+}
+
+ul.pagination li.page-item {
+    margin: 0 5px;
+}
+
+ul.pagination li.page-item a.page-link {
+    display: inline-block;
+    padding: 8px 12px;
+    color: #007bff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+ul.pagination li.page-item a.page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+ul.pagination li.page-item.active a.page-link {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    pointer-events: none;
+}
+
