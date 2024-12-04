@@ -15,14 +15,18 @@ const bcrypt = require('bcrypt');
 
 const LoadHomepage=async(req,res)=>{
     try{
+        const user = req.user;
         const userId=req.session.user
         
-        console.log(userId)
+        //console.log(userId)
         const category=await Category.find({isListed:true})
         let productData=await Product.find({
             isBlocked:false,
             category:{$in:category.map(category=>category._id)},quantity:{$gt:0}
         })
+        if (req.isAuthenticated()) {
+            return res.render("home",{user:user,productData})
+        }
 
         productData.sort((a,b)=>new Date(a.createdOn)-new Date(b.createOn)).reverse()
         
@@ -257,9 +261,9 @@ const login = async (req, res) => {
         if (!passwordMatch) {
             return res.render('login', { message: "Password does not match" });
         }
-
         // Save user ID in session
         req.session.user = findUser;
+        // console.log(req.session.user)
 
         // Redirect to homepage on success
         res.redirect('/');

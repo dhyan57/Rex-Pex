@@ -3,8 +3,6 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const User = require("../models/userSchema");
 const env = require("dotenv").config(); // Ensure this is loaded
-console.log('jjjjjj');
-console.log(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_CALLBACK_URL);
 
 
 // Google OAuth strategy
@@ -18,9 +16,11 @@ passport.use(
         async (accessToken, refreshToken, profile, done) => {
             try {
                 // Check if user already exists
+                
                 let user = await User.findOne({ googleId: profile.id });
                 if (user) {
                     return done(null, user); // User found, pass to passport
+                    
                 } else {
                     // If not, create a new user
                     user = new User({
@@ -39,17 +39,19 @@ passport.use(
     )
 );
 
-
 // Serialize user to store in session
 passport.serializeUser((user, done) => {
+
     done(null, user.id); // Only store user ID in session
 });
 
 // Deserialize user from session
-passport.deserializeUser((id, done) => {
+const deserialize = passport.deserializeUser((id, done) => {
+
     User.findById(id)
         .then((user) => done(null, user))
         .catch((err) => done(err, null));
 });
+// console.log("Deserialized user: ", deserialize)
 
 module.exports = passport;
