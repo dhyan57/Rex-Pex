@@ -9,10 +9,10 @@ const User = require("../../models/userSchema");
 const customerInfo = async (req, res) => {
     try {
         let search = req.query.search || "";
-        let page = parseInt(req.query.page, 10) || 1;
+        let page = parseInt(req.query.page) || 1;
         const limit = 3;
 
-        // Fetch paginated and filtered users
+
         const userData = await User.find({
             isAdmin: false,
             $or: [
@@ -24,7 +24,8 @@ const customerInfo = async (req, res) => {
             .skip((page - 1) * limit)
             .exec();
 
-        // Total users count for pagination
+
+
         const count = await User.countDocuments({
             isAdmin: false,
             $or: [
@@ -33,7 +34,7 @@ const customerInfo = async (req, res) => {
             ],
         });
 
-        res.render("customer",{
+        res.render("customer", {
             data: userData,
             currentPage: page,
             totalPages: Math.ceil(count / limit),
@@ -44,33 +45,30 @@ const customerInfo = async (req, res) => {
     }
 };
 
-const customerBlocked=async(req,res)=>{
+const customerBlocked = async (req, res) => {
     try {
-        
+
         const id = req.query.id;
         console.log(id);
-        
 
-        // Update the user's blocked status to true
-        await User.updateOne({_id:id},{$set:{isBlocked:true}});
+        await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
 
         res.redirect("/admin/users");
     } catch (error) {
-        console.error("Error blocking customer:",error);
+        console.error("Error blocking customer:", error);
         res.redirect("/pageerror");
     }
 };
 
-const customerunBlocked=async(req,res)=>{
+const customerunBlocked = async (req, res) => {
     try {
         const id = req.query.id;
-
-        // Update the user's blocked status to false
-        await User.updateOne({_id:id},{$set:{isBlocked:false}});
+        
+        await User.updateOne({ _id: id }, { $set: { isBlocked: false } });
 
         res.redirect("/admin/users");
     } catch (error) {
-        console.error("Error unblocking customer:",error);
+        console.error("Error unblocking customer:", error);
         res.redirect("/pageerror");
     }
 };

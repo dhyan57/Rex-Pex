@@ -25,12 +25,12 @@
                         <form method="post" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
                             <div class="mb-4">
                                 <label for="product_name" class="form-label">Name</label>
-                                <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required />
+                                <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name"/>
                                 <div id="name-error" class="error-message"></div>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Description</label>
-                                <textarea placeholder="Type here" name="description" class="form-control" id="descriptionId" required></textarea>
+                                <textarea placeholder="Type here" name="description" class="form-control" id="descriptionId" ></textarea>
                                 <div id="description-error" class="error-message"></div>
                             </div>
                             <div class="d-grid">
@@ -55,29 +55,6 @@
                                         <th class="text-start">Edit</th>
                                     </tr>
                                 </thead>
-                                <!-- <tbody>
-                                    <% cat.reverse().forEach((category) => { %>
-                                        <tr>
-                                            <td></td>
-                                            <td class="text-start"><%= category.name %></td>
-                                            <td class="text-start"><%= category.description %></td>
-                                            <td>
-                                                <%= category.categoryOffer ? category.categoryOffer : "0%" %>
-                                            </td>
-                                            <td class="text-start">
-                                                <% if (category.categoryOffer === 0) { %>
-                                                    <button class="btn btn-info" style="width: 100px">
-                                                        <a href="#" class="text-white" onclick="addOffer('<%= category._id %>')">Add Offer</a>
-                                                    </button>
-                                                <% } else { %>
-                                                    <button class="btn btn-info" style="width: 100px">
-                                                        <a href="#" class="text-white" onclick="removeOffer('<%= category._id %>')">Remove</a>
-                                                    </button>
-                                                <% } %>
-                                            </td>
-                                        </tr>
-                                    <% }) %>
-                                </tbody> -->
                                 <tbody>
                                     <% cat.reverse().forEach((category) => { %>
                                         <tr>
@@ -105,14 +82,6 @@
                                                     Inactive
                                                 <% } %>
                                             </td>
-                                            <!-- <td>
-                                                <% if (category.status === "active") { %>
-                                                    <button class="btn btn-danger" onclick="toggleStatus('<%= category._id %>', 'inactive')">Unlist</button>
-                                                <% } else { %>
-                                                    <button class="btn btn-success" onclick="toggleStatus('<%= category._id %>', 'active')">List</button>
-                                                <% } %>
-                                            </td> -->
-
                                             <td class="text-start">
                                                 <%if(category.isListed){%>
                                                     <button onclick="unlist('<%=category._id%>')" class="btn btn-danger" style="width: 70px;">

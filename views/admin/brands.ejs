@@ -10,7 +10,7 @@
         <div class="card-body">
         <div class="row">
             <div class="col-md-3">
-            <form method="post" action="/admin/addBrand" enctype="multipart/form-data">
+            <form id="brandForm" method="post" action="/admin/addBrand" enctype="multipart/form-data">
                 <div class="mb-4">
                 <label for="brand_name" class="form-label">Brand Name</label>
                 <input
@@ -20,11 +20,13 @@
                     placeholder="Type here"
                     class="form-control"
                 />
+                <div id="brand-error" class="barnd-message"></div>
                 </div>
                 <label for="brand_image" class="form-label">Brand Image</label>
                 <div class="input-upload">
                     <img src="" alt="" id="preview" style="max-width: 100%; max-height: 150px;" />
                 <input class="form-control border mt-2" name="image" type="file" onchange="previewImage(event)" />
+                <div id="image-error" class="image-message"></div>
                 </div>
                 <div class="d-grid">
                 <button class="btn btn-primary mt-20" type="submit">
@@ -120,17 +122,65 @@
         }
     </script>
 
-
-
-
-        <!-- <script>
-            function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                const output = document.getElementById('preview');
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
+    
+    <script>
+        // Preview uploaded image
+        function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const output = document.getElementById("preview");
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        }
+    
+        // Form validation logic
+        document.getElementById("brandForm").addEventListener("submit", function (event) {
+        let isValid = true;
+    
+        // Brand name validation
+        const brandNameField = document.getElementById("brand_name");
+        const brandError = document.getElementById("brand-error");
+        const brandNameValue = brandNameField.value.trim();
+    
+        if (brandNameValue.length < 3 || brandNameValue.length > 50) {
+            brandError.textContent =
+            "Brand name must be between 3 and 50 characters.";
+            isValid = false;
+        } else if (!/^[a-zA-Z0-9\s]+$/.test(brandNameValue)) {
+            brandError.textContent =
+            "Brand name can only contain letters, numbers, and spaces.";
+            isValid = false;
+        } else {
+            brandError.textContent = "";
+        }
+    
+        // Image file validation
+        const imageInput = document.querySelector("input[name='image']");
+        const imageError = document.getElementById("image-error");
+        const imageFile = imageInput.files[0];
+    
+        if (!imageFile) {
+            imageError.textContent = "Please upload a brand image.";
+            isValid = false;
+        } else {
+            const validExtensions = ["image/jpeg", "image/png", "image/jpg"];
+            if (!validExtensions.includes(imageFile.type)) {
+            imageError.textContent =
+                "Only JPEG, PNG, and JPG image formats are allowed.";
+            isValid = false;
+            } else {
+            imageError.textContent = "";
             }
-        </script> -->
+        }
+    
+        // Prevent form submission if invalid
+        if (!isValid) {
+            event.preventDefault();
+        }
+        });
+    </script>
+
+
+
         <%- include("../../views/partials/admin/footer") %>

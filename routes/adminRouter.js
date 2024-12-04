@@ -6,7 +6,6 @@ const customerController = require("../controllers/admin/customerController")
 const categoryController = require('../controllers/admin/categoryController');
 const brandController=require("../controllers/admin/brandController")
 const productController=require("../controllers/admin/productController")
-
 const multer=require("multer")
 const storage=require("../helpers/multer")
 const Product = require("../models/productSchema")
@@ -44,8 +43,13 @@ router.get("/deleteBrand",adminAuth,brandController.deleteBrand)
 
 //products Management
 router.get("/addProducts",adminAuth,productController.getProductAddPage)
-router.post("/addProducts",adminAuth,uploads.array("image",4),productController.addProducts)
-router.get("/products",adminAuth,productController.getAllProducts); 
+router.post("/addProducts",adminAuth,uploads.array("images", 4),productController.addProducts);
+router.get("/products", adminAuth, productController.getAllProducts);
+router.get("/blockProduct",adminAuth,productController.blockProduct)
+router.get("/unblockProduct",adminAuth,productController.unblockProduct)
+router.get("/editProduct",adminAuth,productController.getEditProduct)
+router.post("/editProduct/:id",adminAuth,uploads.array("images", 4),productController.editProduct)
+router.post("/deleteImage",adminAuth,productController.deleteSingleImage)
 
 
 

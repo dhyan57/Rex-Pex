@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose; // Fixed case of Schema
+const { Schema } = mongoose;
 
 const bannerSchema = new Schema({
     image: {

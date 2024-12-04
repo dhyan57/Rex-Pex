@@ -1,8 +1,11 @@
 const express=require('express')
 const router=express.Router()
 const userController=require('../controllers/user/userController')
+const productController=require ('../controllers/user/productController')
+
 
 const passport=require("passport")
+const { userAuth } = require('../middlewares/auth')
 
 router.get("/", userController.LoadHomepage) 
 router.get('/signup',userController.Loadsignup)
@@ -18,6 +21,9 @@ router.get('/login',userController.LoadLogin)
 router.post('/login',userController.login)
 router.get('/logout',userController.logout)
 
+
+//product management
+router.get("/productDetails",userAuth,productController.productDetails)
 
 
 

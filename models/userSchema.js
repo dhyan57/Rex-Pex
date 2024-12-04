@@ -55,7 +55,7 @@ const userSchema = new Schema({
     },
     redeemed: {
         type: Boolean
-    },
+    }, 
     redeemedUser: [{
         type: Schema.Types.ObjectId,
         ref: "user"

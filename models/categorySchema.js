@@ -1,30 +1,30 @@
-const mongoose = require('mongoose'); // Import mongoose
+const mongoose = require('mongoose'); 
 
-const { Schema } = mongoose; // Destructure Schema from mongoose
+const { Schema } = mongoose; 
 
-const categorySchema = new Schema({
+const CategorySchema = new Schema({
     name: {
         type: String,
         required: true,
         unique: true,
     },
-    description: { // Fixed typo in "description"
+    description: { 
         type: String,
-        required: true, // Added "true" to the required field
+        required: true, 
     },
     isListed: {
         type: Boolean,
-        default: false, // Use false instead of 0 for clarity
+        default: false, 
     },
     categoryOffer: {
         type: Number,
         default: 0,
     },
-    createdAt: { // Fixed typo in "createAt"
+    createdAt: { 
         type: Date,
-        default: Date.now, // Use `Date.now` instead of `Date.new`
+        default: Date.now,
     },
 });
 
-const Category = mongoose.model('Category', categorySchema); // Fixed typo in "mongoose"
+const Category = mongoose.model('Category', CategorySchema);  
 module.exports = Category;

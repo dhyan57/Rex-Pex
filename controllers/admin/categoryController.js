@@ -7,20 +7,19 @@ const product =require("../../models/productSchema")
 
 const categoryInfo = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; // Corrected req.quer to req.query
-        const limit = 4; // Number of categories per page
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 4; 
         const skip = (page - 1) * limit;
 
-        // Fetch paginated and sorted categories
         const categoryData = await Category
             .find({})
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 
-        // Total category count for pagination
+        
         const totalCategories = await Category.countDocuments();
-        const totalPages = Math.ceil(totalCategories / limit); // Fixed typo (Match → Math)
+        const totalPages = Math.ceil(totalCategories / limit); 
 
         res.render("category", {
             cat: categoryData,
@@ -38,13 +37,12 @@ const addCategory = async (req, res) => {
     const { name, description } = req.body;
 
     try {
-        // Check for existing category
         const existingCategory = await Category.findOne({ name });
         if (existingCategory) {
             return res.status(400).json({ error: "Category already exists" });
         }
 
-        // Add new category
+        
         const newCategory = new Category({
             name,
             description,
@@ -150,7 +148,7 @@ const editCategory=async(req,res)=>{
     try {
         const id =req.query.id;
         const {categoryName,description}=req.body
-        const existingCategory=await Category.findOne({name:categoryName,_id:{$ne:idf}})
+        const existingCategory=await Category.findOne({name:categoryName,_id:{$ne:id}})
         if(existingCategory){
             return res.status(400).json({error:"category exist, please choose another"})
         }

@@ -8,14 +8,13 @@ const db = require("./config/db");
 const userRouter = require("./routes/userRouter");
 const adminRouter=  require('./routes/adminRouter')
 
-// Initialize Database
 db();
 
-// Middleware for parsing request body
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session Middleware
+
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
@@ -29,36 +28,33 @@ app.use(
     })
 );
 
-// Passport Middleware
-require("./config/passport"); // Import Passport strategy configuration
+
+require("./config/passport");
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Prevent caching
 app.use((req, res, next) => {
     res.set("Cache-Control", "no-store");
     next();
 });
 
-// View Engine Setup
 app.set("view engine", "ejs");
 app.set("views", [path.join(__dirname, "views/user"), path.join(__dirname, "views/admin")]);
 
-// Serve Static Files
+
 app.use(express.static("public"));
 
-// Routes
+
 app.use("/", userRouter);
 app.use('/admin',adminRouter)
 
 
-// Error Handling Middleware
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send("Something went wrong!");
 });
 
-// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

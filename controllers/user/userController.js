@@ -1,7 +1,11 @@
 
 const User = require('../../models/userSchema')
+const Category = require('../../models/categorySchema')
+const Product = require('../../models/productSchema')
+
 const nodemailer=require("nodemailer")
 const env=require('dotenv').config()
+const bcrypt = require('bcrypt');
 
 
 
@@ -12,12 +16,25 @@ const env=require('dotenv').config()
 const LoadHomepage=async(req,res)=>{
     try{
         const userId=req.session.user
+        
         console.log(userId)
+        const category=await Category.find({isListed:true})
+        let productData=await Product.find({
+            isBlocked:false,
+            category:{$in:category.map(category=>category._id)},quantity:{$gt:0}
+        })
+
+        productData.sort((a,b)=>new Date(a.createdOn)-new Date(b.createOn)).reverse()
+        
+
+
+
+
         if(userId){
             const userData=await User.findOne({ _id:userId })
-            res.render("home",{user:userData})
+            res.render("home",{user:userData,productData})
         }else{
-            return res.render("home")
+            return res.render("home",{productData})
         }
 
     }catch(error){
@@ -218,7 +235,7 @@ const LoadLogin=async(req,res)=>{
 }
 
 
-const bcrypt = require('bcrypt'); // Ensure bcrypt is imported
+
 
 const login = async (req, res) => {
     try {
