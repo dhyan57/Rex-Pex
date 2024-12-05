@@ -18,7 +18,7 @@ const LoadHomepage=async(req,res)=>{
         const user = req.user;
         const userId=req.session.user
         
-        //console.log(userId)
+        
         const category=await Category.find({isListed:true})
         let productData=await Product.find({
             isBlocked:false,
@@ -167,7 +167,7 @@ const verifyOtp = async (req, res) => {
         if (otp === String(req.session.userOtp)) { 
             const user = req.session.userData;
 
-            // Validate session data
+            
             if (!user || !user.name || !user.email || !user.phone || !user.password) {
                 return res.status(400).json({
                     success: false,
@@ -207,14 +207,14 @@ const resendOtp = async (req, res) => {
             return res.status(400).json({ success: false, message: "Email not found in session." });
         }
 
-        // Generate OTP
-        const otp = generateOtp(); // Define or import this function
+        
+        const otp = generateOtp();
         req.session.userOtp = otp;
 
-        // Send Verification Email
-        const emailSent = await sendVerificationEmail(email, otp); // Pass necessary arguments
+        
+        const emailSent = await sendVerificationEmail(email, otp);
         if (emailSent) {
-            console.log("Resend OTP:", otp); // Avoid logging in production
+            console.log("Resend OTP:", otp);
             return res.status(200).json({ success: true, message: "OTP Resent Successfully" });
         } else {
             return res.status(500).json({ success: false, message: "Failed to resend OTP. Please try again." });
@@ -245,27 +245,26 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Find user in the database
+        
         const findUser = await User.findOne({ isAdmin: 0, email: email });
         if (!findUser) {
             return res.render('login', { message: "User not found" });
         }
 
-        // Check if user is blocked
+        
         if (findUser.isBlocked) {
             return res.render("login", { message: "User is blocked by admin" });
         }
 
-        // Verify password
+        
         const passwordMatch = await bcrypt.compare(password, findUser.password);
         if (!passwordMatch) {
             return res.render('login', { message: "Password does not match" });
         }
-        // Save user ID in session
+        
         req.session.user = findUser;
-        // console.log(req.session.user)
-
-        // Redirect to homepage on success
+        
+        
         res.redirect('/');
     } catch (error) {
         console.error("Login error:", error.stack || error);
