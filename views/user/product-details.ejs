@@ -1,7 +1,6 @@
 <%- include("../../views/partials/user/header") %>
 
     <style>
-
         .ProductContainer {
             max-width: 1200px;
             margin: 0 auto;
@@ -21,7 +20,7 @@
             position: relative;
             overflow: hidden;
             width: 100%;
-            padding-top: 100%; /* 1:1 Aspect Ratio */
+            padding-top: 100%; 
         }
         .main-image {
             position: absolute;
@@ -119,11 +118,7 @@
                             <img src="/uploads/re-image/<%=product.productImage[i]%>"  alt="Product Thumbnail 1" class="thumbnail active" onclick="changeImage(this)">
                         </div>
                     <%}%>
-                    <!-- <img src="/uploads/re-image/product1.jpg" alt="Product Thumbnail 1" class="thumbnail active" onclick="changeImage(this)">
-                    <img src="/uploads/re-image/product2.jpg" alt="Product Thumbnail 2" class="thumbnail" onclick="changeImage(this)">
-                    <img src="/uploads/re-image/product3.jpg" alt="Product Thumbnail 3" class="thumbnail" onclick="changeImage(this)">
-                    <img src="/uploads/re-image/product4.jpg" alt="Product Thumbnail 4" class="thumbnail" onclick="changeImage(this)">
-                    <img src="/uploads/re-image/product5.jpg" alt="Product Thumbnail 5" class="thumbnail" onclick="changeImage(this)"> -->
+                
                 </div>
             </div>
             <div class="product-info">
@@ -149,6 +144,24 @@
             </div>
         </div>
     </div>
+    <div style="flex-direction: column;">
+        <h1>Related Product</h1>
+        <%for(let i=0; i <recommendedProduct.length ; i++){%>
+            
+            <div class="col-lg-3 col-sm-6 mix all dresses bags">
+                <div class="single-product-item">
+                    <figure>
+                        <a href="/productDetails?id=<%=recommendedProduct[i]?._id%>"><img src="/uploads/re-image/<%=recommendedProduct[i]?.productImage[0]%>" alt=""></a>
+                        <div class="p-status">new</div>
+                    </figure>
+                    <div class="product-text">
+                        <h6><%=recommendedProduct[i].productName%></h6>
+                        <p><%=recommendedProduct[i].salePrice%></p>
+                    </div>
+                </div>
+            </div>
+            <%}%>
+    </div>
 
     <script>
         function changeImage(thumbnail) {
@@ -156,7 +169,7 @@
             mainImage.src = thumbnail.src;
             mainImage.alt = thumbnail.alt;
             
-            // Update active thumbnail
+            
             document.querySelectorAll('.thumbnail').forEach(thumb => {
                 thumb.classList.remove('active');
             });
@@ -166,7 +179,7 @@
         function changeQuantity(change) {
             const quantityElement = document.getElementById('quantity');
             let quantity = parseInt(quantityElement.textContent) + change;
-            quantity = Math.max(1, quantity); // Ensure quantity is at least 1
+            quantity = Math.max(1, quantity); 
             quantityElement.textContent = quantity;
         }
 

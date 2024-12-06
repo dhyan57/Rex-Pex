@@ -18,13 +18,16 @@ const productDetails=async(req,res)=>{
         const categoryOffer=findCategory?.categoryOffer||0;
         const productOffer=product.productOffer||0;
         const totalOffer=categoryOffer+productOffer;
+
+        const recommendedProduct=await Product.find({category:findCategory,_id:{$ne:productId}})
         
         res.render("product-details",{
             user:userData,
             product:product,
             quantity:product.quantity,
             totalOffer:totalOffer,
-            category:findCategory
+            category:findCategory,
+            recommendedProduct
         });
         
     } catch (error) {

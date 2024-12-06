@@ -86,33 +86,36 @@
             <button type="submit">Sign Up</button>
         </form> 
         <div class="social-btns">
-            <a href="/auth/google" class="btn btn-outline-danger">
-                <img
-                src="img/googlesignup.png"
-                alt="Google Logo"
-                style="width: 24px; height: 24px"
-                />
-            </a>
+            <button>
+                <a href="/auth/google" class="btn btn-outline-danger">
+                    <img
+                    src="img/googlesignup.png"
+                    alt=""
+                    style="width: 24px; height: 24px"
+                    />Google Sign
+                </a>
+            </button>
+        
             </div> 
     </div>
 
-    <!-- Include Google API -->
+    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         const form = document.getElementById("signupForm");
         const errorMessage = document.getElementById("errorMessage");
 
         form.addEventListener("submit", function (event) {
-            errorMessage.textContent = ""; // Clear previous errors
+            errorMessage.textContent = ""; 
 
-            // Form fields
+            
             const name = document.getElementById("name").value.trim();
             const phone = document.getElementById("phone").value.trim();
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value;
             const cpassword = document.getElementById("cpassword").value;
 
-            // Validation
+            
             if (name.length < 3) {
                 errorMessage.textContent = "Name must be at least 3 characters long.";
                 event.preventDefault();
@@ -146,22 +149,22 @@
             alert("Form submitted successfully!");
         });
 
-        // Google Sign-In
+        
         window.onload = function () {
             google.accounts.id.initialize({
-                client_id: "YOUR_GOOGLE_CLIENT_ID", // Replace with your Google Client ID
+                client_id: "YOUR_GOOGLE_CLIENT_ID", 
                 callback: handleCredentialResponse
             });
 
             google.accounts.id.renderButton(
-                document.getElementById("googleSignIn"), // Render in the Google button
-                { theme: "outline", size: "large" } // Customize button style
+                document.getElementById("googleSignIn"), 
+                { theme: "outline", size: "large" } 
             );
         };
 
         function handleCredentialResponse(response) {
             console.log("Google ID token:", response.credential);
-            // Send this token to your server to validate and create a user
+            
         }
     </script>
 </body>

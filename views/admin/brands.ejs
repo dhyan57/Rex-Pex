@@ -124,7 +124,6 @@
 
     
     <script>
-        // Preview uploaded image
         function previewImage(event) {
         const reader = new FileReader();
         reader.onload = function () {
@@ -134,11 +133,11 @@
         reader.readAsDataURL(event.target.files[0]);
         }
     
-        // Form validation logic
+        
         document.getElementById("brandForm").addEventListener("submit", function (event) {
         let isValid = true;
     
-        // Brand name validation
+        
         const brandNameField = document.getElementById("brand_name");
         const brandError = document.getElementById("brand-error");
         const brandNameValue = brandNameField.value.trim();
@@ -155,7 +154,7 @@
             brandError.textContent = "";
         }
     
-        // Image file validation
+        
         const imageInput = document.querySelector("input[name='image']");
         const imageError = document.getElementById("image-error");
         const imageFile = imageInput.files[0];
@@ -174,7 +173,7 @@
             }
         }
     
-        // Prevent form submission if invalid
+        
         if (!isValid) {
             event.preventDefault();
         }

@@ -15,8 +15,10 @@ const bcrypt = require('bcrypt');
 
 const LoadHomepage=async(req,res)=>{
     try{
-        const user = req.user;
+        // const user = req.user;
         const userId=req.session.user
+        
+        
         
         
         const category=await Category.find({isListed:true})
@@ -24,9 +26,9 @@ const LoadHomepage=async(req,res)=>{
             isBlocked:false,
             category:{$in:category.map(category=>category._id)},quantity:{$gt:0}
         })
-        if (req.isAuthenticated()) {
-            return res.render("home",{user:user,productData})
-        }
+        // if (req.isAuthenticated()) {
+        //     return res.render("home",{user:userId,productData})
+        // }
 
         productData.sort((a,b)=>new Date(a.createdOn)-new Date(b.createOn)).reverse()
         
@@ -73,7 +75,7 @@ const Loadsignup =async (req,res)=>{
 
 
 function generateOtp(){
-    console.log('hendn')
+    
     return Math.floor(100000+Math.random()*900000).toString();
 }
 
@@ -124,7 +126,7 @@ const signup = async (req, res) => {
             return res.render('signup', { message: "Email already exists" });
         }
 
-        console.log('Before generating OTP');
+        
         const otp = generateOtp();
         console.log('Generated OTP:', otp);
 

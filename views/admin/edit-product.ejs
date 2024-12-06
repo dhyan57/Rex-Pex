@@ -348,7 +348,7 @@ function clearErrorMessages() {
                         let croppedImage = document.getElementById("croppedImg" + index);
                         croppedImage.src = croppedCanvas.toDataURL('image/jpeg', 1.0);
                         let timestamp = new Date().getTime();
-                        //    let fileName = cropped-img-${timestamp}-${index}.png;
+                        
                         let fileName = `cropped-img-${timestamp}-${index}.png`;
                         await croppedCanvas.toBlob(blob => {
                             let input = document.getElementById('input' + index);
@@ -399,7 +399,7 @@ function clearErrorMessages() {
             };
 
             function deleteSingleImage(imageId,productId){
-                $.aja({
+                $.ajax({
                     url:"/admin/deleteImage",
                     method:'post',
                     data:{imageNameToserver:imageId,productIdToServer:productId},
