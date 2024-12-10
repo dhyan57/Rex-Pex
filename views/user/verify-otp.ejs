@@ -4,123 +4,149 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Verification</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 
     <style>
-        /* Base Reset */
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #6b7280;
+            --background-color: #f4f7ff;
+            --text-color: #1f2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body, html {
             height: 100%;
-            margin: 0;
-            font-family: "Nunito Sans", sans-serif;
-            background: #f9f9f9;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
             display: flex;
             justify-content: center;
             align-items: center;
+            line-height: 1.6;
         }
 
         .container {
             width: 100%;
-            max-width: 400px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             text-align: center;
         }
 
         h3 {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 25px;
+            font-weight: 700;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         label {
-            font-size: 1rem;
-            color: #666;
+            font-size: 0.875rem;
+            color: var(--secondary-color);
             display: block;
             text-align: left;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
         input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            transition: border-color 0.3s;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
         }
 
         input:focus {
-            border-color: #007bff;
+            border-color: var(--primary-color);
             outline: none;
+            box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.1);
         }
 
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             font-size: 1rem;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-primary {
-            background-color: #007bff;
-            color: #fff;
+            background-color: var(--primary-color);
+            color: white;
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
+            background-color: #3a54d1;
         }
 
         .btn-secondary {
-            background-color: #6c757d;
-            color: #fff;
-            margin-top: 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            margin-top: 15px;
         }
 
         .btn-secondary:hover {
-            background-color: #5a6268;
+            background-color: #4b5563;
         }
 
         .otp-timer {
-            margin: 15px 0;
-            font-size: 1rem;
-            color: #555;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: var(--secondary-color);
         }
 
         .otp-timer span {
-            font-weight: bold;
-            color: #333;
+            font-weight: 600;
+            color: var(--text-color);
         }
 
         .expired {
-            color: red !important;
+            color: #ef4444 !important;
         }
 
         .footer-link {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #666;
+            margin-top: 25px;
+            font-size: 0.875rem;
+            color: var(--secondary-color);
         }
 
         .footer-link a {
-            color: #007bff;
+            color: var(--primary-color);
             text-decoration: none;
+            font-weight: 500;
         }
 
         .footer-link a:hover {
             text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
@@ -232,6 +258,3 @@
     </script>
 </body>
 </html>
-
-
-

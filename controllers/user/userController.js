@@ -293,6 +293,8 @@ const logout=async(req,res)=>{
 
 
 
+
+
 module.exports={
     LoadHomepage,
     pageNotFound,
@@ -303,5 +305,5 @@ module.exports={
     resendOtp,
     LoadLogin,
     login,
-    logout
+    logout,
 } 

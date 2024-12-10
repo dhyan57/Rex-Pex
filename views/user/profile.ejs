@@ -1,0 +1,127 @@
+<%- include('../partials/user/header') %>
+    <main class="main">
+
+        <!-- Account Details Section -->
+        <section class="pt-150 pb-150">
+            <div class="container">
+                <div class="row">
+                    <aside class="col-md-3">
+                        <div class="sidebar">
+                            <h4>Account Settings</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="/userProfile">Profile</a></li>
+                                <li><a href="/orders">Orders</a></li>
+                                <li><a href="/wishlist">Wishlist</a></li>
+                                <li><a href="/address">Address</a></li>
+                                <li><a href="/wallet">Wallet</a></li>
+                                <li><a href="/logout">Logout</a></li>
+                            </ul>
+                        </div>
+                    </aside>
+
+                    <div class="col-md-9">
+                        <h4>Account Details</h4><br>
+
+                        <div class="referral-section mb-4">
+                            <h5>Your Referral Code</h5>
+                            <div class="input-group">
+                                <input type="text" id="referralCode" class="form-control"
+                                    value="<%= user.referalCode %>" readonly>
+                                <button onclick="copyReferralCode()" class="btn btn-secondary">Copy</button>
+                            </div>
+                            <small class="text-muted">Share your referral code with friends to earn rewards!</small>
+                        </div>
+
+                        <form id="myForm" method="post" action="/updateprofile?id=<%= user._id %>" class="form">
+                            <div class="form-group">
+                                <label for="dname">Display Name</label>
+                                <input type="text" id="dname" name="dname" value="<%= user.name %>"
+                                    class="form-control">
+                                <span id="nameErr" style="color:red;"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="text" id="phone" name="phone" value="<%= user.phone %>"
+                                    class="form-control">
+                                <span id="phoneErr" style="color:red;"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" value="<%= user.email %>" readonly
+                                    class="form-control">
+                                <span id="emailErr" style="color:red;"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+
+        function copyReferralCode() {
+            const referralCodeInput = document.getElementById("referralCode");
+            referralCodeInput.select();
+            document.execCommand("copy");
+        }
+
+        document.getElementById('myForm').addEventListener('submit', function (event) {
+            // Prevent form submission initially
+            event.preventDefault();
+
+            // Reset error messages
+            document.getElementById('nameErr').textContent = '';
+            document.getElementById('phoneErr').textContent = '';
+            document.getElementById('emailErr').textContent = '';
+
+            // Get form values
+            const displayName = document.getElementById('dname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            let isValid = true;
+
+            // Validate Display Name
+            if (!displayName) {
+                document.getElementById('nameErr').textContent = 'Display name is required';
+                isValid = false;
+            } else if (displayName.length < 2) {
+                document.getElementById('nameErr').textContent = 'Display name must be at least 2 characters long';
+                isValid = false;
+            } else if (displayName.length > 50) {
+                document.getElementById('nameErr').textContent = 'Display name cannot exceed 50 characters';
+                isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(displayName)) {
+                document.getElementById('nameErr').textContent = 'Display name can only contain letters and spaces';
+                isValid = false;
+            }
+
+            // Validate Phone Number
+            if (!phone) {
+                document.getElementById('phoneErr').textContent = 'Phone number is required';
+                isValid = false;
+            } else {
+                // Remove any non-numeric characters for validation
+                const cleanPhone = phone.replace(/\D/g, '');
+                if (cleanPhone.length < 10 || cleanPhone.length > 15) {
+                    document.getElementById('phoneErr').textContent = 'Please enter a valid phone number (10-15 digits)';
+                    isValid = false;
+                }
+            }
+
+            // Email validation is not needed since it's readonly
+            // But if you need to validate it in the future:
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('emailErr').textContent = 'Please enter a valid email address';
+                isValid = false;
+            }
+
+            // If all validations pass, submit the form
+            if (isValid) {
+                this.submit();
+            }
+        });
+    </script>
+    <%- include('../partials/user/footer') %>

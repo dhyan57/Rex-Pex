@@ -1,171 +1,275 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Form</title>
+    <title>Create Your Account</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: #fff;
+            min-height: 100vh;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
         }
-        form {
+        .signup-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+            animation: fade-in 0.5s ease-out;
+        }
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .signup-container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .signup-form {
             display: flex;
             flex-direction: column;
         }
-        input {
+        .form-group {
             margin-bottom: 15px;
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            position: relative;
         }
-        input:focus {
-            border-color: #007bff;
+        .signup-form input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
-        button {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px;
+        .signup-form input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        .error-message {
+            color: #ff4d4d;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .input-error {
+            border-color: #ff4d4d !important;
+        }
+        .signup-form button {
+            background-color: #4a90e2;
+            color: white;
             border: none;
-            border-radius: 5px;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 16px;
             cursor: pointer;
-            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
         }
-        button:hover {
-            background-color: #0056b3;
+        .signup-form button:hover {
+            background-color: #357abd;
         }
-        .error {
-            color: red;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
+        .social-signup {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .social-signup .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .social-signup .divider::before,
+        .social-signup .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .social-signup .divider span {
+            padding: 0 10px;
+            color: #888;
         }
         .google-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #4285F4;
-            color: white;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            color: #757575;
+            padding: 12px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         .google-btn:hover {
-            background-color: #357ae8;
+            background-color: #f5f5f5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .google-icon {
+        .google-btn img {
+            width: 24px;
+            height: 24px;
             margin-right: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Signup Form</h2>
-        <form id="signupForm" action="/signup" method="post">
-            <div class="error" id="errorMessage"></div>
-            <input type="text" id="name" name="name" placeholder="Name" />
-            <input type="text" id="phone" name="phone" placeholder="Phone (10 digits)" />
-            <input type="email" id="email" name="email" placeholder="Email" />
-            <input type="password" id="password" name="password" placeholder="Password (6+ characters)" />
-            <input type="password" id="cpassword" name="cpassword" placeholder="Confirm Password" />
+    <div class="signup-container">
+        <h2>Create Your Account</h2>
+        <form id="signupForm" action="/signup" method="post" class="signup-form">
+            <div class="form-group">
+                <input type="text" id="name" name="name" placeholder="Full Name" />
+                <div id="nameError" class="error-message">Name must be at least 3 characters long.</div>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="phone" name="phone" placeholder="Phone (10 digits)" />
+                <div id="phoneError" class="error-message">Phone number must be exactly 10 digits.</div>
+            </div>
+            
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder="Email Address" />
+                <div id="emailError" class="error-message">Please enter a valid email address.</div>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="password" name="password" placeholder="Password (6+ characters)" />
+                <div id="passwordError" class="error-message">Password must be at least 6 characters long.</div>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="cpassword" name="cpassword" placeholder="Confirm Password" />
+                <div id="cpasswordError" class="error-message">Passwords do not match.</div>
+            </div>
+            
             <button type="submit">Sign Up</button>
-        </form> 
-        <div class="social-btns">
-            <button>
-                <a href="/auth/google" class="btn btn-outline-danger">
-                    <img
-                    src="img/googlesignup.png"
-                    alt=""
-                    style="width: 24px; height: 24px"
-                    />Google Sign
-                </a>
-            </button>
+        </form>
         
-            </div> 
+        <div class="social-signup">
+            <div class="divider">
+                <span>Or continue with</span>
+            </div>
+            
+            <a href="/auth/google" class="google-btn">
+                <img src="img/googlesignup.png" alt="Google logo" />
+                Continue with Google
+            </a>
+        </div>
     </div>
 
-    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        const form = document.getElementById("signupForm");
-        const errorMessage = document.getElementById("errorMessage");
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signupForm');
 
-        form.addEventListener("submit", function (event) {
-            errorMessage.textContent = ""; 
+            // Get all input fields and error message elements
+            const inputs = {
+                name: document.getElementById('name'),
+                phone: document.getElementById('phone'),
+                email: document.getElementById('email'),
+                password: document.getElementById('password'),
+                cpassword: document.getElementById('cpassword')
+            };
 
-            
-            const name = document.getElementById("name").value.trim();
-            const phone = document.getElementById("phone").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value;
-            const cpassword = document.getElementById("cpassword").value;
+            const errors = {
+                name: document.getElementById('nameError'),
+                phone: document.getElementById('phoneError'),
+                email: document.getElementById('emailError'),
+                password: document.getElementById('passwordError'),
+                cpassword: document.getElementById('cpasswordError')
+            };
 
-            
-            if (name.length < 3) {
-                errorMessage.textContent = "Name must be at least 3 characters long.";
-                event.preventDefault();
-                return;
+            // Function to show error
+            function showError(inputElement, errorElement) {
+                inputElement.classList.add('input-error');
+                errorElement.style.display = 'block';
             }
 
-            if (!/^\d{10}$/.test(phone)) {
-                errorMessage.textContent = "Phone number must be exactly 10 digits.";
-                event.preventDefault();
-                return;
+            // Function to hide error
+            function hideError(inputElement, errorElement) {
+                inputElement.classList.remove('input-error');
+                errorElement.style.display = 'none';
             }
 
-            if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-                errorMessage.textContent = "Please enter a valid email address.";
-                event.preventDefault();
-                return;
-            }
+            // Validation functions
+            const validations = {
+                name: (value) => value.trim().length >= 3,
+                phone: (value) => /^\d{10}$/.test(value),
+                email: (value) => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value),
+                password: (value) => value.length >= 6,
+                cpassword: (value) => value === inputs.password.value
+            };
 
-            if (password.length < 6) {
-                errorMessage.textContent = "Password must be at least 6 characters long.";
-                event.preventDefault();
-                return;
-            }
-
-            if (password !== cpassword) {
-                errorMessage.textContent = "Passwords do not match.";
-                event.preventDefault();
-                return;
-            }
-
-            alert("Form submitted successfully!");
-        });
-
-        
-        window.onload = function () {
-            google.accounts.id.initialize({
-                client_id: "YOUR_GOOGLE_CLIENT_ID", 
-                callback: handleCredentialResponse
+            // Add real-time validation for each input
+            Object.keys(inputs).forEach(key => {
+                inputs[key].addEventListener('input', function() {
+                    const isValid = validations[key](this.value);
+                    if (isValid) {
+                        hideError(this, errors[key]);
+                    } else {
+                        showError(this, errors[key]);
+                    }
+                });
             });
 
-            google.accounts.id.renderButton(
-                document.getElementById("googleSignIn"), 
-                { theme: "outline", size: "large" } 
-            );
-        };
+            // Form submission handler
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                let isFormValid = true;
 
-        function handleCredentialResponse(response) {
-            console.log("Google ID token:", response.credential);
-            
-        }
+                // Validate all fields
+                Object.keys(inputs).forEach(key => {
+                    const isValid = validations[key](inputs[key].value);
+                    if (!isValid) {
+                        showError(inputs[key], errors[key]);
+                        isFormValid = false;
+                    } else {
+                        hideError(inputs[key], errors[key]);
+                    }
+                });
+
+                // If form is valid, submit the form
+                if (isFormValid) {
+                    this.submit();
+                }
+            });
+
+            // Google Sign-In initialization
+            window.onload = function () {
+                google.accounts.id.initialize({
+                    client_id: "YOUR_GOOGLE_CLIENT_ID", 
+                    callback: handleCredentialResponse
+                });
+
+                google.accounts.id.renderButton(
+                    document.getElementById("googleSignIn"), 
+                    { theme: "outline", size: "large" } 
+                );
+            };
+
+            function handleCredentialResponse(response) {
+                console.log("Google ID token:", response.credential);
+            }
+        });
     </script>
 </body>
 </html>

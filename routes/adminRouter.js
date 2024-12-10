@@ -16,7 +16,7 @@ router.get('/pageerror',AdminController.pageerror)
 //Login Management
 router.get('/login',AdminController.loginPage)
 router.post('/login',AdminController.login)
-router.get('/',adminAuth,AdminController.loadDasboard)
+router.get('/dashboard',adminAuth,AdminController.loadDasboard)
 router.get('/logout',AdminController.logout)
 
 //customer Management

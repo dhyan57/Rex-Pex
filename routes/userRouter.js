@@ -2,6 +2,7 @@ const express=require('express')
 const router=express.Router()
 const userController=require('../controllers/user/userController')
 const productController=require ('../controllers/user/productController')
+const profileControllers=require("../controllers/user/profileController")
 
 
 const passport=require("passport")
@@ -25,6 +26,22 @@ router.get('/logout',userController.logout)
 
 //product management
 router.get("/productDetails",userAuth,productController.productDetails)
+router.get("/forgot-password",profileControllers.getForgotPassPage)
+router.post("/forgot-email",profileControllers.forgotEmailValid)
+router.post("/verify-passForgot-otp",profileControllers.verifyForgotPassOtp)
+router.get("/reset-password",profileControllers.getResetPassPage)
+router.post("/resend-otp",profileControllers.resendOtp)
+router.post("/reset-password",profileControllers.postNewPassword)
+router.get("/userProfile",userAuth,profileControllers.userProfile)
+
+
+
+
+
+
+
+
+
 
 
 
