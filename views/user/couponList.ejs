@@ -1,0 +1,90 @@
+<%- include('../partials/user/header') %>
+
+<main class="main">
+    <!-- Coupons Section -->
+    <section class="coupons-section position-relative pt-50">
+        <div class="container">
+            <!-- Return to Dashboard Link -->
+            <div class="return-link mb-4 text-center">
+                <a href="/checkout" class="text-muted"><i class="fi-rs-angle-left"></i> Return to checkout</a>
+            </div>
+
+            <!-- Coupons List Header -->
+            <div class="coupons-header d-flex flex-column align-items-center mb-4 text-center">
+                <h2 class="section-title">Available Coupons</h2>
+                <p>Exclusive discounts just for you!</p>
+            </div>
+
+            <!-- List of Coupons -->
+            <% if (coupons && coupons.length > 0) { %>
+                <div class="coupons-list card mb-4">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <% coupons.forEach((coupon) => { %>
+                            <div class="coupon-item d-flex flex-column align-items-center mb-4 text-center">
+                                <div class="coupon-details">
+                                    <p>Code: <strong><%= coupon.name %></strong></p>
+                                    <p>Discount: <%= coupon.offerPrice %>% off</p>
+                                    
+                                    <p>Expires on: <%= coupon.expiredOn.toLocaleDateString() %></p>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            <% } else { %>
+                <h2 class="text-center">No coupons available right now</h2>
+            <% } %>
+        </div>
+    </section>
+</main>
+
+<%- include('../partials/user/footer') %>
+
+<style>
+    .coupons-section {
+        padding-top: 50px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .coupons-header {
+        text-align: center;
+    }
+
+    .coupons-list .card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .coupon-item {
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .coupon-details p {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .return-link,
+    .coupons-header,
+    .coupons-list {
+        text-align: center;
+    }
+
+    .apply-coupon .btn {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .apply-coupon .btn:hover {
+        background-color: #0056b3;
+    }
+</style>

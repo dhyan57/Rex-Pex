@@ -1,16 +1,23 @@
-const mongoose=require('mongoose');
-const {schema}=mongoose
-const {v4:uuidv4}=require('uuid')
+const mongoose = require('mongoose');
+const {Schema}=mongoose
+const {v4:uuidv4 } = require('uuid');
 
-const orderScchema=new schema({
+
+const orderSchema=new Schema({
     orderId:{
         type:String,
         default:()=>uuidv4(),
         unique:true
     },
-    orderItems:[{
-        Product:{
-            type:Schema.Type.OrderId,
+    user:{
+        type:Schema.Types.ObjectId,
+        ref:'User',
+        required:true
+    },
+
+    orderedItems:[{
+        product:{
+            type:Schema.Types.ObjectId,
             ref:'Product',
             required:true
         },
@@ -26,6 +33,7 @@ const orderScchema=new schema({
     totalPrice:{
         type:Number,
         required:true
+
     },
     discount:{
         type:Number,
@@ -36,30 +44,53 @@ const orderScchema=new schema({
         required:true
     },
     address:{
-        type:Schema.Type.ObjectId,
-        ref:'User',
+        type:Schema.Types.ObjectId,
+        ref:'Address',
         required:true
     },
-    invoiceDate:{
-        type:Date,
+    paymentMethod: {
+        type: String,
+        enum: ['COD', 'Online'],
+        required: true
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['Pending', 'Processing', 'Completed', 'Failed'],
+        default: 'Pending'
+    },
+    invoiceDate:{  
+        type:Date
     },
     status:{
         type:String,
         required:true,
-        enum:["Pending",'Processing','Shipped','Delivered','Cancalled','Return Request','Returned ']
+        enum:['pending','processing','Shipped','Delivered','Cancelled','Return Requeest','Returned']
+
+    },
+    deliveryCharge:{
+        type:Number,
+        require:true
+
     },
     createdOn:{
         type:Date,
         default:Date.now,
         required:true
     },
+    couponCode:{
+        type:String,
+        require:true
+
+    },
     couponApplied:{
         type:Boolean,
         default:false
+    },
+    cancelleationReson:{
+        type:String,
+        default:'',
+
     }
-})
-
-
-
-const Order=moongoose.model("Order",orderSchema)
+},{ timestamps: true })
+const Order= mongoose.model('Order',orderSchema)
 module.exports=Order

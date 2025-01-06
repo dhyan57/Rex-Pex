@@ -1,247 +1,366 @@
 <%- include("../../views/partials/admin/header") %>
 
 <style>
-    
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+/* Modern styling */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
     background-color: #f8f9fa;
 }
 
-
-.content-header h2 {
-    color: #343a40;
-    margin-bottom: 10px;
-    font-weight: bold;
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
 }
 
-
-.input-group {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1a1a1a;
 }
 
-.input-group input {
-    padding: 10px;
+.search-container {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
     outline: none;
+    transition: all 0.2s;
 }
 
-.input-group button {
-    background-color: #007bff;
-    color: white;
-    border-radius: 0 20px 20px 0;
-    cursor: pointer;
+.search-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
-.input-group button:hover {
-    background-color: #0056b3;
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
 }
 
-
-.table {
-    background: #ffffff;
-    margin: 20px auto;
-    width: 90%;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
+.product-table {
+    width: 100%;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
-.table thead {
-    background: #007bff;
-    color: white;
-    text-align: center;
+.product-table th {
+    background-color: #f8fafc;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-.table th, .table td {
-    padding: 15px;
-    text-align: center;
+.product-table td {
+    padding: 1rem;
+    color: #1e293b;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-.table-striped tbody tr:nth-child(odd) {
-    background-color: #f2f2f2;
+.product-table tr:hover {
+    background-color: #f8fafc;
 }
 
-.table-striped tbody tr:hover {
-    background-color: #e9ecef;
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
 }
 
+.status-badge.in-stock {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.low-stock {
+    background-color: #fef9c3;
+    color: #854d0e;
+}
 
 .btn {
-    font-size: 14px;
-    padding: 8px 12px;
-    border-radius: 5px;
-    text-align: center;
-    display: inline-block;
-}
-
-.btn a {
-    color: white;
-    text-decoration: none;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-}
-
-.btn-danger:hover {
-    background-color: #a71d2a;
-}
-
-.btn-success {
-    background-color: #28a745;
-}
-
-.btn-success:hover {
-    background-color: #1e7e34;
-}
-
-.btn-info {
-    background-color: #17a2b8;
-}
-
-.btn-info:hover {
-    background-color: #117a8b;
-}
-
-
-.pagination {
-    margin-top: 20px;
-}
-
-.pagination .page-item {
-    margin: 0 5px;
-}
-
-.pagination .page-link {
-    color: #007bff;
-    padding: 10px 15px;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    transition: all 0.2s ease-in-out;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #007bff;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
     border: none;
 }
 
-.pagination .page-link:hover {
-    background-color: #0056b3;
+.btn-primary {
+    background-color: #3b82f6;
     color: white;
 }
 
-
-.swal2-popup {
-    font-size: 16px;
-    font-family: 'Arial', sans-serif;
+.btn-primary:hover {
+    background-color: #2563eb;
 }
 
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-success {
+    background-color: #22c55e;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #16a34a;
+}
+
+.btn-outline {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+.btn-outline:hover {
+    background-color: #f8fafc;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.375rem;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    transition: all 0.2s;
+}
+
+.page-link:hover {
+    background-color: #f8fafc;
+}
+
+.page-link.active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
 
 @media (max-width: 768px) {
-    .input-group {
-        width: 90%;
-        margin: auto;
+    .dashboard-container {
+        padding: 1rem;
     }
-
-    .table {
-        width: 100%;
-        font-size: 12px;                                                  
+    
+    .product-table {
+        display: block;
+        overflow-x: auto;
     }
-
-    .pagination .page-link {
-        padding: 8px 10px;
+    
+    .search-container {
+        max-width: 100%;
     }
 }
-
 </style>
 
-<div class="right  mt-6">
-    <div class="content-header">
-        <div>
-            <h2 class="content-title card-title">Products</h2>
-        </div>
+<div class="dashboard-container">
+    <div class="page-header">
+        <h1 class="page-title">Products Management</h1>
     </div>
-    <header class="card-header text-center mb-20">
-        <form action="/admin/products" method="get" class="d-inline">
-            <div class="input-group input-group-sm border border-1 border-grey rounded-pill" style="width: 500px; margin-left: 230px;">
-                <input type="text" class="form-control border-0 rounded-pill" placeholder="Search products or brands" name="search">
-                <button class="btn border-0" type="submit">Search</button>
-            </div>
+
+    <div class="search-container">
+        <form action="/admin/products" method="get">
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Search products or brands" 
+                name="search"
+            >
+            <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
         </form>
-    </header>
-    <div class="right mt-6">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col"><b>Product name</b></th>
-                    <th scope="col"><b>Brand</b></th>
-                    <th scope="col"><b>Category</b></th>
-                    <th scope="col"><b>Sale Price</b></th>
-                    <th scope="col"><b>Offer Price</b></th>
-                    <th scope="col"><b>Offer</b></th>
-                    <th scope="col"><b>Quantity</b></th>
-                    <th scope="col"><b>Action</b></th>
-                    <th scope="col"><b>Edit</b></th>
-                </tr>
-            </thead> 
-            <tbody>
-                <% for (let i = data.length - 1; i >= 0; i--) { %>
+    </div>
+
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Sale Price</th>
+                <th>Offer Price</th>
+                <th>Quantity</th>
+                <th>Offer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let i = data.length - 1; i >= 0; i--) { %>
                 <tr>
                     <td><%= data[i].productName %></td>
                     <td><%= data[i].brand %></td>
                     <td><%= data[i].category.name %></td>
-                    <td><%= data[i].salePrice %></td>
-                    <td><%= data[i].offerPrice %></td>
+                    <td>₹<%= data[i].salePrice %></td>
                     <td>
-                        <button class="btn btn-info" style="width: 100px;">
+                        <%if(locals.data[i].productOffer){%>
+                            <%=data[i].productOffer%>
+                            <%}else{%>
+                                0%
+                            
+                            <%}%>
+                    </td>
+                    <td>
+                        <span class="status-badge <%= data[i].quantity > 10 ? 'in-stock' : 'low-stock' %>">
+                            <%= data[i].quantity %> in stock
+                        </span>
+                    </td>
+                    <td>
+                        <%if(locals.data[i].productOffer==0){%>
+                        
+                        <button class="btn btn-sm font-sm rounded btn-brand" onclick="addOffer('<%=data[i]._id%>')" style="width: 100px;">
                             <a href="#" class="text-white">Add Offer</a>
                         </button>
-                        <button class="btn btn-info" style="width: 100px;">
+                        <%}else{%>
+                        <button class="btn btn-sm font-sm rounded btn-brand" onclick="removeOffer('<%=data[i]._id%>')" style="width: 100px;">
                             <a href="#" class="text-white">Remove</a>
                         </button>
+                        <%}%>
                     </td>
-                    <td><%= data[i].quantity %></td>
-                    <td>
+                    <td class="action-buttons">
                         <% if (data[i].isBlocked === false) { %>
-                            <button class="btn btn-danger" style="width: 80px;">
-                                <a href="/admin/blockProduct?id=<%= data[i]._id %>" class="text-white" style="text-decoration: none;">Block</a>
+                            <button class="btn btn-danger">
+                                <a href="/admin/blockProduct?id=<%= data[i]._id %>" class="text-white">Block</a>
                             </button>
                         <% } else { %>
-                            <button class="btn btn-success" style="width: 80px;">
-                                <a href="/admin/unblockProduct?id=<%= data[i]._id %>" class="text-white" style="text-decoration: none;">Unblock</a>
+                            <button class="btn btn-success">
+                                <a href="/admin/unblockProduct?id=<%= data[i]._id %>" class="text-white">Unblock</a>
                             </button>
                         <% } %>
-                    </td>
-                    <td>
-                        <button class="btn btn-info" style="width: 80px;">
-                            <a href="/admin/editProduct?id=<%= data[i]._id %>" class="text-white" style="text-decoration: none;">Edit</a>
+                        <button class="btn btn-outline">
+                            <a href="/admin/editProduct?id=<%= data[i]._id %>" class="text-inherit">Edit</a>
                         </button>
                     </td>
                 </tr>
-                <% } %>
-            </tbody>
-        </table>
+            <% } %>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <a 
+                href="?page=<%= i %>" 
+                class="page-link <%= (i === currentPage) ? 'active' : '' %>"
+            >
+                <%= i %>
+            </a>
+        <% } %>
     </div>
-    
-    <div class="container mt-3" style="justify-items: center;">
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center mb-20" style="margin-right: 200px;">
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                <li class="page-item <%= (i === currentPage) ? 'active' : '' %>" style="float: left;">
-                    <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-                </li>
-                <% } %>
-            </ul>
-        </nav>
-    </div>
-    
-    
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+<script>
+    async function addOffer(productId) {
+        const {value:amount}=await Swal.fire({
+            title:'Offer in percentage',
+            input:'number',
+            inputLabel:'percentage',
+            inputPlaceholder:'%',
+
+        })
+        $.ajax({
+            url:'/admin/addProductOffer',
+            method:'post',
+            data:{
+                percentage:amount,
+                productId:productId,
+            },
+            success:(response)=>{
+                if(response.status===true){
+                    
+                    Swal.fire('Offer added ','the offer has been removed','success')
+                        .then(()=>location.reload())
+                }else{
+                    Swal.fire('Failed', response.message || 'Failed to add offer', 'error');
+                }
+            }
+        })
+    }
+    function removeOffer(productId){
+        try {
+            Swal.fire({
+                title:'Remove offer',
+                text:'Are you sure ou want to remove this offer',
+                icon:'warning',
+                showCancelButton:true,
+                confirmbuttonColor:'#3085d6',
+                cancelButtonColor:'d33',
+                confirmButtonText:'Yes,Remove it!',
+                timer:5000,
+                timerProgressBar:true
+            }).then(async (result)=>{
+                if(result.isConfirmed){
+                    $.ajax({
+                        url:'/admin/removeProductOffer',
+                        method:'post',
+                        data:{
+                            productId:productId,
+
+                        },
+                        success:(response)=>{
+                            if(response.status===true){
+                                Swal.fire('Removed!','the offer has been removed','success')
+                                location.reload()
+
+                            }else if(response.status===false){
+                                Swal.fire('failed')
+                            }else{
+                                alert('failed')
+                            }
+                        }
+                    })
+                }
+            })
+            
+        } catch (error) {
+            console.error(error)
+            
+        }
+    }
+</script>
 
 <%- include("../../views/partials/admin/footer") %>

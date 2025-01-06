@@ -45,10 +45,10 @@ const customerInfo = async (req, res) => {
     }
 };
 
-const customerBlocked = async (req, res) => {
+const  customerBlocked = async (req, res) => {
     try {
 
-        const id = req.query.id;
+        let id = req.query.id;
         console.log(id);
 
         await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
@@ -62,7 +62,7 @@ const customerBlocked = async (req, res) => {
 
 const customerunBlocked = async (req, res) => {
     try {
-        const id = req.query.id;
+        let id = req.query.id;
         
         await User.updateOne({ _id: id }, { $set: { isBlocked: false } });
 

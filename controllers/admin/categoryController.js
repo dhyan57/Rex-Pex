@@ -11,14 +11,10 @@ const categoryInfo = async (req, res) => {
         const limit = 4; 
         const skip = (page - 1) * limit;
 
-        const categoryData = await Category
-            .find({})
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(limit);
+        const categoryData = await Category.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
 
         
-        const totalCategories = await Category.countDocuments();
+        const totalCategories = await Category.countDocuments();  
         const totalPages = Math.ceil(totalCategories / limit); 
 
         res.render("category", {
@@ -31,7 +27,7 @@ const categoryInfo = async (req, res) => {
         console.error("Error in categoryInfo:", error);
         res.redirect("/pageerror");
     }
-};
+};    
 
 const addCategory = async (req, res) => {
     const { name, description } = req.body;
@@ -64,7 +60,7 @@ const addCategoryOffer=async(req,res)=>{
         
         const category=await Category.findById(categoryId)
         if(!category){
-            return res.status(404).json({ststus:false,message:"Categry not found"})
+            return res.status(404).json({status:false,message:"Categry not found"})
         }
         const products=await product.find({category:category._id})
         const hasProductOffer=products.some((product)=>product.productOffer>percentage)
@@ -72,7 +68,7 @@ const addCategoryOffer=async(req,res)=>{
         return res.json({success:false,message:"products within this category alreaddy have product offers"})
 
         }
-        await Category.updateOne ({_id:categoryId},{set:{categoryOffer:percentage}});
+        await Category.updateOne ({_id:categoryId},{$set:{categoryOffer:percentage}});
         for(const product of products){
             product.productOffer=0;
             product.salePrice=product.regularPrice;
@@ -91,15 +87,15 @@ const removeCategoryOffer=async(req,res)=>{
         const categoryId=req.body.categoryId;
         const category=await Category.findById(categoryId);
         if(!category){
-            return res.status(404).json({ststus:false,message:"Category not found"})
+            return res.status(404).json({status:false,message:"Category not found"})
         }
         const percentage=category.categoryOffer;
         const products=await product.find({category:category._id})
 
         if(products.length>0){
             for(const product of products){
-                product.salePrice+=Math.floor(product.redularPrice*(percentage/100))
-                product.productOffer=0
+                product.salePrice+=Math.floor(product.regularPrice*(percentage/100))
+                product.productOffer=0;
                 await product.save();
             }
         }
@@ -107,7 +103,7 @@ const removeCategoryOffer=async(req,res)=>{
         await category.save();
         res.json({status:true})
     } catch (error) {
-        res.status(500).json({ststus:false,message:"Internal serrver Error"})
+        res.status(500).json({status:false,message:"Internal serrver Error"})
     }
 }
 

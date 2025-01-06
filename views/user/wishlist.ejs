@@ -1,0 +1,196 @@
+<%- include("../../views/partials/user/header") %>
+
+<style>
+    /* Button Base Styles */
+.shopping-summery .action button,
+.shopping-summery .btn-sm {
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Add to Cart Button */
+.shopping-summery .btn-sm {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+}
+
+.shopping-summery .btn-sm:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.shopping-summery .btn-sm i {
+    font-size: 16px;
+}
+
+/* Remove Button */
+.shopping-summery .action button {
+    background-color: #ff4444;
+    color: white;
+    box-shadow: 0 2px 4px rgba(255, 68, 68, 0.2);
+}
+
+.shopping-summery .action button:hover {
+    background-color: #ff3333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 68, 68, 0.3);
+}
+
+/* Out of Stock Button */
+.shopping-summery .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+/* Button Link Styles */
+.shopping-summery .action button a,
+.shopping-summery .btn-sm a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Icon Styles */
+.shopping-summery .fi-rs-shopping-bag,
+.shopping-summery .fi-rs-trash {
+    margin-right: 6px;
+    font-size: 14px;
+}
+
+/* Active/Focus States */
+.shopping-summery .btn-sm:active,
+.shopping-summery .action button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .shopping-summery .action button,
+    .shopping-summery .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .shopping-summery .fi-rs-shopping-bag,
+    .shopping-summery .fi-rs-trash {
+        font-size: 12px;
+    }
+}
+</style>
+
+
+<main class="main">
+    <section class="mt-50 mb-50">
+        <aside class="col-md-3">
+            <div class="sidebar border p-3 rounded shadow-sm">
+                <h4 class="mb-3">Account Settings</h4>
+                <ul class="list-unstyled">
+                    <li><a href="/userProfile" class="text-decoration-none text-dark">Profile</a></li>
+                    <li><a href="/orders" class="text-decoration-none text-dark">Orders</a></li>
+                    <li><a href="/wishlist" class="text-decoration-none text-dark">Wishlist</a></li>
+                    <li><a href="/address" class="text-decoration-none text-dark">Address</a></li>
+                    <li><a href="/wallet" class="text-decoration-none text-dark">Wallet</a></li>
+                    <li><a href="/logout-user" class="text-decoration-none text-danger">Logout</a></li>
+                </ul>
+            </div>
+        </aside>
+        <div class="">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table shopping-summery text-center">
+                            <thead>
+                                <tr class="main-heading">
+                                    <th scope="col" colspan="2">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Stock Status</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (wishlistItems.length > 0) { %>
+                                    <% wishlistItems.forEach(item => { %>
+                                        
+                                        <tr>
+                                            <td class="image product-thumbnail"><img src="/uploads/re-image/<%= item.image %>" alt="<%= item.name %>"></td>
+                                            <td class="product-des product-name">
+                                                <h5 class="product-name"><a href="/productDetails?id=<%= item.id %>"><%= item.name %></a></h5>
+                                                <p class="font-xs"><%= item.description.substring(0,150) %>...</p>
+                                            </td>
+                                            <td class="price" data-title="Price"><span>$<%= item.price %></span></td>
+                                            <td class="text-center" data-title="Stock">
+                                                <span class="<%= item.stockStatus ? 'color3' : 'text-danger' %> font-weight-bold"><%= item.stock %></span>
+                                            </td>
+                                            <td class="text-right" data-title="Cart">
+                                                <% if (item.stockStatus) { %>
+                                                    <form action="" method="POST"
+                                                        style="display: inline; " onsubmit="event.preventDefault(); addToCart('<%= item.id %>')">
+                                                        <input type="hidden" name="quantity" id="cart-quantity" value="1">
+                                                        <button type="submit" class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i><a>Add to cart</a></button>
+                                                    </form>
+                                                    
+                                                <% } else { %>
+                                                    <button class="btn btn-sm btn-secondary" disabled><i class="fi-rs-headset mr-5"></i>Out of Stock</button>
+                                                <% } %>
+                                            </td>
+                                            <td class="action" data-title="Remove">
+                                                <button><a href="#" onclick="removeFromWishlist('<%= item.id %>')"><i class="fi-rs-trash"></i>Remove</a></button>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6">Your wishlist is empty.</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<%- include("../../views/partials/user/footer") %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function addToCart(productId) {
+        fetch(`/addToCart?productId=${productId}`,{method:'post'},{body:JSON.stringify({quantity:1})})
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Added!', data.message, 'success');
+                } else {a
+                    Swal.fire('Oops!', data.message, 'error');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function removeFromWishlist(productId) {
+        fetch(`/removeFromWishlist?id=${productId}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Removed!', data.message, 'success').then(() => location.reload());
+                } else {
+                    Swal.fire('Oops!', data.message, 'error');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>

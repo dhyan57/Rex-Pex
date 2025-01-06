@@ -1,0 +1,451 @@
+<%- include("../../views/partials/admin/header") %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+<style>
+    /* Status colors */
+    .status-pending { background-color: #f0ad4e; color: white; }
+    .status-processing { background-color: #5bc0de; color: white; }
+    .status-shipped { background-color: #0275d8; color: white; }
+    .status-delivered { background-color: #5cb85c; color: white; }
+    .status-cancelled { background-color: #d9534f; color: white; }
+    .status-return-request { background-color: #f7a35c; color: white; }
+    .status-returned { background-color: #8e8e8e; color: white; }
+
+    /* Table improvements */
+    .table {
+        border-collapse: separate;
+        border-spacing: 0 15px;  /* Adds vertical spacing between rows */
+    }
+
+    .table thead th {
+        padding: 15px;
+        font-size: 15px;
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table tbody tr {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+    }
+
+    .table tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .table tbody td {
+        padding: 20px 15px;
+        vertical-align: middle;
+        background-color: white;
+        border-top: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* Product list styling */
+    .table tbody td ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .table tbody td ul li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+    }
+
+    .table tbody td ul li:last-child {
+        border-bottom: none;
+    }
+
+    /* Status select styling */
+    .badge.rounded-pill {
+        padding: 8px 12px;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        width: auto;
+        min-width: 120px;
+    }
+
+    .badge.rounded-pill:disabled {
+        opacity: 0.8;
+        cursor: not-allowed;
+    }
+
+    /* Search bar improvements */
+    .form-control.bg-white {
+        padding: 10px 15px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+    }
+
+    /* Card styling */
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        background-color: white;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .content-title {
+        font-size: 24px;
+        margin-bottom: 0;
+    }
+
+    /* Clickable row styling */
+    .table tbody td[onclick] {
+        cursor: pointer;
+        color: #0275d8;
+        font-weight: 500;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .table tbody td {
+            padding: 15px 10px;
+        }
+        
+        .badge.rounded-pill {
+            min-width: 100px;
+            font-size: 12px;
+        }
+    }
+
+      /* Main pagination container */
+      .pagination-area {
+        margin: 30px 0;
+    }
+
+    /* Pagination list */
+    .pagination {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    /* General page item styling */
+    .pagination .page-item {
+        margin: 0;
+    }
+
+    /* Page link styling */
+    .pagination .page-link {
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 15px;
+        color: #333;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    /* Hover effect */
+    .pagination .page-link:hover {
+        background-color: #f8f9fa;
+        color: #0d6efd;
+        border-color: #0d6efd;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Active page */
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: white;
+        font-weight: 500;
+    }
+
+    /* Disabled state */
+    .pagination .page-item.disabled .page-link {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    /* Previous/Next buttons */
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        padding: 8px 14px;
+        font-weight: bold;
+    }
+
+    /* Ellipsis styling */
+    .pagination .page-item.disabled .page-link span {
+        margin-bottom: 3px;
+    }
+
+    /* Material icons in pagination */
+    .pagination .material-icons {
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+        .pagination {
+            gap: 4px;
+        }
+
+        .pagination .page-link {
+            padding: 6px 12px;
+            font-size: 14px;
+            min-width: 35px;
+            height: 35px;
+        }
+
+        .pagination .page-item:first-child,
+        .pagination .page-item:last-child {
+            display: none;
+        }
+    }
+
+    /* Container alignment */
+    .pagination-area nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Hover effect for active page */
+    .pagination .page-item.active .page-link:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Animation for page changes */
+    .pagination .page-link {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pagination .page-link::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(13, 110, 253, 0.1);
+        top: 0;
+        left: 0;
+        transform: scale(0);
+        transition: transform 0.3s ease;
+        border-radius: 8px;
+    }
+
+    .pagination .page-link:active::after {
+        transform: scale(1);
+    }    
+</style>
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Order List </h2>
+                </div>
+                <div>
+                    <input type="text" placeholder="Search order ID" class="form-control bg-white">
+                </div>
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        
+                        
+                        
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Payment Method</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%for(let i=0;i<orders.length;i++){%>
+                                    <tr >
+                                        <td onclick="orderPage('<%=orders[i]._id%>')"><%=orders[i].orderId%></td>
+                                        <td><%=orders[i].createdOn.toLocaleDateString()%></td>
+                                        <td><b><%= orders[i].user ? orders[i].user.username : 'User not found' %></b></td>
+                                        <td>
+                                            <ul style="padding-left: 15px; margin: 0;">
+                                                <% orders[i].orderedItems.forEach(item => { %>
+                                                    <li><%= item.product.productName %></li>
+                                                <% }) %>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                <%orders[i].orderedItems.forEach(item => {%>
+                                                   <li><%= item.quantity %></li> 
+                                                <%})%>
+                                            </ul>
+                                        </td>
+                                        <td>₹<%=orders[i].finalAmount.toLocaleString()%></td>
+                                        <td><%=orders[i].paymentMethod%></td>
+                                        <td>
+                                            <select 
+                                                data-order-id="<%= orders[i].orderId %>" 
+                                                onchange="updateOrderStatus(this.dataset.orderId, this.value)" 
+                                                class="badge rounded-pill status-<%= orders[i].status.toLowerCase().replace(/ /g, '-') %>"
+                                                <%= orders[i].status === 'Delivered' || orders[i].status === 'Cancelled' ? 'disabled' : '' %>
+                                            >
+                                                <option value="Pending" <%= orders[i].status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                                <option value="Processing" <%= orders[i].status === 'Processing' ? 'selected' : '' %>>Processing</option>
+                                                <option value="Shipped" <%= orders[i].status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                                <option value="Delivered" <%= orders[i].status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                                <option value="Cancelled" <%= orders[i].status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                                <option value="Return Request" <%= orders[i].status === 'Return Request' ? 'selected' : '' %>>Return Request</option>
+                                                <option value="Returned" <%= orders[i].status === 'Returned' ? 'selected' : '' %>>Returned</option>
+                                            </select>
+                                        </td>
+                                        
+                                    </tr>
+                                <%}%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="pagination-area mt-15 mb-50 container">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <!-- Previous Button -->
+                        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                            <a class="page-link d-flex justify-content-center align-items-center" 
+                            href="<%= currentPage === 1 ? '#' : `?page=${currentPage - 1}` %>"
+                            <%= currentPage === 1 ? 'aria-disabled="true"' : '' %>>
+                                <span class="material-icons"><</span>
+                            </a>
+                        </li>
+    
+                        <!-- Page Numbers -->
+                        <% 
+                        let startPage = Math.max(1, currentPage - 2);
+                        let endPage = Math.min(totalPages, startPage + 4);
+                        
+                        if (endPage - startPage < 4) {
+                            startPage = Math.max(1, endPage - 4);
+                        }
+                        
+                        if (startPage > 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">1</a>
+                            </li>
+                            <% if (startPage > 2) { %>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            <% } %>
+                        <% } %>
+    
+                        <% for(let i = startPage; i <= endPage; i++) { %>
+                            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+    
+                        <% if (endPage < totalPages) { %>
+                            <% if (endPage < totalPages - 1) { %>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            <% } %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= totalPages %>"><%= totalPages %></a>
+                            </li>
+                        <% } %>
+    
+                        <!-- Next Button -->
+                        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                            <a class="page-link d-flex justify-content-center align-items-center" 
+                            href="<%= currentPage === totalPages ? '#' : `?page=${currentPage + 1}` %>"
+                            <%= currentPage === totalPages ? 'aria-disabled="true"' : '' %>>
+                                <span class="material-icons">></span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div><br>
+        </section>
+        
+<%- include("../../views/partials/admin/footer") %>
+
+<script>
+    function orderPage(id){
+        window.location.href=`/admin/orderDetails?id=${id}`
+    }
+
+
+    
+    // Reusable function for SweetAlert notifications
+    function showAlert(icon, title, text, confirmButtonColor = '#3085d6', confirmButtonText = 'OK') {
+        Swal.fire({
+            icon,
+            title,
+            text,
+            confirmButtonColor,
+            confirmButtonText
+        });
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+        fetch('/admin/update-order-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ orderId, newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('success', 'Order Status Updated', 'The order status has been updated successfully!')
+                
+                
+                // Update badge styling
+                const selectElement = document.querySelector(`select[data-order-id="${orderId}"]`);
+                if (selectElement) {
+                    selectElement.className = ''; // Reset existing classes
+                    selectElement.classList.add('badge', 'rounded-pill', `status-${newStatus.toLowerCase().replace(/ /g, '-')}`);
+                }
+               window.location.reload() 
+            } else {
+                showAlert('error', 'Update Failed', 'Failed to update order status. Please try again.', '#d33', 'Close');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating order status:', error);
+            showAlert('error', 'An Error Occurred', 'There was a problem updating the order status. Please try again.', '#d33', 'Close');
+        });
+    }
+
+    function filterByStatus(status) {
+        window.location.href = `/admin/orders?status=${status}`;
+    }
+
+
+
+    function filterByStatus(status) {
+        window.location.href = `/admin/orders?status=${status}`;
+    }
+</script>

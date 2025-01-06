@@ -1,0 +1,260 @@
+<%-include('../../views/partials/admin/header')%>
+<style>
+  .container {
+    max-width: 800px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+
+  h1, h2 {
+    text-align: center;
+    color: #333;
+  }
+
+  form {
+    margin-bottom: 20px;
+  }
+
+  form div {
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  button {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #218838;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  table, th, td {
+    border: 1px solid #ccc;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+    color: #333;
+  }
+
+  tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #fff;
+  }
+
+  .empty-message {
+    text-align: center;
+    font-style: italic;
+    color: #999;
+  }
+
+  .delete-icon {
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .delete-icon:hover {
+    color: #a71d2a;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const expireOnInput = document.getElementById('expireOn');
+    const today = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
+    expireOnInput.setAttribute('min', today);  // Set the minimum allowed date to today
+  });
+</script>
+
+<div class="container">
+  <h1>Add Coupon</h1>
+  <form id="couponForm" method="post" action="/admin/add-coupon">
+    <div>
+      <label for="name">Coupon Name</label>
+      <input type="text" name="name" id="name">
+    </div>
+    <div>
+      <label for="expireOn">Expiry Date</label>
+      <input type="date" name="expireOn" id="expireOn"> 
+    </div>
+    <div>
+      <label for="offerPrice">Offer percentage</label>
+      <input type="number" name="offerPrice" id="offerPrice">
+    </div>
+    <div>
+      <label for="minimumPrice">Minimum Price</label>
+      <input type="number" name="minimumPrice" id="minimumPrice">
+    </div>
+    <div>
+      <label for="minimumPrice">Maximum Price</label>
+      <input type="number" name="maximumPrice" id="maximumPrice">
+    </div>
+    <button type="submit">Add Coupon</button>
+  </form>
+
+  <h2>All Coupons</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Created On</th>
+        <th>Expires On</th>
+        <th>Offer Price</th>
+        <th>Minimum Price</th>
+        <th>Status</th>
+        <th>Action</th> <!-- New action column -->
+      </tr>
+    </thead>
+    <tbody>
+      <% if (coupons.length > 0) { %>
+        <% coupons.forEach(coupon => { %>
+          <tr>
+            <td><%= coupon.name %></td>
+            <td><%= new Date(coupon.createdOn).toLocaleDateString() %></td>
+            <td><%= new Date(coupon.expiredOn).toLocaleDateString() %></td>
+            <td><%= coupon.offerPrice %></td>
+            <td><%= coupon.minimumPrice %></td>
+            <td><%=  coupon.expireOn < Date.now()? "Inactive" : "Active" || coupon.isList ? 'Active' : 'Inactive'%></td>
+            <td>
+              <!-- Delete Icon -->
+              <a href="/admin/delete-coupon/<%= coupon._id %>"  class="delete-icon" title="Delete">
+                <i class="fas fa-trash-alt"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M280-120q-33 0-56.5-23.5T200-200v-520q-17 0-28.5-11.5T160-760q0-17 11.5-28.5T200-800h160q0-17 11.5-28.5T400-840h160q17 0 28.5 11.5T600-800h160q17 0 28.5 11.5T800-760q0 17-11.5 28.5T760-720v520q0 33-23.5 56.5T680-120H280Zm200-284 76 76q11 11 28 11t28-11q11-11 11-28t-11-28l-76-76 76-76q11-11 11-28t-11-28q-11-11-28-11t-28 11l-76 76-76-76q-11-11-28-11t-28 11q-11 11-11 28t11 28l76 76-76 76q-11 11-11 28t11 28q11 11 28 11t28-11l76-76Z"/></svg></i>
+              </a>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="7" class="empty-message">No coupons available</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<br>
+<br>
+<%-include('../../views/partials/admin/footer')%>
+
+<!-- FontAwesome CDN (if not already included in the header) -->
+<!-- <script src="https://kit.fontawesome.com/a076d05399.js"></script> -->
+
+  
+  <script>
+    document.getElementById('couponForm').addEventListener('submit',async function (e) {
+      e.preventDefault(); // Prevent default form submission
+      const formData= new FormData(this)
+      
+      const data = Object.fromEntries(formData.entries()); // Convert FormData to an object
+
+      // Validate minimum and maximum prices
+      const minPrice = parseFloat(data.minimumPrice);
+      const maxPrice = parseFloat(data.maximumPrice);
+      const per=parseFloat(data.offerPrice);
+      console.log(per);
+
+      if (isNaN(minPrice) || isNaN(maxPrice)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Input',
+          text: 'Both minimum and maximum price must be valid numbers.',
+        });
+        return;
+      }
+
+      if (minPrice >= maxPrice) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: 'Minimum price must be less than maximum price.',
+        });
+        return;
+      }
+      if (per>100 || per<0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: 'percentage must be between 0-100.',
+        });
+        return;
+      }
+      
+      try {
+        const response = await fetch('/admin/add-coupon', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          Swal.fire({
+            icon: 'success',
+            title: 'Coupon Added',
+            text: `Coupon added successfully: ${result.message}`,
+          })
+          .then(()=>window.location.reload())
+        } else {
+          const error = await response.json();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'Failed to add coupon.',
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Unexpected Error',
+          text: 'An unexpected error occurred. Please try again later.',
+        });
+      }
+    });
+
+
+    
+
+    
+ 
+</script>

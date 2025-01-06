@@ -1,15 +1,15 @@
 const mongoose=require('mongoose');
-const {schema}=mongoose
+const {Schema}=mongoose
 
 const cartSchema=new Schema({
-    UserId:{
-        type:schema.Type.ObjectId, 
+    userId:{
+        type:Schema.Types.ObjectId, 
         ref:"User",
         required:true
     },
     items:[{
-        ProductId:{
-            type:schema.Type.ObjectId,
+        productId:{
+            type:Schema.Types.ObjectId,
             ref:'Product',
             required:true
         },

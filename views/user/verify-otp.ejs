@@ -156,7 +156,7 @@
         <form id="otpForm" action="/verify-otp" method="post" onsubmit="return validateOTPForm()">
             <div class="form-group">
                 <label for="otp">Enter OTP:</label>
-                <input type="text" id="otp" name="otp" placeholder="Enter 6-digit OTP" required maxlength="6" pattern="\d*" />
+                <input type="text" id="otp" name="otp" placeholder="Enter 6-digit OTP"  />
             </div>
             <button type="submit" class="btn btn-primary">Verify Email</button>
             <div class="otp-timer">
@@ -229,7 +229,7 @@
         function resendOTP() {
             $.ajax({
                 type: "POST",
-                url: "/resend-otp",
+                url: "/resendOtp",
                 success: function(response) {
                     if (response.success) {
                         Swal.fire({

@@ -128,3 +128,182 @@ a {
     }
 }
 
+
+
+
+        /* General Reset */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #333333;
+        }
+        
+        /* Main Content */
+        .content-main {
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #374151;
+        }
+        
+        /* Cards */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #111827;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        /* Form Styles */
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #374151;
+        }
+        
+        .form-control,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            transition: border-color 0.2s ease-in-out;
+        }
+        
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0 0 3px rgba(37, 99, 235, 0.5);
+        }
+        
+        /* Textarea Styles */
+        textarea.form-control {
+            min-height: 150px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+        
+        /* Image Upload and Thumbnails */
+        .image-upload-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-bottom: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.25rem;
+            object-fit: contain;
+        }
+        
+        .thumbnails-container {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 1rem;
+            border: 1px dashed #d1d5db;
+            border-radius: 0.375rem;
+        }
+        
+        .thumbnail {
+            position: relative;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            background-color: #ffffff;
+            flex-shrink: 0;
+        }
+        
+        .remove-icon {
+            position: absolute;
+            top: -0.5rem;
+            right: -0.5rem;
+            background-color: #ef4444;
+            color: #ffffff;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        /* Error Message */
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        /* Hover Effects */
+        .hover-up:hover {
+            transform: translateY(-3px);
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        /* Responsive Layout */
+        @media (max-width: 768px) {
+            .content-main {
+                padding: 1.5rem;
+            }
+        
+            .product-form-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        

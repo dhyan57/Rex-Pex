@@ -16,7 +16,9 @@
 <script src="https://kit.fontawesome.com/16d4885483.js" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link rel="stylesheet" href="/styles/header.css">
-<link rel="stylesheet" href="/styles/publicAdd.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 
 </head>
 <body>
@@ -25,13 +27,13 @@
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="brand-wrap">
             <a href="#">
-                <img src="/img/Rexpex.jpg" class="logo" alt="Dashboard Logo">
+                <h1 style="font-style: oblique; font-family: serif; font-size: xx-large;">Rex-Pex</h1>
             </a>
         </div>
         <ul class="menu-aside">
             <li class="menu-item">
-                <a class="menu-link active" href="/admin">
-                    <i class="icon fas fa-tachometer-alt"></i>
+                <a class="menu-link " href="/admin/dashboard">
+                    <i class="icon fas fa-tags"></i>
                     <span class="text">Dashboard</span>
                 </a>
             </li>
@@ -78,13 +80,13 @@
                 </a>
             </li>
             <li class="menu-item">
-                <a class="menu-link" href="/admin/coupons">
+                <a class="menu-link" href="/admin/add-coupon">
                     <i class="icon fas fa-ticket-alt"></i>
                     <span class="text">Coupons</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a class="menu-link" href="/admin/reports">
+                <a class="menu-link" href="/admin/saleReport">
                     <i class="icon fas fa-chart-line"></i>
                     <span class="text">Reports</span>
                 </a>
@@ -99,14 +101,14 @@
     </aside>
     
     <main cl0ass="main-wrap">
-        <header class="main-header navbar">
+        <header class="main-header navbar ">
             <div class="col-search">
             </div>
             <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
                 <ul class="nav">
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/admin-assets/imgs/people/avatar2.jpg" alt="User"></a>
+                        <!-- <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/admin-assets/imgs/people/avatar2.jpg" alt="User"></a> -->
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>

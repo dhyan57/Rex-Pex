@@ -1,0 +1,226 @@
+<%- include('../partials/user/header') %>
+<br><br><br>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<main class="main">
+
+    <section class="mt-50 mb-50">
+        <div class="r">
+            <div class="row">
+                <!-- Sidebar Section -->
+                <aside class="col-md-3">
+                    <div class="sidebar border p-3 rounded shadow-sm">
+                        <h4 class="mb-3">Account Settings</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="/userProfile" class="text-decoration-none text-dark">Profile</a></li>
+                            <li><a href="/orders" class="text-decoration-none text-dark">Orders</a></li>
+                            <li><a href="/wishlist" class="text-decoration-none text-dark">Wishlist</a></li>
+                            <li><a href="/address" class="text-decoration-none text-dark">Address</a></li>
+                            <li><a href="/wallet" class="text-decoration-none text-dark">Wallet</a></li>
+                            <li><a href="/logout-user" class="text-decoration-none text-danger">Logout</a></li>
+                        </ul>
+                    </div>
+                </aside>
+
+                <!-- Main Content Section -->
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table shopping-summery text-center">
+                            <thead>
+                                <tr class="main-heading">
+                                    <th scope="col">Wallet Balance</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="balance" data-title="Balance">
+                                        <strong style="font-size: 40px;">₹<%=balance.toLocaleString()%></strong>
+                                    </td>
+                                    <td data-title="Actions">
+                                        <!-- Add Money Button -->
+                                        <button onclick="showAddMoneyForm()" class="btn btn-primary">Add Money</button>
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Add Money Form -->
+                    <div id="addMoneyForm" class="mt-4" style="display: none;">
+                        <div class="form-group">
+                            <label for="amount">Enter Amount to Add</label>
+                            <input type="number" id="amount" class="form-control" placeholder="Enter amount" min="1">
+                        </div>
+                        <button onclick="confirmAddMoney()" class="btn btn-success">Confirm Add Money</button>
+                    </div>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table shopping-summery text-center">
+                            <thead>
+                                <tr class="main-heading">
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Transaction Type</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (let i = transactions.length - 1; i >= 0; i--) { %>
+                                    <tr>
+                                        <td data-title="Date"><%=transactions[i].date.toLocaleDateString()%></td>
+                                        <td data-title="Transaction Type"><%=transactions[i].type%></td>
+                                        <% if (transactions[i].type === "Purchase") { %>
+                                            <td data-title="Amount">
+                                                <b class="text-danger" style="font-size: 25px;">-</b>&nbsp;
+                                                <strong class="text-danger">₹<%=transactions[i].amount.toLocaleString()%></strong>
+                                            </td>
+                                        <% } else { %>
+                                            <td data-title="Amount">
+                                                <b class="text-success" style="font-size: 20px;">+</b>&nbsp;
+                                                <strong class="text-success">₹<%=transactions[i].amount.toLocaleString()%></strong>
+                                            </td>
+                                        <% } %>
+                                        <td data-title="Status">
+                                            <span class="text-success font-weight-bold"><%=transactions[i].status%></span>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                                <tr>
+                                    <td colspan="4">No more transactions available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination justify-content-center mt-4">
+                            <nav>
+                                <ul class="pagination">
+                                    <% if (currentPage > 1) { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+                                        </li>
+                                    <% } else { %>
+                                        <li class="page-item disabled">
+                                            <a class="page-link">Previous</a>
+                                        </li>
+                                    <% } %>
+                        
+                                    <% for (let i = 1; i <= totalPages; i++) { %>
+                                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                            <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+                                        </li>
+                                    <% } %>
+                        
+                                    <% if (currentPage < totalPages) { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+                                        </li>
+                                    <% } else { %>
+                                        <li class="page-item disabled">
+                                            <a class="page-link">Next</a>
+                                        </li>
+                                    <% } %>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main><br><br><br>
+<%- include('../partials/user/footer') %>
+
+<script>
+    function showAddMoneyForm() {
+        if(document.getElementById('addMoneyForm').style.display == 'block'){
+            document.getElementById('addMoneyForm').style.display = 'none';
+        }else{
+            document.getElementById('addMoneyForm').style.display = 'block';
+        }
+    }
+
+    function confirmAddMoney() {
+        const amount = document.getElementById('amount').value;
+        if (amount <= 0 || !amount) {
+            Swal.fire({
+                title: "Invalid Amount",
+                text: "Please enter a valid amount to add.",
+                icon: "error"
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Add Money",
+            text: `Do you want to add ₹${amount} to your wallet?`,
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, add money!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const walletAmount=document.getElementById('amount').value
+                initiateAddMoney(walletAmount);
+            }
+        });
+    }
+    function initiateAddMoney(amount) {
+    fetch('/create-wallet', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount: amount })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const options = {
+            key: '<%= keyId %>',
+            amount: data.amount,  // Amount in paise
+            currency: "INR",
+            name: "DIGITALAGE",
+            description: "Wallet Top Up",
+            order_id: data.orderId,
+            handler: function (response) {
+                // Handle payment success
+                fetch('/verify-wallet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        paymentId: response.razorpay_payment_id,
+                        orderId: response.razorpay_order_id,
+                        signature: response.razorpay_signature
+                    })
+                })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.message === 'Payment successful') {
+                        Swal.fire('Success!', 'Your wallet has been topped up.', 'success');
+                        
+                    } else {
+                        Swal.fire('Error', 'Payment verification failed.', 'error');
+                    }
+                }).then(()=>window.location.reload());
+            },
+            prefill: {
+                name: 'User Name',
+                email: 'user@example.com',
+                contact: '1234567890'
+            },
+            theme: {
+                color: "#3399cc"
+            }
+        };
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+    })
+    .catch(error => console.error('Error creating order:', error));
+}
+
+    
+</script>

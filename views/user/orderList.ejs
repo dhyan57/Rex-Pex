@@ -1,0 +1,157 @@
+    <%- include('../partials/user/header') %>
+
+    <!-- Include SweetAlert library (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    <main class="main">
+        <!-- Breadcrumb -->
+        <div class="page-header breadcrumb-wrap">
+
+        </div><br><br>
+        <br>
+
+        <section class="pt-150 pb-150">
+            <div class="">
+                <div class="row">
+                    <!-- Sidebar -->
+                    <aside class="col-md-3">
+                        <div class="sidebar border p-3 rounded shadow-sm">
+                            <h4 class="mb-3">Account Settings</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="/userProfile" class="text-decoration-none text-dark">Profile</a></li>
+                                <li><a href="/orders" class="text-decoration-none text-dark">Orders</a></li>
+                                <li><a href="/wishlist" class="text-decoration-none text-dark">Wishlist</a></li>
+                                <li><a href="/address" class="text-decoration-none text-dark">Address</a></li>
+                                <li><a href="/wallet" class="text-decoration-none text-dark">Wallet</a></li>
+                                <li><a href="/logout-user" class="text-decoration-none text-danger">Logout</a></li>
+                            </ul>
+                        </div>
+                    </aside>
+
+                    <!-- Orders Section -->
+                    <div class="col-md-9">
+                        <h4 class="mb-4">Your Orders</h4>
+                        <% if (orders && orders.length > 0) { %>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Total</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% orders.forEach(order => { %>
+                                            <tr>
+                                                <td>#<%= order.orderId %></td>
+                                                <td><%= order.createdOn.toLocaleDateString() %></td>
+                                                <td><span class="badge bg-<%= order.status === 'Cancelled' ? 'danger' : (order.status === 'Delivered' ? 'success' : (order.status === 'Returned' ? 'primary' : 'warning')) %>">
+                                                    <%= order.status %></span></td>
+                                                <td>₹<%= order.finalAmount.toLocaleString() %></td>
+                                                <td>
+                                                    <a href="/order-details?id=<%= order._id %>" class="btn btn-sm btn-success me-2">View Details</a>
+                                                    <% let days = (Date.now() - new Date(order.createdOn)) / (1000 * 60 * 60 * 24); %>
+                                                    <% if (order.status !== 'Cancelled' && order.status !== 'Delivered' && order.status !== 'Return Request' &&order.status !== 'Returned') { %>
+
+                                                        <button class="btn btn-sm btn-danger"
+                                                            onclick="confirmCancelOrder('<%= order._id %>')">Cancel</button>
+                                                        
+                                                        <% }else if ( order.status=='Delivered' && days< 7 ){ %>
+                                                            <button class="btn btn-sm btn-danger"
+                                                        onclick="confirmReturn('<%= order._id %>')">return</button>
+                                                        
+                                                            <%}%>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <p class="text-muted">You have no orders yet.</p>
+                        <% } %>
+                        <!--  -->
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main><br><br>
+
+    <%- include('../partials/user/footer') %>
+
+    <script>
+        function confirmCancelOrder(orderId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, cancel it!',
+                input: 'text',
+                inputPlaceholder: 'Enter reason for cancellation',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'You need to provide a reason for cancellation!'
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const reason = result.value;
+                    window.location.href = `/cancel-order?id=${orderId}&reason=${encodeURIComponent(reason)}`;
+                }
+            });
+        }
+        async function confirmReturn(orderId) {
+            try {
+                const result = await Swal.fire({
+                title: "Return Order?",
+                icon: "warning",
+                text: "Reason for Returning Product",
+                html: `<textarea id="returnReason" class="swal2-textarea" placeholder="Enter your reason here"></textarea>`,
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel',
+                preConfirm: () => {
+                    const reason = document.getElementById('returnReason').value.trim();
+                    if (!reason) {
+                    Swal.showValidationMessage('Reason cannot be empty');
+                    }
+                    return reason;
+                }
+                });
+
+                if (result.isConfirmed) {
+                const reason = result.value;
+
+                const response = await fetch('/return-request', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json', 
+                    },
+                    body: JSON.stringify({ 
+                    orderId: orderId,
+                    reason: reason,
+                    }),
+                });
+
+                const responseData = await response.json();
+                if (response.ok) {
+                    Swal.fire('Success!', responseData.message, 'success');
+                } else {
+                    Swal.fire('Error!', responseData.message, 'error');
+                }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
+            }
+            }
+    </script>

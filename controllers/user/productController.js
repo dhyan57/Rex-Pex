@@ -23,9 +23,9 @@ const productDetails=async(req,res)=>{
         
         res.render("product-details",{
             user:userData,
-            product:product,
+            product,
             quantity:product.quantity,
-            totalOffer:totalOffer,
+            totalOffer,
             category:findCategory,
             recommendedProduct
         });
@@ -38,9 +38,31 @@ const productDetails=async(req,res)=>{
 
 
 
+const shop = async (req, res) => {
+    try {
+        const user = req.session.user;
+        if (!user) {
+            return res.redirect('/login');
+        }
+        const products = await Product.find().populate('category');
+        const categories = await Category.find();
+
+        console.log("categories:", categories)
+
+        res.render("shop", { products, categories });
+    } catch (error) {
+        console.error("Error fetching shop data:", error);
+        res.redirect("/pageerror");
+    }
+};
+
+
+
+
 
 
 
 module.exports={
-    productDetails
+    productDetails,
+    shop
 }

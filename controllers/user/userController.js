@@ -165,8 +165,13 @@ const verifyOtp = async (req, res) => {
     try {
         const { otp } = req.body;
         console.log("Entered OTP:", otp);
+        console.log("Session OTP:", req.session.userOtp);
+        console.log(otp,'otp')
+        console.log(otp == String(req.session.userOtp))
 
-        if (otp === String(req.session.userOtp)) { 
+        if (otp == String(req.session.userOtp)) { 
+            console.log("OTP verified");
+            
             const user = req.session.userData;
 
             
@@ -203,6 +208,8 @@ const verifyOtp = async (req, res) => {
 
 const resendOtp = async (req, res) => {
     try {
+        console.log("Resending OTP");
+        
         const { email } = req.session.userData;
 
         if (!email) {
@@ -211,12 +218,14 @@ const resendOtp = async (req, res) => {
 
         
         const otp = generateOtp();
+        
         req.session.userOtp = otp;
 
         
         const emailSent = await sendVerificationEmail(email, otp);
         if (emailSent) {
             console.log("Resend OTP:", otp);
+            console.log(req.session.userOtp);
             return res.status(200).json({ success: true, message: "OTP Resent Successfully" });
         } else {
             return res.status(500).json({ success: false, message: "Failed to resend OTP. Please try again." });
@@ -230,11 +239,16 @@ const resendOtp = async (req, res) => {
 
 const LoadLogin=async(req,res)=>{
     try {
-        if(!req.session.user){
-            return res.render('login')
-        }else{
-            res.redirect('/')
-        }
+        if (req.session.user) {
+            const user = await User.findById(req.session.user);
+            if (user && user.isBlocked) {
+              req.session.user = null;
+              return res.render("login", { message: "User is blocked" });
+            }
+            return res.redirect("/");
+          } else {
+            return res.render("login", { message: '' });
+          }
     } catch (error) {
         res.redirect('/pageNotFound')
     }
@@ -295,6 +309,72 @@ const logout=async(req,res)=>{
 
 
 
+
+const  getFilterData=async (req, res) => {
+    const { category = 'all', search = '', sort = 'default' } = req.query;
+    
+
+    try {
+        const categoryId=await Category.findOne({name:category})
+        
+        const query = category === 'all' ? {} : { category:categoryId._id };
+        
+
+        
+        if (search) {
+            query.productName = { $regex: search, $options: 'i' }; 
+        }
+        query.isBlocked=false;
+
+        
+        let sortCriteria = {};
+        switch (sort) {
+            
+            case 'price-low':
+                sortCriteria.salePrice = 1; // Ascending
+                break;
+            case 'price-high':
+                sortCriteria.salePrice = -1; // Descending
+                break;
+            
+            case 'az':
+                sortCriteria.productName = 1; 
+                break;
+            case 'za':
+                sortCriteria.productName = -1; 
+                break;
+            case 'new':
+                sortCriteria.createdAt = -1; 
+                break;
+            default:
+                sortCriteria = {};
+        }
+        
+        
+
+        const products = await Product.find(query).sort(sortCriteria);
+        
+
+        
+        res.json({
+            success: true,
+            products, 
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching products',
+            error: error.message,
+        });
+    }
+}
+
+
+
+
+
+
 module.exports={
     LoadHomepage,
     pageNotFound,
@@ -306,4 +386,5 @@ module.exports={
     LoadLogin,
     login,
     logout,
+    getFilterData
 } 

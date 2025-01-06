@@ -1,0 +1,241 @@
+<%- include('../partials/admin/header') %>
+
+<style>
+    /* Main layout adjustments */
+    .main {
+        margin-left: 250px; /* Adjust this value to match your sidebar width */
+        padding: 20px;
+        margin-top: 70px; /* Adjust based on your navbar height */
+    }
+
+    .order-details-section {
+        padding: 30px 0;
+        position: relative;
+    }
+
+    /* Container adjustments */
+    .container {
+        max-width: 1200px;
+        padding: 0 20px;
+    }
+
+    /* Card and content spacing */
+    .card {
+        margin-bottom: 25px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    /* Store and order summary */
+    .store-order-summary {
+        padding: 15px 0;
+    }
+
+    .store-order-summary h2.store-name {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    /* Product list adjustments */
+    .product-item {
+        padding: 15px 0;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .product-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .product-image {
+        border-radius: 8px;
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    /* Order summary section */
+    .order-summary .card-body {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .shipping-details,
+    .payment-method,
+    .order-summary-details {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .main {
+            margin-left: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .order-summary .card-body {
+            flex-direction: column;
+        }
+
+        .shipping-details,
+        .payment-method,
+        .order-summary-details {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .product-item {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .product-price {
+            margin-top: 15px;
+        }
+    }
+
+    /* Status badge adjustments */
+    .badge {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    /* Return link styling */
+    .return-link {
+        padding: 10px 0;
+    }
+
+    .return-link a {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+</style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <main class="main">
+        <!-- Order Details Section -->
+        <section class="order-details-section position-relative pt-50">
+            <div class="container">
+                <!-- Return to Orders Link -->
+                <div class="return-link mb-4">
+                    <a href="/admin/allOrders" class="text-muted"><i class="fi-rs-angle-left"></i> Return to Orders</a>
+                </div>
+
+                <!-- Store and Order Summary -->
+                <!-- Store and Order Summary -->
+                <div class="store-order-summary d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <!-- <h2 class="store-name">Digitalage</h2> -->
+                        <p>Order ID: <%= order.orderId %> <br>Payment Status:
+                                <span class="badge text-dark ms-2 
+                <% if (order.paymentStatus === 'Pending') { %> bg-secondary 
+                <% } else if (order.paymentStatus === 'Processing') { %> bg-info 
+                <% } else if (order.paymentStatus === 'Completed') { %> bg-success 
+                <% } else if (order.paymentStatus === 'Failed') { %> bg-dander 
+                <% } %>">
+                                    <%= order.paymentStatus %>
+                                </span>&nbsp;&nbsp;&nbsp;
+                               
+                        <p>Placed on: <%= order.createdOn.toLocaleString() %>
+                        </p>
+                    </div>
+                    <div class="order-total">
+                        <h3>Total: <span class="text-primary">₹ <%= order.finalAmount.toLocaleString() %></span></h3>
+                    </div>
+                </div>
+
+
+                <!-- Shipment Status -->
+                <div class="shipment-status card mb-4">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5>Shipment Status: <span class="badge text-dark ms-2 
+                                <% if (order.status === 'Pending') { %> bg-secondary 
+                                <% } else if (order.status === 'Processing') { %> bg-info 
+                                <% } else if (order.status === 'Shipped') { %> bg-primary 
+                                <% } else if (order.status === 'Delivered') { %> bg-success 
+                                <% } else if (order.status === 'Cancelled') { %> bg-danger 
+                                <% } else if (order.status === 'Return Request') { %> bg-warning 
+                                <% } else if (order.status === 'Returned') { %> bg-primary
+                                <% } %>">
+                                    <%= order.status %>
+                                </span>
+                            </h5>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Products in Order -->
+                <div class="order-products card mb-4">
+                    <div class="card-body">
+                        <% for (let i=0; i < order.orderedItems.length; i++) { %>
+                            <div class="product-item d-flex align-items-center mb-4">
+                                <img src="/uploads/re-image/<%= products[i].productImage[0] %>"
+                                    alt="<%= products[i].productName %>" class="product-image me-3" width="80">
+                                <div class="product-details">
+                                    <h5>
+                                        <%= products[i].productName %>
+                                    </h5>
+                                    <p>Qty: <%= order.orderedItems[i].quantity %>
+                                    </p>
+                                </div>
+                                <div class="product-price ms-auto">
+                                    <h5>₹ <%= products[i].salePrice.toLocaleString() %>
+                                    </h5>
+                                </div>
+                            </div>
+                            <% } %>
+                    </div>
+                </div>
+
+                <!-- Order Summary and Shipping Details -->
+                <div class="order-summary card">
+                    <div class="card-body d-flex justify-content-between">
+                        <div class="shipping-details">
+                            <h6>Shipping Details</h6>
+                            <p>
+                                <%= address.name %>
+                            </p>
+                            <p>
+                                <%= address.streetAddress %>, <%= address.city %>, <%= address.state %> - <%=
+                                                address.pincode %>
+                            </p>
+                            <p>Phone: <%= address.phone %>
+                            </p>
+                        </div>
+
+                        <div class="payment-method text-center">
+                            <h6>Payment Method</h6><br>
+                            <p><strong>
+                                    <%=order.paymentMethod%>
+                                </strong></p>
+                        </div>
+
+                        <div class="order-summary-details">
+                            <h6>Order Summary</h6>
+                            <p>Subtotal: ₹<%= order.totalPrice.toLocaleString() %>
+                            </p>
+                            <p>Discount: ₹<%= order.discount.toLocaleString() %>
+                            </p>
+                            <hr>
+                            <h5>Total: ₹<%= order.finalAmount.toLocaleString() %>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../partials/admin/footer') %>
+
+  

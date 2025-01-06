@@ -1,5 +1,6 @@
 const User = require("../../models/userSchema")
 const Address=require("../../models/addressSchema")
+const Order=require("../../models/orderSchema")
 const nodemailer=require("nodemailer")
 const bcrypt=require("bcrypt")
 const env=require("dotenv").config()
@@ -22,38 +23,41 @@ function generateOtp(){
 }
 
 
-async function sendVerificationEmail(email,otp){
+async function sendVerificationEmail(email, otp) {
     try {
-        const transporter=nodemailer.createTransport({
-            service:'gmail',
-            port:587, 
-            secure:false,
-            requireTLS:true,
-            auth:{
+        if (!email) {
+            console.error("No recipient email provided.");
+            return false;
+        }
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            port: 587,
+            secure: false,
+            requireTLS: true,
+            auth: {
                 user: process.env.NODEMAILER_EMAIL,
-                pass: process.env.NODEMAILER_PASSWORD
-            }
-        })
+                pass: process.env.NODEMAILER_PASSWORD,
+            },
+        });
 
-        const info=await transporter.sendMail({
-            from:process.env.NODEMAILER_EMAIL,
-            to :email,
-            subject:"Verify your account",
-            text:`Your OTP is ${otp}`,
-            html:`<b>Your OTP: ${otp}</b>`
-        })
+        const info = await transporter.sendMail({
+            from: process.env.NODEMAILER_EMAIL,
+            to: email,
+            subject: "Verify your account",
+            text: `Your OTP is ${otp}`,
+            html: `<b>Your OTP: ${otp}</b>`,
+        });
 
-        return info.accepted.length>0
-
-
+        console.log("Email sent info:", info);
+        return info.accepted.length > 0;
 
     } catch (error) {
-        console.error("Error sendng email",error)
+        console.error("Error sending email:", error.message);
+        console.error(error.stack);
         return false;
     }
 }
-
-
 
 
 const getForgotPassPage=async(req,res)=>{
@@ -115,10 +119,15 @@ const getResetPassPage=async(req,res)=>{
 
 
 const resendOtp=async(req,res)=>{
+    console.log("resend otp");
+    
     try {
         const otp = generateOtp()
         req.session.otp=otp
-        const email=req.session.email
+        const email=req.session.userData.email
+        console.log(email);
+        console.log(req.session);
+        
         const emailSent=await sendVerificationEmail(email,otp)
         if(emailSent){
             console.log("resend OTP:",otp)
@@ -173,17 +182,38 @@ const userProfile=async(req,res)=>{
 
 
 
-const address=async(req,res)=>{
+const address = async (req, res) => {
     try {
-        const user=req.session.user;
-        const addressData=await Address.findOne({userId:user})
-        console.log(addressData);
-        
-        res.render("address",{user:user,address:addressData.address})
+        const user = req.session.user;
+        const page = parseInt(req.query.page) || 1; // Default to page 1
+        const limit = 3 // Number of addresses per page
+        const skip = (page - 1) * limit;
+
+        // Fetch the total count of addresses
+        const totalAddresses = await Address.findOne({ userId: user });
+        if (!totalAddresses) {
+            return res.render("address", {
+                user: user,
+                address: [],
+                currentPage: 1,
+                totalPages: 1,
+            }); 
+        }
+        const addressData = totalAddresses.address.slice(skip, skip + limit);
+        const totalPages = Math.ceil(totalAddresses.address.length / limit);
+        console.log("totalAddresses:", addressData);
+        res.render("address", {
+            user: user,
+            address: addressData,
+            currentPage: page,
+            totalPages: totalPages,
+        });
     } catch (error) {
-        res.redirect("/pageerror")
+        console.error(error);
+        res.redirect("/pageerror");
     }
-}
+};
+
 
 const addAddress=async(req,res)=>{
     try {
@@ -227,7 +257,7 @@ const editAddress=async(req,res)=>{
         const user=req.session.user
         const currentAddress=await Address.findOne({
             userId:user
-           
+        
         })
         console.log(currentAddress);
         
@@ -254,38 +284,6 @@ const editAddress=async(req,res)=>{
 
 
 
-
-
-// const postEditAddress=async(req,res)=>{
-//     try {
-//         const data=req.body;
-//         const addressId=req.query.id;
-//         const user=req.session.user;
-//         const findAddress=await Address.findOne({"address._id":adddressId})
-//         if(!findAddress){
-//             res.redirect("/pageerror")
-//         }
-//         await Address.updateOne(
-//             {"address._id":adddressId},
-//             {$set:{
-//                 "address.$":{
-//                     _id:addressId,
-//                     addressType: data.addressType,
-//                     name:data.name,
-//                     city:data.city,
-//                     landMark:data
-//                     state:data.
-//                 }
-//             }}
-//         )
-//     } 
-    
-//     } catch (error) {
-        
-//     }
-// }
-
-
 const postEditAddress = async (req, res) => {
     try {
         const data = req.body
@@ -302,7 +300,7 @@ const postEditAddress = async (req, res) => {
                     addressType: data.addressType,
                     name: data.name,
                     city: data.city,
-                    landMark: data.lanndMark,
+                    landMark: data.landMark,
                     state: data.state,
                     pincode: data.pincode,
                     phone: data.phone,
@@ -345,6 +343,7 @@ const deleteAddress= async (req,res)=>{
 
 
 
+
 module.exports={
     getForgotPassPage,
     forgotEmailValid,
@@ -358,5 +357,5 @@ module.exports={
     postAddAddress,
     editAddress,
     postEditAddress,
-    deleteAddress
+    deleteAddress,
 }

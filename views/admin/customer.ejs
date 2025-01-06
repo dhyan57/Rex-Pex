@@ -1,64 +1,178 @@
 <%- include('../partials/admin/header') %>
 <link rel="stylesheet" href="/styles/customer.css">
 
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <!-- Title -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="content-title">Customers</h2>
+                </div>
 
-<div class="content-header row">
-    <div class="d-flex justify-content-between align-items-center">
-        <h2 class="content-title card-title">Customers</h2>
-    
-    </div>
-</div>         
-        </div>
-        
-            <header class="card-header text-center mb-20">
-                <form action="/admin/users/" method="get" class="d-inline">
-                    <div class="input-group input-group-sm border border-1 border-grey rounded-pill" style="width: 500px; margin-left: 230px;">
-                        <input type="text" class="form-control border-0 rounded-pill" placeholder="Search customers..." name="search">
-                        <button class="btn  border-0" type="submit">Search</button>
-                    </div>
-                </form>
-            </header>
-            <div class="right mt-5">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th scope="col"><b>Name</b></th>
-                        <th scope="col"><b>Email</b></th>
-                        <th scope="col"><b>Phone No</b></th>
-                        <th scope="col"><b>Action</b></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <% for(let i=0;i < data.length;i++){ %>
+                <!-- Fixed Search Bar -->
+                <div class="search-container mb-4">
+                    <form action="/admin/users/" method="get">
+                        <div class="custom-search">
+                            <input type="text" 
+                                   class="search-input" 
+                                   placeholder="Search customers..." 
+                                   name="search">
+                            <button class="search-button" type="submit">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Table Section -->
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
                             <tr>
-                                <td><%=data[i].name%></td>
-                                <td><%=data[i].email%></td>
-                                <td><%=data[i].phone%></td>
-                                <td> 
-                                    <%if(data[i].isBlocked==false){%>
-                                        <button class="btn btn-danger" style="width: 80px;">
-                                            <a href="/admin/blockCustomer?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;">Block</a>
-                                        </button>
-                                        <%}else{%>
-                                        <button class="btn btn-success" style="width: 80px;">
-                                            <a href="/admin/unblockCustomer?id=<%=data[i]._id%>" class="text-white" style="text-decoration: none;">Unblock</a>
-                                        </button> 
-                                        <%}%>
-                                </td>
+                                <th scope="col"><b>Name</b></th>
+                                <th scope="col"><b>Email</b></th>
+                                <th scope="col"><b>Phone No</b></th>
+                                <th scope="col"><b>Action</b></th>
                             </tr>
-                            <%}%>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <% for(let i=0; i < data.length; i++) { %>
+                                <tr>
+                                    <td><%= data[i].name %></td>
+                                    <td><%= data[i].email %></td>
+                                    <td><%= data[i].phone %></td>
+                                    <td>
+                                        <% if(data[i].isBlocked == false) { %>
+                                            <a href="/admin/blockCustomer?id=<%= data[i]._id %>" 
+                                               class="btn custom-block-btn">
+                                                Block
+                                            </a>
+                                        <% } else { %>
+                                            <a href="/admin/unblockCustomer?id=<%= data[i]._id %>" 
+                                               class="btn custom-unblock-btn">
+                                                Unblock
+                                            </a>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <% for(let i=1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+            </div>
         </div>
-        <div class="container mt-3">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center mb-20" style="margin-right: 200px;">
-                <%for(let i=1;i<=totalPages;i++){%>
-                    <li class="page-item<%=(i===currentPage)? 'active' : '' %>">
-                        <a class="page-link" href="?page=<%=i%>"><%=i %></a>
-                    </li>
-                    <%}%>
-                </ul>
-            </nav>
-        </div>
-        <%- include('../partials/admin/footer') %>
+    </div>
+</div>
+
+<style>
+.content-wrapper {
+    margin-left: 250px;
+    padding: 20px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Fixed Search Bar Styles */
+.search-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.custom-search {
+    display: flex;
+    align-items: center;
+    width: 500px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    overflow: hidden;
+    background: white;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    background: white;
+    border: none;
+    border-left: 1px solid #ddd;
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search-button:hover {
+    background: #f8f9fa;
+    color: #333;
+}
+
+/* Block/Unblock Button Styles */
+.custom-block-btn {
+    background: #dc3545;
+    color: white;
+    min-width: 80px;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.custom-block-btn:hover {
+    background: #c82333;
+    color: white;
+    text-decoration: none;
+}
+
+.custom-unblock-btn {
+    background: #28a745;
+    color: white;
+    min-width: 80px;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.custom-unblock-btn:hover {
+    background: #218838;
+    color: white;
+    text-decoration: none;
+}
+
+/* Table Styles */
+.table thead th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content-wrapper {
+        margin-left: 0;
+        padding: 15px;
+    }
+    
+    .custom-search {
+        width: 100%;
+    }
+}
+</style>
+
+<%- include('../partials/admin/footer') %>

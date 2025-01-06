@@ -134,7 +134,7 @@ const getAllProducts = async (req, res) => {
 const blockProduct=async(req,res)=>{
     try {
         let id=req.query.id;
-        await Product.updateOne({id:id},{$set:{isBlocked:true}})
+        await Product.updateOne({_id:id},{$set:{isBlocked:true}})
         res.redirect("/admin/products")
     } catch (error) {
         res.redirect("/pageerror ")
@@ -146,7 +146,7 @@ const blockProduct=async(req,res)=>{
 const unblockProduct=async(req,res)=>{
     try {
         let id=req.query.id
-        await Product.updateOne({id:id},{$set:{isBlocked:false}})
+        await Product.updateOne({_id:id},{$set:{isBlocked:false}})
         res.redirect("/admin/Products")
         
     } catch (error) {
@@ -232,14 +232,23 @@ const editProduct = async (req, res) => {
 
 const deleteSingleImage =async(req,res)=>{
     try {
-        const {imageNameToServer,productIdToServer}=req.body
-        const product=await Product.findByIdAndUpdate(productIdToServer,{$pull:{productImage:imageNameToServer}})
-        const imagePath=path.join("public","uploads","re-image",imageNameToServer);
+        console.log("delete image") 
+        const {imageNameToserver,productIdToServer}=req.body
+        console.log(req.body)
+        const product=await Product.findByIdAndUpdate(productIdToServer,{$pull:{productImage:imageNameToserver}})
+        console.log(product)
+        console.log("imageNameToServer:", imageNameToserver);
+console.log("productIdToServer:", productIdToServer);
+console.log("Path components:", "public", "uploads", "re-image", imageNameToserver);
+
+        const imagePath=path.join("public","uploads","re-image",imageNameToserver);
+        console.log("im",imagePath);
+        
         if(fs.existsSync(imagePath)){
-            await fs.unlinkSync(imagePath);
-            console.log(`Image ${imageNameToServer} deleted successfully`)
+            fs.unlinkSync(imagePath);
+            console.log(`Image ${imageNameToserver} deleted successfully`)
         }else{
-            console.log(`Image ${imageNameToServer} not found`)
+            console.log(`Image ${imageNameToserver} not found`)
 
         }
         res.send({status:true})
@@ -247,6 +256,75 @@ const deleteSingleImage =async(req,res)=>{
         res.redirect("/pageeroor")
     }
 }
+
+const addProductOffer = async (req, res) => {
+    try {
+        const { productId, percentage } = req.body;
+        console.log('start');
+
+        // Find the product and its category
+        const findProduct = await Product.findOne({ _id: productId });
+        console.log('1');
+        const findCategory = await Category.findOne({ _id: findProduct.category });
+
+        // Check if the category already has an offer
+        if (findCategory.categoryOffer > percentage) {
+            console.log('2');
+            return res.json({ status: false, message: "This product's category already has a category offer." });
+        }
+
+        // Calculate the discount and update sale price (subtract from the original price)
+        const discount = Math.floor(findProduct.salePrice * (percentage / 100));
+        findProduct.salePrice = findProduct.salePrice - discount;
+        console.log('3');
+
+        // Store the product offer percentage
+        findProduct.productOffer = parseInt(percentage);
+        console.log('4');
+
+        await findProduct.save();
+        console.log('5');
+
+        // Reset the category offer to 0
+        findCategory.categoryOffer = 0;
+        await findCategory.save();
+        console.log('6');
+
+        res.json({ status: true });
+
+    } catch (error) {
+        console.error(error);
+        res.redirect('/admin/pageerror');
+    }
+};
+
+const removeProductOffer = async (req, res) => {
+    try {
+        const { productId } = req.body;
+        
+        // Find the product to remove the offer
+        const findProduct = await Product.findOne({ _id: productId });
+
+        // Get the discount percentage and calculate the restored price
+        const percentage = findProduct.productOffer;
+        
+
+        // Restore the original sale price
+        findProduct.salePrice = ((findProduct.salePrice *100)/(100-percentage))
+
+        // Remove the product offer
+        findProduct.productOffer = 0;
+
+        // Save the updated product
+        await findProduct.save();
+
+        res.json({ status: true });
+
+    } catch (error) {
+        console.error(error);
+        res.redirect('/admin/pageerror');
+    }
+};
 
 
 
@@ -258,6 +336,8 @@ module.exports = {
     unblockProduct,
     getEditProduct,
     editProduct,
-    deleteSingleImage
+    deleteSingleImage,
+    removeProductOffer,
+    addProductOffer
 
 }

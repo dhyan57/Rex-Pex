@@ -273,117 +273,470 @@
   }
 }
 
+/* Common button base styles */
+.add-to-cart,
+.add-to-wishlist {
+    padding: 12px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    margin: 10px 0;
+    display: block;
+    text-align: center;
+    border: none;
+}
+
+/* Add to Cart button specific styles */
+.add-to-cart {
+    background-color: #007bff;
+    color: white;
+}
+
+.add-to-cart:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-to-cart:active {
+    transform: translateY(0);
+    background-color: #004494;
+}
+
+/* Add to Wishlist button specific styles */
+.add-to-wishlist {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 2px solid #007bff;
+}
+
+.add-to-wishlist:hover {
+    background-color: #e7f1ff;
+    color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-to-wishlist:active {
+    transform: translateY(0);
+    background-color: #d4e5ff;
+}
+
+/* Ripple effect for both buttons */
+.add-to-cart::after,
+.add-to-wishlist::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.add-to-cart:active::after,
+.add-to-wishlist:active::after {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+}
+
+/* Quantity button styles */
+.quantity button {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.quantity button:hover {
+    background-color: #e9ecef;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quantity button:active {
+    transform: translateY(0);
+    background-color: #dde2e6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .add-to-cart,
+    .add-to-wishlist {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+
+
+/* Modern Product Details Layout */
+.ProductContainer {
+    max-width: 1400px;
+    margin: 5% auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Product Images Section */
+.product-images {
+    flex: 1;
+    min-width: 350px;
+    max-width: 50%;
+}
+
+.main-image-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: #f8f9fa;
+    transition: box-shadow 0.3s ease;
+}
+
+.main-image-container:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.main-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.thumbnail-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+    padding: 10px 0;
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.thumbnail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.thumbnail.active {
+    border-color: #007bff;
+    transform: scale(1.05);
+}
+
+/* Product Info Section */
+.product-info {
+    flex: 1;
+    min-width: 350px;
+    padding: 20px 30px;
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.product-info h3 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.rating span {
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.price {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 25px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.old-price {
+    font-size: 20px;
+    color: #6c757d;
+    text-decoration: line-through;
+}
+
+/* Quantity Controls */
+.quantity {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 25px 0;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.quantity button {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.quantity span {
+    min-width: 60px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Action Buttons */
+.button-group {
+    display: grid;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.add-to-cart {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 16px 32px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.add-to-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.3);
+    background: linear-gradient(135deg, #0056b3, #004494);
+}
+
+.add-to-wishlist {
+    background: #fff;
+    color: #007bff;
+    padding: 14px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 2px solid #007bff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-to-wishlist:hover {
+    background: #f0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+/* Product Meta */
+.product-meta {
+    margin-top: 30px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.product-meta p {
+    color: #6c757d;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+}
+
+/* Related Products Section */
+.related-products {
+    margin-top: 60px;
+    padding: 30px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.related-products h5 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    padding-left: 0;
+}
+
+.single-product-item {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.single-product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.single-product-item figure {
+    position: relative;
+    padding-top: 100%;
+    overflow: hidden;
+}
+
+.single-product-item figure img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.single-product-item figure:hover img {
+    transform: scale(1.05);
+}
+
+.p-status {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(135deg, #ff4d4f, #ff7875);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(255, 77, 79, 0.3);
+}
+
+.product-text {
+    padding: 20px;
+    text-align: center;
+}
+
+.product-text h6 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.product-text p {
+    font-size: 16px;
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .ProductContainer {
+        padding: 20px;
+    }
+    
+    .product-detail {
+        gap: 30px;
+    }
+}
+
+@media (max-width: 992px) {
+    .product-images,
+    .product-info {
+        min-width: 300px;
+    }
+    
+    .thumbnail-strip {
+        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .ProductContainer {
+        margin-top: 3%;
+    }
+    
+    .product-images,
+    .product-info {
+        max-width: 100%;
+    }
+    
+    .product-info {
+        padding: 20px;
+    }
+    
+    .price {
+        font-size: 28px;
+    }
+    
+    .button-group {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-detail {
+        gap: 20px;
+    }
+    
+    .thumbnail {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .quantity button {
+        width: 35px;
+        height: 35px;
+    }
+}
 </style>
 
-
-
-
-    <!-- <style>
-        .ProductContainer {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px; 
-            margin-top: 5%;
-        }
-        .product-detail {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-        .product-images {
-            flex: 1;
-            min-width: 300px;
-        }
-        .main-image-container {
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            padding-top: 100%; 
-        }
-        .main-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .thumbnail-strip {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            overflow-x: auto;
-        }
-        .thumbnail {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        .thumbnail.active {
-            border-color: #007bff;
-        }
-        .product-info {
-            flex: 1;
-            min-width: 300px;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .rating {
-            color: #ffc107;
-            font-size: 20px;
-        }
-        .price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #007bff;
-            margin: 10px 0;
-        }
-        .old-price {
-            text-decoration: line-through;
-            color: #6c757d;
-            margin-left: 10px;
-        }
-        .quantity {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .quantity button {
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            padding: 5px 10px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .quantity span {
-            padding: 5px 15px;
-            border-top: 1px solid #ced4da;
-            border-bottom: 1px solid #ced4da;
-        }
-        .add-to-cart {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .add-to-cart:hover {
-            background-color: #0056b3;
-        }
-        .product-meta {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #6c757d;
-        }
-    </style> -->
     <div class="ProductContainer">
         <div class="product-detail">
             <div class="product-images">
@@ -414,7 +767,8 @@
                     <span id="quantity">1</span>
                     <button onclick="changeQuantity(1)">+</button>
                 </div>
-                <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
+                <button class="add-to-cart" onclick="addToCart('<%=product._id%>')">Add to Cart</button>
+                <button class="add-to-wishlist" onclick="addToWishlist('<%=product._id%>')">Add to wishlist</a></button>
                 <div class="product-meta">
                     <p>Stock Code: FWM15VKT</p>
                     <p>Availability: <span style="color: #28a745;"><%=quantity%></span></p>
@@ -422,14 +776,17 @@
             </div>
         </div>
     </div>
-    <div style="flex-direction: row  ;">
-        <h5>Related Product</h5>
-        <%for(let i=0; i <recommendedProduct.length ; i++){%>
-            
-            <div class="col-lg-3 col-sm-6 mix all dresses bags">
+    
+
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 16px;">
+        <h5 style="flex-basis: 100%; padding-left: 30px;">Related Products</h5>
+        <% for (let i = 0; i < recommendedProduct.length; i++) { %>
+            <div class="col-lg-3 col-sm-6 mix all dresses bags" style="flex: 1 1 calc(25% - 16px); box-sizing: border-box;">
                 <div class="single-product-item">
                     <figure>
-                        <a href="/productDetails?id=<%=recommendedProduct[i]?._id%>"><img src="/uploads/re-image/<%=recommendedProduct[i]?.productImage[0]%>" alt=""></a>
+                        <a href="/productDetails?id=<%=recommendedProduct[i]?._id%>">
+                            <img src="/uploads/re-image/<%=recommendedProduct[i]?.productImage[0]%>" alt="">
+                        </a>
                         <div class="p-status">new</div>
                     </figure>
                     <div class="product-text">
@@ -438,8 +795,10 @@
                     </div>
                 </div>
             </div>
-            <%}%>
+        <% } %>
     </div>
+    
+
 
     <script>
         function changeImage(thumbnail) {
@@ -461,10 +820,155 @@
             quantityElement.textContent = quantity;
         }
 
-        function addToCart() {
-            const quantity = document.getElementById('quantity').textContent;
-            alert(`Added ${quantity} item(s) to cart!`);
+            
+
+
+        function addToCart(id) {
+    const quantity = document.getElementById('quantity').textContent;
+    
+    // Show loading state
+    Swal.fire({
+        title: 'Adding to Cart...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
         }
+    });
+
+    fetch(`/addToCart`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            quantity: parseInt(quantity),
+            productId: id 
+        }),
+    })
+    .then((response) => {
+        if (response.ok) {
+            // Success message
+            Swal.fire({
+                title: 'Added to Cart!',
+                text: `Successfully added ${quantity} item(s) to your cart`,
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Go to Cart',
+                cancelButtonText: 'Continue Shopping'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to cart page
+                    window.location.href = '/showCart';
+                }
+            });
+        } else {
+            // Error message for failed response
+            Swal.fire({
+                title: 'Oops...',
+                text: 'Failed to add item to cart. Please try again.',
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        // Error message for network/server errors
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong. Please try again later.',
+            icon: 'error',
+            confirmButtonColor: '#3085d6'
+        });
+    });
+}
+
+// Enhanced quantity validation with SweetAlert
+function changeQuantity(change) {
+    const quantityElement = document.getElementById('quantity');
+    let quantity = parseInt(quantityElement.textContent) + change;
+    
+    // Get max stock from your product data
+    const maxStock = 5; // You can replace this with actual stock limit
+    
+    if (quantity < 1) {
+        Swal.fire({
+            title: 'Minimum Quantity',
+            text: 'Quantity cannot be less than 1',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+        });
+        return;
+    }
+    
+    if (quantity > maxStock) {
+        Swal.fire({
+            title: 'Maximum Quantity Reached',
+            text: `Sorry, you can only add up to ${maxStock} items`,
+            icon: 'warning',
+            confirmButtonColor: '#3085d6'
+        });
+        return;
+    }
+    
+    quantityElement.textContent = quantity;
+}
+
+// Add to Wishlist with enhanced feedback
+function addToWishlist(productId) {
+    if (!productId) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Action',
+            text: 'Product ID is missing!',
+            confirmButtonColor: '#3085d6'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Adding to Wishlist...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch(`/addtoWishlist?id=${productId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist!',
+                    text: data.message,
+                    showConfirmButton: true,
+                    confirmButtonColor: '#3085d6',
+                    timer: 2000
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Notice',
+                    text: data.message,
+                    confirmButtonColor: '#3085d6'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong. Please try again later.',
+                confirmButtonColor: '#3085d6'
+            });
+        });
+}
 
         function zoomImage(e) {
             const image = e.target;
@@ -486,16 +990,6 @@
     </script>
 <%- include("../../views/partials/user/footer") %>
 
-
-
-
-
-
-
-
-
-
-<%- include("../../views/partials/user/header.ejs") %>
 
 
 

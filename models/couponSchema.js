@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-const {schema}=mongoose
+const {Schema}=mongoose
 
 
 
@@ -16,7 +16,7 @@ const couponSchema=new mongoose.Schema({
     },
     expiredOn:{
         type:Date,
-        reqiuired:Date.now,
+        required:true,
     },
     offerPrice:{
         type:Number,
@@ -31,11 +31,11 @@ const couponSchema=new mongoose.Schema({
         default:true
     },
     userId:[{
-        type:mongoose.schema.Type.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     }]
 })
 
 
-const Coupon=moongoose.model("Coupon",couponSchema)
+const Coupon=mongoose.model("Coupon",couponSchema)
 module.exports=Coupon

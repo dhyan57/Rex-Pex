@@ -173,8 +173,8 @@
             if (!validateForm()) {
                 return false;
             }
-            const name = document.getElementsByName("name")[0].value;
-            const description = document.getElementById("descriptionId").value;
+            const name = document.getElementsByName("name")[0].value.trim();
+            const description = document.getElementById("descriptionId").value.trim();
 
             fetch('/admin/addCategory', {
                 method: 'POST',
@@ -265,7 +265,7 @@
             try {
                 const response = await fetch("/admin/removeCategoryOffer", {
                     method: "POST",
-                    headers: { "content-type": "application/json" },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ categoryId })
                 });
 

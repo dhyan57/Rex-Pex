@@ -6,6 +6,8 @@ const customerController = require("../controllers/admin/customerController")
 const categoryController = require('../controllers/admin/categoryController');
 const brandController=require("../controllers/admin/brandController")
 const productController=require("../controllers/admin/productController")
+const orderControllers=require("../controllers/admin/orderControllers")
+const couponControllers=require("../controllers/admin/couponController")
 const multer=require("multer")
 const storage=require("../helpers/multer")
 const Product = require("../models/productSchema")
@@ -50,6 +52,37 @@ router.get("/unblockProduct",adminAuth,productController.unblockProduct)
 router.get("/editProduct",adminAuth,productController.getEditProduct)
 router.post("/editProduct/:id",adminAuth,uploads.array("images", 4),productController.editProduct)
 router.post("/deleteImage",adminAuth,productController.deleteSingleImage)
+router.post('/addProductOffer',adminAuth,productController.addProductOffer);
+router.post('/removeProductOffer',adminAuth,productController.removeProductOffer);
+
+
+//order mamagement
+router.get('/orders',adminAuth,orderControllers.getAllorders)
+router.post('/update-order-status',orderControllers.updateOrderStatus);
+router.get('/getReturnRequest',adminAuth,orderControllers.getReturnPage)
+router.post('/returnDataUpdate',adminAuth,orderControllers.returnRequest);
+router.get('/orderDetails',orderControllers.getOrderDetail)
+
+
+
+// coupon manegement 
+router.get('/add-coupon',couponControllers.getCoupon)
+router.post('/add-coupon',couponControllers.addCoupon)
+router.get('/delete-coupon/:id',couponControllers.deleteCoupon)
+
+
+
+//slese report
+
+router.get('/salesReportPDF',orderControllers.pdfGenerate)
+router.get('/salesReportExcel',orderControllers.excelGenerate)
+router.get('/saleReport',orderControllers.getSaleReport)
+router.get('/saleReport',orderControllers.getSaleReport)
+router.get('/filterSales',orderControllers.getSaleReportFilter)
+router.get('/salesReportPDF',orderControllers.pdfGenerate)
+router.get('/salesReportExcel',orderControllers.excelGenerate)
+
+
 
 
 
