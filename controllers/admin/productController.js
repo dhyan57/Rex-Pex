@@ -17,7 +17,7 @@ const getProductAddPage = async (req, res) => {
             brand: brand
         })
     } catch (error) {
-        res.redirect("/pageerror")
+        res.redirect("/admin/pageerror")
     }
 }
 
@@ -25,6 +25,9 @@ const getProductAddPage = async (req, res) => {
 const addProducts = async (req, res) => {
     try {
         const products = req.body;
+        
+        console.log("Product Data:", products);
+        
 
     
         const productExists = await Product.findOne({
@@ -45,7 +48,7 @@ const addProducts = async (req, res) => {
 
             for (let file of req.files) {
 
-                const originalImagePath = file.path;
+                const originalImagePath = file.path; 
                 const resizedImagePath = path.join(
                     "public",
                     "uploads",
@@ -126,7 +129,7 @@ const getAllProducts = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.redirect("/pageerror")
+        res.redirect("/admin/pageerror")
     }
 }
 
@@ -137,7 +140,7 @@ const blockProduct=async(req,res)=>{
         await Product.updateOne({_id:id},{$set:{isBlocked:true}})
         res.redirect("/admin/products")
     } catch (error) {
-        res.redirect("/pageerror ")
+        res.redirect("/admin/pageerror ")
     }
 }
 

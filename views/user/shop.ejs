@@ -1,5 +1,46 @@
     
     <style>
+   .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.pagination-list li {
+    display: inline-block;
+}
+
+.pagination-list li a {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+}
+
+.pagination-list li a:hover {
+    background: #007bff;
+    color: white;
+}
+
+.pagination-list li.active a {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+
+
+
+
+
         .container {
         max-width: 1800px;
         width: 98%;
@@ -237,8 +278,14 @@
             </div>
             </div>
         </div>
+        <div class="pagination" id="pagination">
+            
+            
+        </div>
+        
+        
         </section>
-    </main>
+    </main><br>
 
     <%- include('../../views/partials/user/footer') %>
     
@@ -275,70 +322,113 @@
         }
         }
 
-        async function updateProducts() {
-        const category = document.getElementById('category').value;
-        const search = document.getElementById('search').value;
-        const sort = document.getElementById('sort').value;
+        async function updateProducts(page = 1) {
+            const category = document.getElementById('category').value;
+            const search = document.getElementById('search').value;
+            const sort = document.getElementById('sort').value;
 
-        try {
-            const response = await fetch(`/getFilteredData?category=${category}&search=${search}&sort=${sort}`);
-            const data = await response.json();
+            try {
+                const response = await fetch(
+                    `/getFilteredData?` + 
+                    `category=${encodeURIComponent(category)}` +
+                    `&search=${encodeURIComponent(search)}` +
+                    `&sort=${encodeURIComponent(sort)}` +
+                    `&page=${page}`
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
 
-            if (data.success) {
-            renderProducts(data.products);
-            } else {
-            throw new Error(data.message);
+                if (data.success) {
+                    renderProducts(data.products);
+                    updatePagination(data.currentPage, data.totalPages);
+                } else {
+                    console.error('Error:', data.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Failed to update products'
+                    });
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to fetch products'
+                });
             }
-        } catch (error) {
-            console.error('Error:', error);
-            Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to update products. Please try again.'
-            });
-        }
         }
 
+
+
+        async function updatePagination(currentPage, totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            if (currentPage > 1) {
+                pagination.innerHTML += `<li class="page-item">
+                    <a class="page-link" onclick="updateProducts(${currentPage - 1})">&laquo;</a>
+                </li>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" onclick="updateProducts(${i})">${i}</a>
+                </li>`;
+            }
+
+            if (currentPage < totalPages) {
+                pagination.innerHTML += `<li class="page-item">
+                    <a class="page-link" onclick="updateProducts(${currentPage + 1})">&raquo;</a>
+                </li>`;
+            }
+        }
         function renderProducts(products) {
-            if(products.length === 0) {
-                document.getElementById('productList').innerHTML = `
+            const productList = document.getElementById('productList');
+            
+            if (products.length === 0) {
+                productList.innerHTML = `
                     <div class="text-center" style="width: 100%; padding: 2rem;">
                         <h2>No products found</h2>
                     </div>
                 `;
                 return;
             }
-        const productList = document.getElementById('productList');
-        productList.innerHTML = products.map(product => `
-            <div class="product-cart-wrap">
-            <div class="product-img-action-wrap">
-                <div class="product-img-zoom">
-                <a href="/productDetails?id=${product._id}">
-                    <img class="default-img" src="/uploads/re-image/${product.productImage[0]}" 
-                        alt="${product.productName}">
-                </a>
+
+            productList.innerHTML = products.map(product => `
+                <div class="product-cart-wrap">
+                    <div class="product-img-action-wrap">
+                        <div class="product-img-zoom">
+                            <a href="/productDetails?id=${product._id}">
+                                <img class="default-img" src="/uploads/re-image/${product.productImage[0]}" 
+                                    alt="${product.productName}">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="product-content-wrap">
+                        <div class="product-category">
+                            <a href="#">${product.category?.name || 'Uncategorized'}</a>
+                        </div>
+                        <h2 class="product-title">${product.productName}</h2>
+                        <div class="rating-result" title="90%">
+                            <span>${product.productOffer}% OFF</span>
+                        </div>
+                        <div class="product-price">
+                            <span>₹${product.salePrice}</span>
+                            <span class="old-price">₹${product.regularPrice}</span>
+                        </div>
+                        <div class="product-action-1">
+                            <button class="action-btn" onclick="addtocart('${product._id}')">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="product-content-wrap">
-                <div class="product-category">
-                <a href="#">${product.category.name}</a>
-                </div>
-                <h2 class="product-title">${product.productName}</h2>
-                <div class="rating-result" title="90%">
-                <span>${product.productOffer}% OFF</span>
-                </div>
-                <div class="product-price">
-                <span>₹${product.salePrice}</span>
-                <span class="old-price">₹${product.regularPrice}</span>
-                </div>
-                <div class="product-action-1">
-                <button class="action-btn" onclick="addtocart('${product._id}')">
-                    Add to Cart
-                </button>
-                </div>
-            </div>
-            </div>
-        `).join('');
+            `).join('');
         }
 
         document.getElementById('category').addEventListener('change', updateProducts);
@@ -346,7 +436,7 @@
         document.getElementById('sort').addEventListener('change', updateProducts);
 
         // Initialize products
-        updateProducts();
+        document.addEventListener('DOMContentLoaded', () => updateProducts(1));
     </script>
     </body>
     </html>

@@ -85,7 +85,7 @@ const getSaleReport=async (req,res)=>{
 
 const getReturnPage= async (req,res)=>{
     try {
-        const limit =5;
+        const limit =2;
         
         const page= Math.max(1,parseInt(req.query.page))||0
         const skip= (page-1)/limit

@@ -18,7 +18,7 @@ const getOrders= async (req,res)=>{
             return res.redirect('/login')
         }
         const page =parseInt(req.query.page)||1
-        const limit =parseInt(req.query.limit)||10
+        const limit =parseInt(req.query.limit)||5
         const skip=(page-1)*limit
         const totalOrders=await Order.countDocuments({user:userId})
 
@@ -95,6 +95,9 @@ const getOrderCancel= async (req,res)=>{
         if (order.paymentMethod === 'Online' && order.paymentStatus === 'Completed') {
             const refundAmount = order.finalAmount;
             console.log(refundAmount);
+            
+
+            
 
             // Update the user's wallet
             const wallet = await Wallet.findOneAndUpdate(
@@ -114,11 +117,18 @@ const getOrderCancel= async (req,res)=>{
                 },
                 { new: true, upsert: true } // Create wallet if not present
             );
+            
 
             console.log(`Refund of ₹${refundAmount} added to wallet for user ${userId}`);
         }else if(order.paymentMethod=='COD'){
             await Order.findByIdAndUpdate(id,{$set:{paymentStatus:'Failed'}})
         }
+        for(let i=0;i<order.orderedItems.length;i++){
+            const product=await Product.findById(order.orderedItems[i].product)
+            product.quantity+=order.orderedItems[i].quantity
+            await product.save()
+        }
+        
 
 
         await Order.findByIdAndUpdate(id,{$set:{status:'Cancelled',cancelleationReson:reason}})

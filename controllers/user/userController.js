@@ -10,7 +10,17 @@ const bcrypt = require('bcrypt');
 
 
 
-
+function generateReferalCode(length) {
+    let result = '';
+    const characters = 'abcdef0123456789';
+    
+        for (let i = 0; i < length; i++) {
+        result += characters[Math.floor(Math.random() * characters.length)];
+        }
+    
+        return result;
+    
+    }
 
 
 const LoadHomepage=async(req,res)=>{
@@ -110,44 +120,42 @@ async function sendVerificationEmail(email,otp){
     }
 }
 
-const signup = async (req, res) => {
-    console.log('Signup handler called');
-    try {
-        const { name, phone, email, password, cpassword } = req.body;
-        console.log('Request body:', req.body);
 
-        if (password !== cpassword) {
-            return res.render('signup', { message: "Passwords do not match" });
+
+    const signup = async (req, res) => {
+        try {
+        const { name, phone, email, password, cpassword,referal } = req.body;
+    
+        if (password != cpassword) {
+            return res.render("signup", { message: "Passwords do not match" });
         }
-
+    
         const findUser = await User.findOne({ email });
         if (findUser) {
-            console.log("already have an email")
-            return res.render('signup', { message: "Email already exists" });
+            return res.render("signup", {
+            message: "User with this email already exists",
+            });
         }
-
-        
+    
         const otp = generateOtp();
-        console.log('Generated OTP:', otp);
-
+        console.log(email)
         const emailSent = await sendVerificationEmail(email, otp);
+    
         if (!emailSent) {
             return res.json("email-error");
         }
-
-        console.log('Email sent:', emailSent);
-
+        
         req.session.userOtp = otp;
-        req.session.userData = { name, phone, email, password };
-
+        req.session.userData = { name, phone, email, password ,referal};
+    
         res.render("verify-otp");
         console.log("OTP sent", otp);
-
-    } catch (error) {
-        console.error("Signup error:", error);
+        } catch (error) {
+        console.error("Signup eror", error);
         res.redirect("/pageNotFound");
-    }
-};
+        }
+    };
+    
 
 
 
@@ -183,12 +191,37 @@ const verifyOtp = async (req, res) => {
             }
 
             const passwordHash = await securePassword(user.password);
+            const referalCode = generateReferalCode(8);
+
+            let refererBonus = 120;
+            let newUserBonus = 100;
+            if (user.referal) {
+                const refererUser = await User.findOne({ referalCode: user.referal });
+        
+                if (refererUser) {
+                    await Wallet.findOneAndUpdate(
+                        { userId: refererUser._id },
+                        {
+                        $inc: { balance: refererBonus },
+                        $push: {
+                            transactions: {
+                            type: "Referal",
+                            amount: refererBonus,
+                            description: "Referral bonus for referring a new user"
+                            }
+                        }
+                        },
+                        { upsert: true }
+                    );
+                    }
+                }
 
             const saveUserData = new User({
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
                 password: passwordHash,
+                referalCode
             });
 
             await saveUserData.save();
@@ -304,72 +337,94 @@ const logout=async(req,res)=>{
     }
 }
 
-
-
-
-
-
-
-const  getFilterData=async (req, res) => {
-    const { category = 'all', search = '', sort = 'default' } = req.query;
-    
+const getFilterData = async (req, res) => {
+    const { category = 'all', search = '', sort = 'default', page = 1, limit = 8 } = req.query;
 
     try {
-        const categoryId=await Category.findOne({name:category})
+        let query = { isBlocked: false };
         
-        const query = category === 'all' ? {} : { category:categoryId._id };
-        
-
-        
-        if (search) {
-            query.productName = { $regex: search, $options: 'i' }; 
+        // Handle category filter
+        if (category !== 'all') {
+            const categoryId = await Category.findOne({ name: category });
+            if (categoryId) {
+                query.category = categoryId._id;
+            }
         }
-        query.isBlocked=false;
 
-        
+        // Handle search
+        if (search.trim()) {
+            query.productName = { $regex: new RegExp(search, 'i') };
+        }
+
         let sortCriteria = {};
+
+        // Handle different sort options
         switch (sort) {
-            
             case 'price-low':
-                sortCriteria.salePrice = 1; // Ascending
+                sortCriteria = { salePrice: 1 };
                 break;
             case 'price-high':
-                sortCriteria.salePrice = -1; // Descending
+                sortCriteria = { salePrice: -1 };
                 break;
-            
             case 'az':
-                sortCriteria.productName = 1; 
+                // For case-insensitive A-Z sorting
+                sortCriteria = { productName: 1 };
                 break;
             case 'za':
-                sortCriteria.productName = -1; 
+                // For case-insensitive Z-A sorting
+                sortCriteria = { productName: -1 };
                 break;
             case 'new':
-                sortCriteria.createdAt = -1; 
+                sortCriteria = { createdAt: -1 };
                 break;
             default:
-                sortCriteria = {};
+                sortCriteria = { createdAt: -1 };
         }
-        
-        
 
-        const products = await Product.find(query).sort(sortCriteria);
-        
+        const skip = (Number(page) - 1) * Number(limit);
 
-        
+        // Fetch products with populated category
+        let products = await Product.find(query)
+            .populate('category')
+            .sort(sortCriteria)
+            .skip(skip)
+            .limit(Number(limit));
+
+        // If sorting is alphabetical, do an additional JS sort for proper case-insensitive ordering
+        if (sort === 'az' || sort === 'za') {
+            products.sort((a, b) => {
+                const nameA = a.productName.toLowerCase();
+                const nameB = b.productName.toLowerCase();
+                return sort === 'az' 
+                    ? nameA.localeCompare(nameB)
+                    : nameB.localeCompare(nameA);
+            });
+        }
+
+        const totalProducts = await Product.countDocuments(query);
+        const totalPages = Math.ceil(totalProducts / Number(limit));
+
         res.json({
             success: true,
-            products, 
+            products,
+            totalPages,
+            currentPage: Number(page),
+            totalProducts
         });
+
     } catch (error) {
-        console.error(error);
+        console.error('Error in getFilterData:', error);
         res.status(500).json({
             success: false,
             message: 'An error occurred while fetching products',
-            error: error.message,
+            error: error.message
         });
     }
-}
+};
 
+module.exports = {
+    getFilterData
+};
 
 
 

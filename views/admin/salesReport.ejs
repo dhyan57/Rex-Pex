@@ -1,129 +1,399 @@
 <%- include('../partials/admin/header') %>
 <style>
+  /* Modern Dashboard Layout */
+.content-wrapper {
+    margin-left: 250px;
+    padding: 30px;
+    background: #f8fafc;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+}
+
+/* Header Styling */
+.heading {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+/* Export Buttons */
+.export-buttons .btn {
+    padding: 10px 20px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn-primary {
+    background: #3b82f6;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: #22c55e;
+    border: none;
+}
+
+.btn-success:hover {
+    background: #16a34a;
+    transform: translateY(-1px);
+}
+
+/* Date Filter Section */
+.form-select, .form-control {
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    background-color: white;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+/* Summary Cards */
+.summary-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.04);
+}
+
+.icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transition: all 0.3s ease;
+}
+
+.icon-wrapper.blue {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.icon-wrapper.green {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.icon-wrapper.yellow {
+    background: rgba(234, 179, 8, 0.1);
+    color: #eab308;
+}
+
+.icon-wrapper.purple {
+    background: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+}
+
+.summary-card .content h6 {
+    color: #64748b;
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.summary-card .content h3 {
+    color: #1e293b;
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Table Styling */
+.card {
+    background: white;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    margin-top: 30px;
+}
+
+.table {
+    margin: 0;
+}
+
+.table thead th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+}
+
+/* Remove bullets from lists in table cells */
+.table tbody td ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.table tbody td ul li {
+    padding: 2px 0;
+}
+
+/* Remove default list styling for all lists in table */
+.table tbody td > div {
+    margin: 2px 0;
+}
+
+.table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}
+
+/* Pagination */
+.pagination {
+    gap: 6px;
+    margin-top: 30px;
+}
+
+.pagination .page-link {
+    padding: 10px 16px;
+    border-radius: 8px;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+    background: #f8fafc;
+    color: #3b82f6;
+    border-color: #e2e8f0;
+}
+
+.pagination .page-item.active .page-link {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
     .content-wrapper {
-        margin-left: 250px;
+        margin-left: 0;
         padding: 20px;
-        background: #f8f9fa;
-        min-height: 100vh;
     }
-    
-    .heading {
-        font-size: 24px;
-        font-weight: 600;
-        color: #333;
-    }
-    
+
     .summary-card {
-        background: white;
-        border-radius: 10px;
         padding: 20px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
-    
+
     .icon-wrapper {
         width: 50px;
         height: 50px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         font-size: 24px;
     }
-    
-    .icon-wrapper.blue {
-        background: rgba(13, 110, 253, 0.1);
-        color: #0d6efd;
-    }
-    
-    .icon-wrapper.green {
-        background: rgba(25, 135, 84, 0.1);
-        color: #198754;
-    }
-    
-    .icon-wrapper.yellow {
-        background: rgba(255, 193, 7, 0.1);
-        color: #ffc107;
-    }
-    
-    .icon-wrapper.purple {
-        background: rgba(111, 66, 193, 0.1);
-        color: #6f42c1;
-    }
-    
-    .summary-card .content h6 {
-        color: #6c757d;
-        margin-bottom: 5px;
-        font-size: 14px;
-    }
-    
+
     .summary-card .content h3 {
-        color: #333;
-        margin: 0;
         font-size: 24px;
-        font-weight: 600;
     }
-    
-    .table {
-        background: white;
-        border-radius: 10px;
+
+    .heading {
+        font-size: 28px;
     }
-    
-    .table thead th {
-        background: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        color: #495057;
-        font-weight: 600;
-        padding: 12px;
+}
+
+/* Additional Enhancements */
+.table-responsive {
+    border-radius: 16px;
+}
+
+.bi {
+    line-height: 1;
+}
+
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Animation for cards */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
-    
-    .table tbody td {
-        padding: 12px;
-        vertical-align: middle;
-        border-bottom: 1px solid #dee2e6;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    
-    .form-select, .form-control {
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        padding: 8px 12px;
+}
+
+.summary-card {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.summary-card:nth-child(1) { animation-delay: 0.1s; }
+.summary-card:nth-child(2) { animation-delay: 0.2s; }
+.summary-card:nth-child(3) { animation-delay: 0.3s; }
+.summary-card:nth-child(4) { animation-delay: 0.4s; }
+
+
+.table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+}
+
+.table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}
+
+/* Pagination */
+.pagination {
+    gap: 6px;
+    margin-top: 30px;
+}
+
+.pagination .page-link {
+    padding: 10px 16px;
+    border-radius: 8px;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+    background: #f8fafc;
+    color: #3b82f6;
+    border-color: #e2e8f0;
+}
+
+.pagination .page-item.active .page-link {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content-wrapper {
+        margin-left: 0;
+        padding: 20px;
     }
-    
-    .btn {
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-weight: 500;
+
+    .summary-card {
+        padding: 20px;
+        margin-bottom: 20px;
     }
-    
-    .pagination {
-        margin-top: 20px;
+
+    .icon-wrapper {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
     }
-    
-    .pagination .page-link {
-        padding: 8px 16px;
-        color: #0d6efd;
-        border: 1px solid #dee2e6;
+
+    .summary-card .content h3 {
+        font-size: 24px;
     }
-    
-    .pagination .page-item.active .page-link {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-        color: white;
+
+    .heading {
+        font-size: 28px;
     }
-    
-    @media (max-width: 768px) {
-        .content-wrapper {
-            margin-left: 0;
-            padding: 15px;
-        }
-        
-        .summary-card {
-            padding: 15px;
-        }
+}
+
+/* Additional Enhancements */
+.table-responsive {
+    border-radius: 16px;
+}
+
+.bi {
+    line-height: 1;
+}
+
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Animation for cards */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.summary-card {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.summary-card:nth-child(1) { animation-delay: 0.1s; }
+.summary-card:nth-child(2) { animation-delay: 0.2s; }
+.summary-card:nth-child(3) { animation-delay: 0.3s; }
+.summary-card:nth-child(4) { animation-delay: 0.4s; }
     </style>
 <div class="content-wrapper">
     <div class="container-fluid">
