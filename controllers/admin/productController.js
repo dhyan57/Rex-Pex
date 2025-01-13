@@ -270,6 +270,10 @@ const addProductOffer = async (req, res) => {
         console.log('1');
         const findCategory = await Category.findOne({ _id: findProduct.category });
 
+        if(percentage>99){
+            return res.json({status:false,message:"Offer percentage should be less than 100."})
+        }
+
         // Check if the category already has an offer
         if (findCategory.categoryOffer > percentage) {
             console.log('2');

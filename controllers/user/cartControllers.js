@@ -38,7 +38,7 @@ const addToCart = async (req, res) => {
         console.log(itemTotalPrice);
         
         let cart = await Cart.findOne({ userId: userId._id });
- 
+        console.log(cart);
         if (!cart) {
             cart = new Cart({
                 userId:userId._id,  
@@ -124,7 +124,7 @@ const removeCart=async(req,res)=>{
         if(!id){
             return res.status(400).redirect("/pageerror")
         }
-        const cart=await Cart.findOne({userId:user._id})
+        const cart=await Cart.findOne({user:user._id})
         const prodId=cart.items.findIndex(item=>item.productId.toString()===id)
         if(prodId||prodId==0){
             cart.items.splice(prodId,1)

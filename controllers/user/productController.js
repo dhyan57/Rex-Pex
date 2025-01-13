@@ -12,7 +12,8 @@ const productDetails=async(req,res)=>{
         const userId=req.session.user;
         const userData=await User.findById(userId)
         const productId=req.query.id;
-        const product=await Product.findById(productId).populate('category')
+        const category=await Category.find({isListed:true},{_id:1})
+        const product=await Product.find({productId}).populate('category')
         const findCategory=product.category;
         
         const categoryOffer=findCategory?.categoryOffer||0;
@@ -52,7 +53,7 @@ const shop = async (req, res) => {
         const filters = {};
         
         if (req.query.category && req.query.category !== 'all') {
-            const category = await Category.findOne({ name: req.query.category });
+            const category = await Category.findOne({ name: req.query.category, isListed: true });
             if (category) {
                 filters.category = category._id;
             }
@@ -114,6 +115,7 @@ const shop = async (req, res) => {
         res.redirect("/pageerror");
     }
 };
+
 
 
 

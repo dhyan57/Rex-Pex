@@ -345,7 +345,7 @@
     
                 if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
                     displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
-                    isValid = false;
+                    isValid = false; 
                 }
     
     
@@ -355,10 +355,14 @@
                     displayErrorMessage('salePrice-error', 'Please enter a valid non-negative price.');
                     isValid = false;
                 }
-                if (parseFloat(price) <= parseFloat(saleprice)) {
-        displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
-        isValid = false;
-    }
+
+
+
+                
+                if (parseFloat(price) <parseFloat(saleprice)) {
+                    displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
+                    isValid = false;
+                }
     
     
                 if (color.trim() === "") {

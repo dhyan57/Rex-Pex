@@ -337,6 +337,29 @@ const deleteAddress= async (req,res)=>{
 }
 
 
+const updateProfile=async (req,res)=>{
+    try {
+        const {dname,phone}=req.body;
+        const userId=req.session.user;
+        if(userId){
+            const profileUpdate= await User.findByIdAndUpdate({_id:userId},{$set:{name:dname,phone:phone}},{new:true})
+            if(profileUpdate){
+                console.log('profile up');
+    
+                console.log('upateed success fully');
+                res.redirect('/userProfile')
+            }
+        }else{
+            console.log('user not found')
+        }
+        
+    } catch (error) {
+        console.error('error on updateprofile',error);
+        res.redirect('/pageerror')
+        
+    }
+}
+
 
 
 
@@ -358,4 +381,5 @@ module.exports={
     editAddress,
     postEditAddress,
     deleteAddress,
+    updateProfile
 }

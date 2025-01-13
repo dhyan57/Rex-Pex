@@ -273,6 +273,10 @@
         displayErrorMessage('quantity-error', 'Please enter a valid non-negative quantity.');
         isValid = false;
     }
+    if (parseFloat(price) <parseFloat(saleprice)) {
+        displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
+        isValid = false;
+    }
     if (!color) {
         displayErrorMessage('color-error', 'Please enter a color.');
         isValid = false;

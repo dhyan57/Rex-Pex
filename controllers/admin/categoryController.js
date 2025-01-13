@@ -63,6 +63,10 @@ const addCategoryOffer=async(req,res)=>{
             return res.status(404).json({status:false,message:"Categry not found"})
         }
         const products=await product.find({category:category._id})
+        if(percentage<=0 || percentage>99){
+        
+        return res.json({success:false,message:"Invalid percentage value"})
+        }
         const hasProductOffer=products.some((product)=>product.productOffer>percentage)
         if(hasProductOffer){
         return res.json({success:false,message:"products within this category alreaddy have product offers"})

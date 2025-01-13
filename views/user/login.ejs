@@ -199,15 +199,34 @@
         }
 
         function passValidateChecking(e) {
-            const passval = passid.value;
-            if (passval.length < 6) {
-            error2.style.display = "block";
-            error2.innerHTML = "Should contain at least 6 characters";
-            } else {
-            error2.style.display = "none";
-            error2.innerHTML = "";
-            }
-        }
+    const passval = passid.value;
+    const errorMessages = [];
+
+    // Check if password length is between 8 and 12
+    if (passval.length < 8 || passval.length > 12) {
+        errorMessages.push("Password should be between 8 and 12 characters.");
+    }
+
+    // Check if password contains at least one letter
+    if (!/[a-zA-Z]/.test(passval)) {
+        errorMessages.push("Password should contain at least one letter.");
+    }
+
+    // Check if password contains at least one number
+    if (!/\d/.test(passval)) {
+        errorMessages.push("Password should contain at least one number.");
+    }
+
+    // Display error messages or clear the error
+    if (errorMessages.length > 0) {
+        error2.style.display = "block";
+        error2.innerHTML = errorMessages.join("<br>");
+    } else {
+        error2.style.display = "none";
+        error2.innerHTML = "";
+    }
+}
+
 
         document.addEventListener("DOMContentLoaded", function () {
             loginform.addEventListener("submit", function (e) {
