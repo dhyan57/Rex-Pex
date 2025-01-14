@@ -1,42 +1,42 @@
-const Product=require("../../models/productSchema");
-const User=require("../../models/userSchema")
+const Product = require("../../models/productSchema");
+const User = require("../../models/userSchema")
 const Category = require("../../models/categorySchema")
 
 
 
 
 
-const productDetails=async(req,res)=>{
+const productDetails = async (req, res) => {
     try {
-        
-        const userId=req.session.user;
-        const userData=await User.findById(userId)
-        const productId=req.query.id;
-        const category=await Category.find({isListed:true},{_id:1})
-        const product=await Product.find({productId}).populate('category')
-        const findCategory=product.category;
-        
-        const categoryOffer=findCategory?.categoryOffer||0;
-        const productOffer=product.productOffer||0;
-        const totalOffer=categoryOffer+productOffer;
 
-        const recommendedProduct=await Product.find({category:findCategory,_id:{$ne:productId}})
-        
-        res.render("product-details",{
-            user:userData,
+        const userId = req.session.user;
+        const userData = await User.findById(userId)
+        const productId = req.query.id;
+        const category = await Category.find({ isListed: true }, { _id: 1 })
+        const product = await Product.findOne({ _id: productId }).populate('category')
+        console.log("product", product)
+        const findCategory = product.category;
+
+        const categoryOffer = findCategory?.categoryOffer || 0;
+        const productOffer = product.productOffer || 0;
+        const totalOffer = categoryOffer + productOffer;
+
+        const recommendedProduct = await Product.find({ category: findCategory, _id: { $ne: productId } })
+
+        res.render("product-details", {
+            user: userData,
             product,
-            quantity:product.quantity,
+            quantity: product.quantity,
             totalOffer,
-            category:findCategory,
+            category: findCategory,
             recommendedProduct
         });
-        
+
     } catch (error) {
-        console.error("Error for fetching Product details",error)
+        console.error("Error for fetching Product details", error)
         res.redirect("/pageNotFound")
     }
 }
-
 
 
 const shop = async (req, res) => {
@@ -51,7 +51,8 @@ const shop = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const filters = {};
-        
+
+        // Filter by category if specified
         if (req.query.category && req.query.category !== 'all') {
             const category = await Category.findOne({ name: req.query.category, isListed: true });
             if (category) {
@@ -59,49 +60,66 @@ const shop = async (req, res) => {
             }
         }
 
+        // Filter by search query if specified
         if (req.query.search) {
             filters.productName = { $regex: new RegExp(req.query.search, 'i') };
         }
 
-        // Updated sorting logic
+        // Determine sorting logic
         let sortOption = {};
         switch (req.query.sort) {
             case 'price-low':
-                sortOption = { salePrice: 1 };
+                sortOption.salePrice = 1; // Ascending price
                 break;
             case 'price-high':
-                sortOption = { salePrice: -1 };
+                sortOption.salePrice = -1; // Descending price
                 break;
             case 'new':
-                sortOption = { createdAt: -1 };
+                sortOption.createdAt = -1; // Newest first
                 break;
             case 'az':
-                // Use collation for proper alphabetical sorting
-                sortOption = { productName: 1 };
+                sortOption.productName = 1; // A-Z
                 break;
             case 'za':
-                sortOption = { productName: -1 };
+                sortOption.productName = -1; // Z-A
                 break;
             default:
-                sortOption = {};
+                sortOption = {}; // Default sorting
         }
 
+        // Fetch listed categories
+        const categories = await Category.find({ isListed: true }).lean();
+        const mappedCategories = categories.map(category => category._id.toString());
+        console.log("categories", mappedCategories);
+
+        // Count total products based on filters
         const totalProducts = await Product.countDocuments(filters);
 
-        // Add collation to the query for case-insensitive sorting
+        // Fetch products with collation for proper sorting when needed
         const products = await Product.find(filters)
             .populate('category')
             .sort(sortOption)
-            .collation({ locale: 'en', strength: 2 }) // Add this line for proper string sorting
+            .collation(req.query.sort === 'az' || req.query.sort === 'za' ? { locale: 'en', strength: 2 } : undefined)
             .skip(skip)
             .limit(limit)
             .lean();
 
-        const categories = await Category.find().lean();
+        console.log("products", products);
+
+        // Filter products to ensure only those with valid categories are included
+        const mappedProducts = products.filter(product =>
+            mappedCategories.includes(product.category._id.toString())
+        );
+
+        console.log("mappedProducts", mappedProducts);
+
+        // Calculate total pages for pagination
         const totalPages = Math.ceil(totalProducts / limit);
 
+        // Render the shop page with products and additional information
         res.render("shop", {
-            products,
+            user: user,
+            products: mappedProducts,
             categories,
             currentPage: page,
             totalPages,
@@ -119,7 +137,8 @@ const shop = async (req, res) => {
 
 
 
-module.exports={
+
+module.exports = {
     productDetails,
     shop
 }

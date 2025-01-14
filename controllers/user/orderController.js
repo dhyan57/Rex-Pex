@@ -404,7 +404,7 @@ const getCoupons=async (req,res)=>{
         });
         console.log("coupons",coupons);
         
-        res.render('couponList',{coupons});
+        res.render('couponList',{coupons,user:userId});
     } catch (error) {
         
     }

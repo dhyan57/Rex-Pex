@@ -342,7 +342,7 @@ const updateProfile=async (req,res)=>{
         const {dname,phone}=req.body;
         const userId=req.session.user;
         if(userId){
-            const profileUpdate= await User.findByIdAndUpdate({_id:userId},{$set:{name:dname,phone:phone}},{new:true})
+            const profileUpdate= await User.updateOne({_id:userId},{$set:{name:dname,phone:phone}},{new:true})
             if(profileUpdate){
                 console.log('profile up');
     
@@ -360,6 +360,37 @@ const updateProfile=async (req,res)=>{
     }
 }
 
+
+const getChangePassword =async (req, res) => {
+    try {
+        const userId = req.session.user;
+        if (!userId) {
+            return res.redirect('/login');
+        }
+        res.render('profileResetPass')
+    } catch (error) {
+        res.redirect('/pageerror')
+    }
+}
+
+const postChangePassword=async(req,res)=>{
+    const {email}=req.body
+    const existingMail=await User.findOne({email:email})
+    if(!existingMail){
+        return res.status(404).json({message:"email not found"})
+    }
+    const otp=generateOtp()
+    console.log("otp",otp)
+    const emailSent = await sendVerificationEmail(email, otp);
+            if (emailSent) {
+                req.session.otp=otp
+                req.session.email=email
+                res.render("forgotPassword-otp")
+                console.log("OTP:",otp)
+            }else{
+                res.json({success:false,message:"failed to send otp.please try again"})
+            }
+}
 
 
 
@@ -381,5 +412,7 @@ module.exports={
     editAddress,
     postEditAddress,
     deleteAddress,
-    updateProfile
+    updateProfile,
+    getChangePassword,
+    postChangePassword
 }

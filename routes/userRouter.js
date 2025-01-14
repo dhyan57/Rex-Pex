@@ -39,6 +39,11 @@ router.get("/reset-password",profileControllers.getResetPassPage)
 router.post("/resend-otp",profileControllers.resendOtp)
 router.post("/reset-password",profileControllers.postNewPassword)
 router.get("/userProfile",userAuth,profileControllers.userProfile)
+router.post('/updateprofile',userAuth,profileControllers.updateProfile)
+
+router.get("/Profilereset-password",userAuth,profileControllers.getChangePassword)
+router.post("/Profilereset-password",userAuth,profileControllers.postChangePassword)
+
 
 
 //adddress management

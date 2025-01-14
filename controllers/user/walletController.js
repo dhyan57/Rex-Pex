@@ -21,7 +21,7 @@ const loadWallet = async (req, res) => {
         const skip = (page - 1) * limit;
 
         // Fetch wallet details
-        const wallet = await Wallet.findOne({ userId }).populate('transactions.orderId').lean();
+        const wallet = await Wallet.findOne({ userId }).sort({createdOn:-1}).populate('transactions.orderId').lean();
 
         if (!wallet) {
             return res.render('wallet', {
@@ -51,7 +51,8 @@ const loadWallet = async (req, res) => {
             currentPage: page,
             totalPages,
             limit,
-            keyId:process.env.RAZORPAY_KEY_ID
+            keyId:process.env.RAZORPAY_KEY_ID,
+            user:userId
         });
     } catch (error) {
         console.error('Error loading wallet page:', error);

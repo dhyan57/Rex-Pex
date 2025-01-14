@@ -58,7 +58,7 @@ const checkout = async (req, res) => {
             }
 
             totalPrice = cart.items.reduce((total, item) => total + item.totalPrice, 0);
-            return res.render('checkout', { cart, products: cart.items, address: addresses, totalPrice, product: null })
+            return res.render('checkout', { cart, products: cart.items, address: addresses, totalPrice, product: null ,user:userId})
 
         }
     } catch (error) {
