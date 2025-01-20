@@ -260,6 +260,9 @@ console.log("Path components:", "public", "uploads", "re-image", imageNameToserv
     }
 }
 
+
+
+
 const addProductOffer = async (req, res) => {
     try {
         const { productId, percentage } = req.body;
@@ -334,6 +337,31 @@ const removeProductOffer = async (req, res) => {
 };
 
 
+const updateStock = async (req,res) => {
+    try {
+        
+        const {productId,newStock} = req.body;
+        await Product.findByIdAndUpdate(productId,{quantity:newStock});
+        res.json({ success: true });
+
+    } catch (error) {
+        console.error("Error updating stock",error);
+        res.json({ success: false });
+    }
+}
+
+
+const getStocks= async (req,res)=>{
+    try {
+        const products=await Product.find().populate('category','name')
+        res.render('stock',{products})
+    } catch (error) {
+        console.error(error)
+        
+    }
+}
+
+
 
 module.exports = {
     getProductAddPage,
@@ -345,6 +373,7 @@ module.exports = {
     editProduct,
     deleteSingleImage,
     removeProductOffer,
-    addProductOffer
-
+    addProductOffer,
+    getStocks,
+    updateStock
 }

@@ -10,7 +10,7 @@ const orderControllers = require('../controllers/user/orderController');
 const walletControllers=require('../controllers/user/walletController');
 
 const passport=require("passport")
-const { userAuth } = require('../middlewares/auth')
+const { userAuth,headerData } = require('../middlewares/auth')
 
 router.get("/", userController.LoadHomepage) 
 router.get('/signup',userController.Loadsignup)
@@ -33,7 +33,7 @@ router.get("/productDetails",userAuth,productController.productDetails)
 
 //profile management
 router.get("/forgot-password",profileControllers.getForgotPassPage)
-router.post("/forgot-email",profileControllers.forgotEmailValid)
+router.post('/forgot-email',profileControllers.forgotPassword);
 router.post("/verify-passForgot-otp",profileControllers.verifyForgotPassOtp)
 router.get("/reset-password",profileControllers.getResetPassPage)
 router.post("/resend-otp",profileControllers.resendOtp)
@@ -74,7 +74,7 @@ router.post('/create-order',checkOutControllers.createOrder);
 router.post('/place-order',checkOutControllers.placeOrder);
 
 //shop
-router.get('/shop',userAuth,productController.shop)
+router.get('/shop',headerData,userAuth,productController.shop)
 router.get('/getFilteredData',userController.getFilterData)
 
 

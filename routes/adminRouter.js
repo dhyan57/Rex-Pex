@@ -18,7 +18,7 @@ router.get('/pageerror',AdminController.pageerror)
 //Login Management
 router.get('/login',AdminController.loginPage)
 router.post('/login',AdminController.login)
-router.get('/dashboard',adminAuth,AdminController.loadDasboard)
+router.get('/dashboard',adminAuth,AdminController.loadDashboard)
 router.get('/logout',AdminController.logout)
 
 //customer Management
@@ -56,6 +56,11 @@ router.post('/addProductOffer',adminAuth,productController.addProductOffer);
 router.post('/removeProductOffer',adminAuth,productController.removeProductOffer);
 
 
+router.get('/stockManagement',productController.getStocks)
+router.post('/update-stock',productController.updateStock)
+
+
+
 //order mamagement
 router.get('/orders',adminAuth,orderControllers.getAllorders)
 router.post('/update-order-status',orderControllers.updateOrderStatus);
@@ -86,8 +91,8 @@ router.get('/salesReportExcel',orderControllers.excelGenerate)
 
 
 
-module.exports = router 
 
+module.exports = router 
 
 
 

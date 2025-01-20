@@ -11,10 +11,10 @@
             </div>
         </div>
         <header class="card-header text-center mb-20">
-            <form action="/admin/category/" method="post" onsubmit="return handleFormSubmit(event)" class="d-inline">
+            <form   class="d-inline">
                 <div class="input-group input-group-sm border border-1 border-grey rounded-pill" style="width: 500px; margin-left: 230px">
-                    <input type="text" class="form-control border-0 rounded-pill mt-3" placeholder="Search categories" name="search" />
-                    <button class="btn" type="submit">Search</button>
+                    <input type="text" class="form-control border-0 rounded-pill mt-3" placeholder="Search categories" name="search" id="search" />
+                    <button class="btn" type="submit"  id="searchBtn">Search</button>
                 </div>
             </form>
         </header>
@@ -128,6 +128,46 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
+        
+        const searchBtn = document.getElementById("searchBtn");
+        searchBtn.addEventListener("click", handleSearchSubmit);
+
+
+        function handleSearchSubmit(event) {
+                        
+                        event.preventDefault();
+                        
+                        const search = document.getElementById("search").value.trim();
+                        if (!search) {
+                            return false;
+                        }
+                        console.log(search);
+                        
+                        fetch( `/admin/category?search=${search}`,{
+                            method: 'GET',
+                            headers: { 'content-type': 'application/json' },
+                        })
+                        .then(response => response.json())
+                        .then((data)=>{
+                            console.log(data);
+                            
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            
+                            if (error.message === "Category not found") {
+                                Swal.fire({ icon: 'error', title: 'Oops', text: 'Category not found' });
+                            } else {
+                                Swal.fire({ icon: 'error', title: 'Oops', text: 'An error occurred while searching the category' });
+                            }
+                        });
+                    }
+
+
+
+
+
+
         function list(id){
             fetch(`/admin/listCategory?id=${id}`, {
                 method: 'POST',
@@ -168,6 +208,11 @@
                 }
             });
         }
+
+    
+
+        
+
         function handleFormSubmit(event) {
             event.preventDefault();
             if (!validateForm()) {

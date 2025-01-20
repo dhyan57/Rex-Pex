@@ -6,7 +6,7 @@
         <meta name="keywords" content="Male_Fashion, unica, creative, html" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Male-Fashion</title>
+        <title>Rex-Pex</title>
         <link
         href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
         rel="stylesheet"
@@ -22,91 +22,216 @@
         <link
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"rel="stylesheet"/>
         <style>
-        body,
-        html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f8f9fa;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-        .card {
-            width: 100%;
-            max-width: 800px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .login-section {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .login-form,
-        .login-image {
-            flex: 1;
-            padding: 10px;
-        }
-        .login-form {
-            max-width: 50%;
-        }
-        .login-image {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            max-width: 40%;
-        }
-        .login-image img {
-            max-width: 100%;
-            height: auto;
-        }
-        .social-btns {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .social-btns button {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        .form-group label {
-            font-size: 0.875rem; 
-        }
-        .form-control {
-            font-size: 0.875rem; 
-            padding: 0.5rem;
-        }
-        .btn-primary {
-            padding: 0.5rem 1rem; 
-            font-size: 0.875rem; 
-        }
-        .card-title {
-            font-size: 1.25rem;
-        }
-        .login-image .sign-up-link {
-            color: #333;
-            text-decoration: none;
-        }
-        .login-image .sign-up-link:hover {
-            color: #ff7f50;
-        }
-        .error-message {
-            color: red;
-            font-size: 0.75rem;
-            display: none;
-        }
+     body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+}
+
+.card {
+    width: 100%;
+    max-width: 900px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.login-section {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 30px;
+}
+
+.login-form {
+    flex: 1;
+    padding: 20px 40px;
+    max-width: 50%;
+}
+
+.login-image {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+}
+
+.login-image img {
+    max-width: 90%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.login-image img:hover {
+    transform: scale(1.02);
+}
+
+.card-title {
+    font-size: 2rem;
+    color: #2d3436;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    font-size: 0.95rem;
+    color: #2d3436;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    height: 48px;
+    padding: 10px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    outline: none;
+}
+
+.btn-primary {
+    background: #4a90e2;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+}
+
+.social-btns {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-btns button, .social-btns a {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e9ecef;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.social-btns button:hover, .social-btns a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sign-up-link {
+    color: #2d3436;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.sign-up-link:hover {
+    color: #4a90e2;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    font-weight: 500;
+    display: none;
+}
+
+/* Forgot password link styling */
+a[href="/forgot-password"] {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+a[href="/forgot-password"]:hover {
+    color: #4a90e2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-form, .login-image {
+        max-width: 100%;
+        padding: 20px;
+    }
+    
+    .login-section {
+        flex-direction: column;
+    }
+    
+    .card {
+        margin: 15px;
+    }
+    
+    .card-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-form {
+        padding: 15px;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .social-btns {
+        justify-content: center;
+    }
+}
         </style>
     </head>
     <body>
@@ -155,7 +280,7 @@
                     <div class="social-btns">
                     <a href="/auth/google" class="btn btn-outline-danger">
                         <img
-                        src=""
+                        src="/uploads/re-image/google.jpeg"
                         alt="Google Sign"
                         style="width: 24px; height: 20px"
                         />

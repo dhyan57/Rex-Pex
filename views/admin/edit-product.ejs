@@ -23,6 +23,7 @@
 
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
     <section class="content-main">
         <div class="row">
@@ -131,7 +132,7 @@
                                         <div class="col-md-12">
                                             <div class="mb-4">
                                                 <div class="col-12">
-                                                    <td>
+                                                    <div style="position: relative; display: inline-block;"> 
                                                         <input type="hidden" value="<%= product.productImage[i] %>" id="imageDatas">
                                                         <img 
                                                             class="rounded" 
@@ -139,16 +140,13 @@
                                                             src="/uploads/re-image/<%= product.productImage[i] %>" 
                                                             alt="Product Image"
                                                         >
-                                                        <!-- Correct icon class and onclick function -->
                                                         <i 
                                                             onclick="deleteSingleImage('<%= product.productImage[i] %>', '<%= product._id %>')" 
-                                                            style="position: absolute; margin-left: .5rem; cursor: pointer;" 
+                                                            style="position: absolute; top: -5px; right: -5px; cursor: pointer; background: #fff; border-radius: 50%; padding: 2px;" 
                                                             class="fa fa-times"
                                                         ></i>
-                                                    </td>
-                                                    
+                                                    </div>
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                     <% } %>

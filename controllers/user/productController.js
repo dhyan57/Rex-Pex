@@ -42,6 +42,7 @@ const productDetails = async (req, res) => {
 const shop = async (req, res) => {
     try {
         const user = req.session.user;
+        console.log("shopuser", user)
         if (!user) {
             return res.redirect('/login');
         }

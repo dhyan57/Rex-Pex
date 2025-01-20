@@ -1,11 +1,611 @@
-<%- include("../../views/partials/admin/header") %>
+<%- include('../partials/admin/header') %>
+
 <section class="content-main">
     <div class="content-header">
-        <div>
-            <h2 class="content-title card-title">Dashboard </h2>
+        <div class="content-title">
+            <h2>Dashboard</h2>
+            <p>Comprehensive data about your business</p>
         </div>
+    </div>
     
+    <!-- Hidden Input Fields for Data -->
+    <input type="hidden" id="salesData" value='<%- JSON.stringify(salesData) %>'>
+    <input type="hidden" id="productsData" value='<%- JSON.stringify(products) %>'>
+    <input type="hidden" id="categoriesData" value='<%- JSON.stringify(categories) %>'>
+    <input type="hidden" id="brandsData" value='<%- JSON.stringify(brands) %>'>
+    
+    <!-- Statistics Cards -->
+    <div class="statistics-grid">
+        <div class="stat-card">
+            <div class="stat-content">
+                <h6>Total Revenue</h6>
+                <span class="stat-value">₹<%= typeof salesData.totalSalesAmount === 'number' ? salesData.totalSalesAmount.toLocaleString('en-IN') : '0' %></span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-content">
+                <h6>Total Orders</h6>
+                <span class="stat-value"><%= totalOrders %></span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-content">
+                <h6>Total Products</h6>
+                <span class="stat-value"><%= totalProducts %></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Display Container -->
+    <div id="errorContainer" class="alert alert-danger" style="display: none;"></div>
+
+    <!-- Charts Container -->
+    <div class="chart-container">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h5>Sales Statistics</h5>
+                <select class="form-select" id="timeFilter">
+                    <option value="yearly">Yearly</option>
+                    <option value="monthly" selected>Monthly</option>
+                    <option value="weekly">Weekly</option>
+                </select>
+            </div>
+            <div class="chart-body">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h5>Top 10 Best Selling Products</h5>
+            </div>
+            <div class="chart-body">
+                <canvas id="productsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h5>Top Categories</h5>
+            </div>
+            <div class="chart-body">
+                <canvas id="categoriesChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card">
+            <div class="chart-header">
+                <h5>Top Brands</h5>
+            </div>
+            <div class="chart-body">
+                <canvas id="brandsChart"></canvas>
+            </div>
+        </div>
     </div>
 </section>
-<%- include("../../views/partials/admin/footer") %>
 
+<!-- Required Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+// Helper function to show errors
+function showError(message) {
+    const errorContainer = document.getElementById('errorContainer');
+    if (errorContainer) {
+        errorContainer.textContent = message;
+        errorContainer.style.display = 'block';
+    }
+    console.error(message);
+}
+
+// Initialize data with proper error handling
+let salesData, productsData, categoriesData, brandsData;
+
+try {
+    const salesDataElem = document.getElementById('salesData');
+    const productsDataElem = document.getElementById('productsData');
+    const categoriesDataElem = document.getElementById('categoriesData');
+    const brandsDataElem = document.getElementById('brandsData');
+
+    salesData = salesDataElem ? JSON.parse(salesDataElem.value) : {};
+    productsData = productsDataElem ? JSON.parse(productsDataElem.value) : [];
+    categoriesData = categoriesDataElem ? JSON.parse(categoriesDataElem.value) : [];
+    brandsData = brandsDataElem ? JSON.parse(brandsDataElem.value) : [];
+} catch (e) {
+    showError('Error parsing dashboard data: ' + e.message);
+    salesData = {
+        monthly: { labels: [], data: [] },
+        weekly: { labels: [], data: [] },
+        yearly: { labels: [], data: [] }
+    };
+    productsData = [];
+    categoriesData = [];
+    brandsData = [];
+}
+
+// Helper function to check if canvas exists and is valid
+function isCanvasValid(canvas) {
+    return canvas && canvas.getContext && canvas.getContext('2d');
+}
+
+// Helper function to create chart with error handling
+function createChart(canvasId, config) {
+    const canvas = document.getElementById(canvasId);
+    if (!isCanvasValid(canvas)) {
+        showError(`Canvas ${canvasId} is not valid`);
+        return null;
+    }
+
+    try {
+        return new Chart(canvas, config);
+    } catch (e) {
+        showError(`Error creating chart ${canvasId}: ${e.message}`);
+        const ctx = canvas.getContext('2d');
+        ctx.font = '14px Arial';
+        ctx.fillStyle = 'red';
+        ctx.fillText('Error loading chart', 10, 50);
+        return null;
+    }
+}
+
+// PDF Export Function
+function exportToPDF() {
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Add title
+        doc.setFontSize(18);
+        doc.text('Sales Report', 14, 20);
+
+        // Add date
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+
+        // Add summary statistics
+        doc.setFontSize(12);
+        doc.text('Summary', 14, 40);
+        
+        const summary = [
+            ['Total Revenue:', `₹${salesData.totalSalesAmount?.toLocaleString('en-IN') || '0'}`],
+            ['Total Orders:', `${salesData.totalOrders?.toLocaleString('en-IN') || '0'}`],
+            ['Average Order Value:', `₹${salesData.averageOrderValue?.toLocaleString('en-IN') || '0'}`]
+        ];
+
+        doc.autoTable({
+            startY: 45,
+            head: [],
+            body: summary,
+            theme: 'plain',
+            styles: { fontSize: 10, cellPadding: 3 }
+        });
+
+        doc.save('sales-report.pdf');
+    } catch (error) {
+        showError('Error generating PDF: ' + error.message);
+    }
+}
+
+// Initialize Charts when DOM is loaded
+document.addEventListener('DOMContentLoaded', function () {
+    // Main Sales Chart
+    const mainChart = createChart('mainChart', {
+        type: 'line',
+        data: {
+            labels: salesData.monthly?.labels || [],
+            datasets: [{
+                label: 'Sales',
+                data: salesData.monthly?.data || [],
+                borderColor: '#4BC0C0',
+                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#4BC0C0',
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return '₹' + context.parsed.y.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Products Chart
+    createChart("productsChart", {
+        type: "bar",
+        data: {
+            labels: productsData.map(item => item?.productName || 'Unknown'),
+            datasets: [{
+                label: "Quantity Sold",
+                data: productsData.map(item => item?.totalQuantitySold || 0),
+                backgroundColor: "rgba(75, 192, 192, 0.6)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Categories Chart
+    createChart("categoriesChart", {
+        type: "pie",
+        data: {
+            labels: categoriesData.map(item => item?.categoryName || 'Unknown'),
+            datasets: [{
+                data: categoriesData.map(item => item?.totalQuantitySold || 0),
+                backgroundColor: [
+                    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", 
+                    "#9966FF", "#FF9F40", "#FF6384", "#36A2EB"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right' }
+            }
+        }
+    });
+
+    // Brands Chart
+    createChart("brandsChart", {
+        type: "doughnut",
+        data: {
+            labels: brandsData.map(item => item?._id || 'Unknown'),
+            datasets: [{
+                data: brandsData.map(item => item?.totalQuantitySold || 0),
+                backgroundColor: [
+                    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", 
+                    "#9966FF", "#FF9F40", "#FF6384", "#36A2EB"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right' }
+            }
+        }
+    });
+
+    // Time filter event listener
+    const timeFilter = document.getElementById('timeFilter');
+    if (timeFilter && mainChart) {
+        timeFilter.addEventListener('change', function(e) {
+            const timeFrame = e.target.value;
+            if (salesData[timeFrame] && Array.isArray(salesData[timeFrame].labels)) {
+                mainChart.data.labels = salesData[timeFrame].labels;
+                mainChart.data.datasets[0].data = salesData[timeFrame].data;
+                mainChart.update();
+            } else {
+                showError(`Invalid data format for timeframe: ${timeFrame}`);
+            }
+        });
+    }
+});
+</script>
+
+<style>
+    :root {
+        --primary-color: #4BC0C0;
+        --secondary-color: #FF6384;
+        --background-color: #f8f9fa;
+        --card-background: #ffffff;
+        --text-color: #333333;
+        --border-color: #e0e0e0;
+    }
+
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    .content-main {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .content-title h2 {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .content-title p {
+        color: #666;
+        margin: 0;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        color: white;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #3aa7a7;
+    }
+
+    .btn-primary i {
+        font-size: 1.1rem;
+    }
+
+    .statistics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background-color: var(--card-background);
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-content h6 {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .chart-container,
+    .chart-grid {
+        margin-bottom: 2rem;
+    }
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .chart-card {
+        background-color: var(--card-background);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .chart-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chart-header h5 {
+        font-size: 1.1rem;
+        margin: 0;
+        color: var(--primary-color);
+    }
+
+    .chart-body {
+        padding: 1.5rem;
+        height: 300px;
+        position: relative;
+    }
+
+    .form-select {
+        padding: 0.5rem 2rem 0.5rem 0.75rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        background-color: white;
+        color: var(--text-color);
+        font-size: 0.9rem;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1em;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(75, 192, 192, 0.25);
+    }
+
+    /* Loading State */
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .content-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .content-actions {
+            width: 100%;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .chart-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .statistics-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .chart-body {
+            height: 250px;
+        }
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1050;
+    }
+
+    .toast {
+        background: white;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .toast.success {
+        border-left: 4px solid #4BC0C0;
+    }
+
+    .toast.error {
+        border-left: 4px solid #FF6384;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Print Styles */
+    @media print {
+        .content-actions,
+        .form-select {
+            display: none;
+        }
+
+        .chart-card {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .statistics-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        body {
+            background-color: white;
+        }
+
+        .content-main {
+            padding: 0;
+        }
+
+        .chart-card {
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+    }
+</style>
+
+<!-- Add toast container for notifications -->
+<div class="toast-container"></div>
+
+<%- include('../partials/admin/footer') %>

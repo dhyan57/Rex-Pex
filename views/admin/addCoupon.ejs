@@ -156,7 +156,7 @@
             <td><%=  coupon.expireOn < Date.now()? "Inactive" : "Active" || coupon.isList ? 'Active' : 'Inactive'%></td>
             <td>
               <!-- Delete Icon -->
-              <a href="/admin/delete-coupon/<%= coupon._id %>"  class="delete-icon" title="Delete">
+              <a href="/admin/delete-coupon/<%= coupon._id %>"  class="delete-icon" title="Delete">delete
                 <i class="fas fa-trash-alt"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"></svg></i>
               </a>
             </td>
@@ -208,11 +208,11 @@
         });
         return;
       }
-      if (per>100 || per<0) {
+      if (per>99 || per<0) {
         Swal.fire({
           icon: 'error',
           title: 'Validation Error',
-          text: 'percentage must be between 0-100.',
+          text: 'percentage must be between 0-99.',
         });
         return;
       }

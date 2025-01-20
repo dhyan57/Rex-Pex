@@ -11,80 +11,94 @@ const addToCart = async (req, res) => {
     try {
         const userId = req.session.user;
         if (!userId) {
-            return res.status(404).redirect("/login");
+            return res.status(401).json({ message: "Please login to continue" });
         }
 
-        const quantity = req.body.quantity || 1;
+        // Extract and validate input
+        const quantity = parseInt(req.body.quantity || 1, 10);
         const productId = req.body.productId || req.query.productId;
-        console.log("productId",productId);
-        console.log("productId,quantity",quantity);
         
-        
-        console.log(req.body,userId)
-        const quantityNumber = parseInt(quantity, 10); 
-        console.log(quantityNumber);
-        
-        const product = await Product.findOne({_id:productId});
-        console.log(product);  
-        const productPrice = product.salePrice;
-        const productQuantity = product.quantity;
-        if(productQuantity<quantityNumber){
-            return res.status(400).json({message:"Product out of stock"});
+        if (!productId) {
+            return res.status(400).json({ message: "Product ID is required" });
         }
 
-        console.log("productQuantity",productQuantity);
-        
-        const itemTotalPrice = productPrice * quantityNumber;
-        console.log(itemTotalPrice);
-        
-        let cart = await Cart.findOne({ userId: userId._id });
-        console.log(cart);
+        // Find product and validate stock
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        if (product.quantity < quantity) {
+            return res.status(400).json({ message: "Insufficient stock" });
+        }
+
+        const itemTotalPrice = product.salePrice * quantity;
+
+        // Find or create cart
+        let cart = await Cart.findOne({ userId: userId });  // Assuming userId is the ID string
         if (!cart) {
             cart = new Cart({
-                userId:userId._id,  
+                userId: userId,
                 items: [{
                     productId,
-                    quantity: quantityNumber,
-                    price: productPrice,
+                    quantity,
+                    price: product.salePrice,
                     totalPrice: itemTotalPrice
                 }]
             });
         } else {
-            const itemIndex = cart.items.findIndex(item => item.productId.equals(productId));
+            const existingItem = cart.items.find(item => 
+                item.productId.toString() === productId.toString()
+            );
 
-            if (itemIndex > -1) {
-                if(product.quantity > cart.items[itemIndex].quantity && cart.items[itemIndex].quantity < 5 ){
-                    cart.items[itemIndex].quantity += quantityNumber;
-                cart.items[itemIndex].totalPrice = cart.items[itemIndex].quantity * productPrice;
-
-                }else{
-                    return  res.status(500).json({message:"Product limit reached"});
+            if (existingItem) {
+                const newQuantity = existingItem.quantity + quantity;
+                
+                // Validate total quantity doesn't exceed limits
+                if (newQuantity > 5) {
+                    return res.status(400).json({ 
+                        message: "Maximum quantity limit (5) exceeded" 
+                    });
                 }
                 
+                if (newQuantity > product.quantity) {
+                    return res.status(400).json({ 
+                        message: "Requested quantity exceeds available stock" 
+                    });
+                }
+
+                existingItem.quantity = newQuantity;
+                existingItem.totalPrice = newQuantity * product.salePrice;
             } else {
                 cart.items.push({
                     productId,
-                    quantity: quantityNumber,
-                    price: productPrice,
+                    quantity,
+                    price: product.salePrice,
                     totalPrice: itemTotalPrice
                 });
             }
         }
+
+        await cart.save();
         
-        let dataSave = await cart.save();
-        if(dataSave){
-            console.log("data save");
-        
-        }else{
-            console.log("not save")
-        }
-        return res.status(200).json({success:true});
+        return res.status(200).json({
+            success: true,
+            message: "Product added to cart successfully",
+            cart: {
+                totalItems: cart.items.length,
+                items: cart.items
+            }
+        });
+
     } catch (error) {
         console.error("Error adding to cart:", error);
-        res.status(500).send("Error adding to cart");
+        return res.status(500).json({
+            success: false,
+            message: "Error adding product to cart",
+            error: error.message
+        });
     }
 };
-
 
 
 const getShowCart=async (req,res)=>{
@@ -117,15 +131,18 @@ const getShowCart=async (req,res)=>{
 const removeCart=async(req,res)=>{
     try {
         const user =req.session.user;
+        console.log("user",user)
         
         const id=req.query.id;
-        console.log(id);
+        console.log("cid",id);
 
         if(!id){
             return res.status(400).redirect("/pageerror")
         }
-        const cart=await Cart.findOne({user:user._id})
+        const cart=await Cart.findOne({userId:user._id})
+        console.log("cart",cart)
         const prodId=cart.items.findIndex(item=>item.productId.toString()===id)
+        console.log("prodId",prodId)
         if(prodId||prodId==0){
             cart.items.splice(prodId,1)
             await cart.save()
@@ -137,7 +154,6 @@ const removeCart=async(req,res)=>{
         res.status(500).redirect("/pageerror")
     }
 }
-
 
 
 const updateQuantity = async (req, res) => {
@@ -209,22 +225,12 @@ const clearCart= async (req,res)=>{
 }
 
 
-
-
-
-
-
-
-
-
 module.exports = {
     addToCart,
     getShowCart,
     removeCart,
     updateQuantity,
     clearCart
-
-    
 };
 
 

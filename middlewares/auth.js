@@ -27,6 +27,23 @@ const userAuth=(req,res,next)=>{
 
 
 
+const headerData=async(req,res,next)=>{
+    try {
+        if(req.session.user){
+            const user= await User.findById(req.session.user._id);
+            res.locals.user=user;
+            next();
+        }
+    } catch (error) {
+        console.log("Error in headerData middleware",error)
+        res.status(500).send("Internal server error")
+        
+    }
+}
+
+
+
+
 
 const adminAuth=(req,res,next)=>{
     User.findOne({isAdmin:true})
@@ -46,5 +63,6 @@ const adminAuth=(req,res,next)=>{
 
 module.exports={
     userAuth,
-    adminAuth
+    adminAuth,
+    headerData
 }

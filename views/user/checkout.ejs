@@ -534,15 +534,15 @@
                 if (paymentMethod === 'COD') {
                     console.log('1000 than');
                     const finalPrice = document.getElementById('finalPrice').value;
-                    // if (finalPrice > 1000) {
-                    //     return Swal.fire({
-                    //         title: 'Error',
-                    //         text: "Caash on Delivery is not available for products above ₹ 1,000",
-                    //         icon: 'error',
-                    //         showConfirmButton: true,
-                    //         confirmButtonText: "OK",
-                    //     });
-                    // }
+                    if (finalPrice > 1000) {
+                        return Swal.fire({
+                            title: 'Error',
+                            text: "Caash on Delivery is not available for products above ₹ 1,000",
+                            icon: 'error',
+                            showConfirmButton: true,
+                            confirmButtonText: "OK",
+                        });
+                    }
                     const codResponse = await fetch('/place-order-initial', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

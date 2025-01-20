@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
 
 </head>
 
@@ -49,8 +50,10 @@
                     <a href="./index.html"><h3>Rex-Pex</h3><img src="" alt=""></a>
                 </div>
                 <div class="header-right">
+
+                    
                     <img src="img/icons/search.png" alt="" class="search-trigger">
-                    <img src="img/icons/man.png" alt="">
+                   
                     <a href="/showCart">
                         <img src="img/icons/bag.png" alt="">
                         <span>2</span>
@@ -63,11 +66,13 @@
                         <li><a class="active" href="/">Home</a></li>
                         <li><a href="/shop">Shop</a></li>
                         <li><a href="./product-page.html">About</a></li>
-                        <li><a href="./check-out.html">Blog</a></li>
+                       
                         <li><a href="./contact.html">Contact</a></li>
+                        <li>
                         <%if(locals.user){%>
                             <div class="dropdown">
                                 <a href="#" class="sign-in-link" ><%=locals.user.name%></a>
+                                <img src="img/icons/man.png" alt="">
                                 <div class="dropdown-content">
                                     <a href="/userProfile">Profile</a>
                                     <a href="/logout">Logout</a>
@@ -78,7 +83,10 @@
                             <a href="/signup" class="in">Sign up</a>
                         </div>
                         <%}%>
+                    </li>
+                       
                     </ul>
+                    
                     
                 </nav>
             </div>

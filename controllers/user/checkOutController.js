@@ -424,10 +424,10 @@ const createOrder = async (req, res) => {
 
 const orderConfirm = async (req, res) => {
     try {
-
+        const user = req.session.user;
         const id = req.query.id
         const order = await Order.findById(id);
-        res.render('successCheckOut', { orderId: order._id })
+        res.render('successCheckOut', { orderId: order._id,user:user })
 
     } catch (error) {
         console.error("Error loading cofirmation page", error);
@@ -467,9 +467,6 @@ const orderConfirm = async (req, res) => {
             res.status(500).json({ success: false, message: 'Failed to update order. Please try again.' });
         }
     };
-
-
-
 
 
 

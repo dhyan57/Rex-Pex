@@ -1,0 +1,116 @@
+<%- include("../../views/partials/admin/header") %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Stock Management</h2>
+            </div>
+            <div>
+                <input type="text" placeholder="Search product name" class="form-control bg-white">
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+                    <div class="col-lg-2 col-6 col-md-3">
+                        <select class="form-select">
+                            <option value="All">All Categories</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Home">Home</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Current Stock</th>
+                                <th>Update Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(let i=0; i < products.length; i++) { %>
+                                <tr>
+                                    <td>
+                                        <%= products[i]._id.toString().substring(0,10) %>
+                                    </td>
+                                    <td>
+                                        <%= products[i].productName.substring(0,30) %>
+                                    </td>
+                                    <td><%=products[i].category.name%></td>
+                                    <td>
+                                        <%= products[i].quantity %>
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" value="<%= products[i].quantity %>"
+                                            id="stock-<%= products[i]._id %>" class="form-control d-inline-block"
+                                            style="width: 100px;">
+                                        <button class="btn btn-primary btn-sm ms-2"
+                                            onclick="updateStock('<%= products[i]._id %>')">Update</button>
+                                    </td>
+                                </tr>
+                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+<%- include("../../views/partials/admin/footer") %>
+
+        <script>
+            function updateStock(productId) {
+                const newStock = document.getElementById(`stock-${productId}`).value;
+
+                fetch(`/admin/update-stock`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId, newStock })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Stock Updated',
+                                text: 'The stock has been updated successfully!',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Update Failed',
+                                text: 'Failed to update stock. Please try again.',
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'Close'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating stock:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'An Error Occurred',
+                            text: 'There was a problem updating the stock. Please try again.',
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'Close'
+                        });
+                    });
+            }
+        </script>

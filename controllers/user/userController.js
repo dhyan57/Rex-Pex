@@ -236,7 +236,7 @@ const verifyOtp = async (req, res) => {
                     }]
                     : []
             });
-            req.session.user = saveUserData._id;
+            req.session.user = saveUserData;
 
             res.json({ success: true, redirectUrl: "/" });
         } else {
@@ -444,9 +444,6 @@ const getFilterData = async (req, res) => {
     }
 };
 
-module.exports = {
-    getFilterData
-};
 
 
 

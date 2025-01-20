@@ -62,37 +62,41 @@ async function sendVerificationEmail(email, otp) {
 
 const getForgotPassPage=async(req,res)=>{
     try {
-        res.render("forgot-password")
+        res.render("forgot-password",{message:null})
     } catch (error) {
         res.render("pageerror")
     }
 }
-const forgotEmailValid=async(req,res)=>{
+// In your controller
+const forgotPassword = async (req, res) => {
     try {
-        const {email}=req.body
-        const findUser=await User.findOne({email:email})
-        if(findUser){
-            const otp=generateOtp()
+        const { email } = req.body;
+        const user = await User.findOne({ email: email });
+        
+        if (!user) {
+            res.render("forgot-password",{message:'Email not found'})
+        }
+        const otp=generateOtp()
             const emailSent = await sendVerificationEmail(email, otp);
             if (emailSent) {
                 req.session.otp=otp
                 req.session.email=email
-                res.render("forgotPassword-otp")
                 console.log("OTP:",otp)
-            }else{
-                res.json({success:false,message:"failed to send otp.please try again"})
-            }
-        }else{
-            res.render("forgot-password",{
-                message:"user this email alrready exist"
-            })
-        }
+                res.render("forgotPassword-otp")
+
+            }    
+        
+        // If email exists, proceed with OTP logic
+        
         
     } catch (error) {
-        res.render("pageerror")
+        console.error(error);
+        res.status(500).json({ 
+            status: false, 
+            message: 'Server error' 
+        });
     }
-}
-
+};
 
 const verifyForgotPassOtp =async(req,res)=>{
     try {
@@ -400,7 +404,7 @@ const postChangePassword=async(req,res)=>{
 
 module.exports={
     getForgotPassPage,
-    forgotEmailValid,
+    forgotPassword,
     verifyForgotPassOtp,
     getResetPassPage,
     resendOtp,

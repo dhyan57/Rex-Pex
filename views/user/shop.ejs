@@ -259,6 +259,13 @@
                             <span>₹<%= product.salePrice %></span>
                             <span class="old-price">₹<%= product.regularPrice %></span>
                             </div>
+                            <div>
+                                <%if(product.quantity<=0){%>
+                                <p>Instock</p>
+                                <%}else{%>
+                                <p>Stock </p>
+                                <%}%>
+                            </div>
                             <div class="product-action-1">
                                 <button class="add-to-cart" onclick="addToCart('<%=product._id%>')">Add to Cart</button>
                             </div>
@@ -414,6 +421,9 @@
                         <div class="product-price">
                             <span>₹${product.salePrice}</span>
                             <span class="old-price">₹${product.regularPrice}</span>
+                        </div>
+                        <div>
+                            ${product.quantity<=0 ? '<p>Instock</p>' : '<p>Stock </p>'}
                         </div>
                         <div class="product-action-1">
                             <button class="action-btn" onclick="addtocart('${product._id}')">
