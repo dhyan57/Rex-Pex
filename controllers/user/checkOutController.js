@@ -22,7 +22,7 @@ const RAZORPAY_MIN_AMOUNT = 100;
 
 
 
-const checkout = async (req, res) => {
+const  checkout = async (req, res) => {
     try {
         const userId = req.session.user;
         const productId = req.query.id;

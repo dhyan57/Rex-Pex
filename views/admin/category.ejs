@@ -55,7 +55,7 @@
                                         <th class="text-start">Edit</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="category-table">
                                     <% cat.reverse().forEach((category) => { %>
                                         <tr>
                                             <td></td>
@@ -138,6 +138,7 @@
                         event.preventDefault();
                         
                         const search = document.getElementById("search").value.trim();
+                        const dataSet=document.getElementById("category-table");
                         if (!search) {
                             return false;
                         }
@@ -150,8 +151,46 @@
                         .then(response => response.json())
                         .then((data)=>{
                             console.log(data);
+                            dataSet.innerHTML="";
                             
-                        })
+                                dataSet.innerHTML+=`
+                                <tr>
+                                    <td></td>
+                                    <td class="text-start">${data.categoryData[0].name}</td>        
+                                    <td class="text-start   
+                                    ">${data.categoryData[0].description}</td>
+                                    <td>${data.categoryData[0].categoryOffer ? data.categoryData[0].categoryOffer : "0%"}</td>
+                                    <td class="text-start
+                                    ">
+                                        ${data.categoryData[0].categoryOffer === 0 ? `<button class="btn btn-info" style="width: 100px">
+                                        <a href="#" class="text-white" onclick="addOffer('${data.categoryData[0]._id}')">Add Offer</a>
+                                    </button>` : `<button class="btn btn-info" style="width: 100px">
+                                        <a href="#" class="text-white" onclick="removeOffer('${data.categoryData[0]._id}')">Remove</a>
+                                    </button>`}
+                                    </td>
+                                    <td>${data.categoryData[0].isListed ? "Active" : "Inactive"}</td>
+                                    <td class="text-start
+                                    ">
+                                        ${data.categoryData[0].isListed ? `<button onclick="unlist('${data.categoryData[0]._id}')" class="btn btn-danger" style="width: 70px;">
+                                        Unlist
+                                    </button>` : `<button onclick="list('${data.categoryData[0]._id}')" class="btn btn-primary" style="width: 70px;">
+                                        list
+                                    </button>`}
+
+                                    </td>
+                                    <td class="text-start
+                                    ">
+                                        <a href="/admin/editCategory?id=${data.categoryData[0].id}" class="btn btn-info text-white">Edit</a>
+                                    </td>
+                                </tr>
+                                `;
+                            })
+
+
+
+                            
+                            
+                        
                         .catch(error => {
                             console.log(error);
                             

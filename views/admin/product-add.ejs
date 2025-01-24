@@ -63,7 +63,7 @@
                                 <div class="col-lg-4">
                                     <div class="mb-4">
                                         <label class="form-label">Quantity</label>
-                                        <input placeholder="" name="quantity" type="text" class="form-control border">
+                                        <input placeholder="" name="quantity" id="quantity" type="text" class="form-control border">
                                         <div id="quantity-error" class="error-message"></div>
                                     </div>
                                 </div>
@@ -172,8 +172,7 @@
                                                         </div>
                             </div>
                             <div>
-                                <button class="btn btn-md rounded font-sm hover-up"  type="submit" onclick="validateForm()
-    ">Publish</button>
+                                <button class="btn btn-md rounded font-sm hover-up"  type="submit" onclick="validateForm()">Publish</button>
                             </div>
                         </form>
                     </div>
@@ -271,6 +270,114 @@
     }
 
 
+
+
+    // Array to store selected images
+    let selectedImages = [];
+
+    // Function to dynamically add image upload inputs
+    function addImageUploadInput() {
+        const imageContainer = document.querySelector('.card.mb-2 .border.row');
+        
+        // Create a new row for image upload
+        const newRow = document.createElement('div');
+        newRow.classList.add('row');
+        
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body', 'align-items-center');
+        cardBody.style.marginBottom = '20px';
+        
+        // Create image view
+        const imgView = document.createElement('img');
+        imgView.src = '';
+        imgView.alt = '';
+        imgView.id = `imgView${selectedImages.length + 1}`;
+        
+        // Create file input
+        const input = document.createElement('input');
+        input.classList.add('form-control');
+        input.type = 'file';
+        input.name = 'images';
+        input.id = `input${selectedImages.length + 1}`;
+        input.accept = 'image/png, image/jpeg, image/jpg';
+        input.onchange = function(event) {
+            // Use existing viewImage function with dynamic index
+            viewImage1(event);
+            viewImage(event, selectedImages.length + 1);
+        };
+        
+        // Create image cropper container
+        const cropperContainer = document.createElement('div');
+        cropperContainer.classList.add('image-cropper', 'd-flex', 'align-items-center');
+        cropperContainer.style.display = 'none';
+        cropperContainer.style.width = '300px';
+        cropperContainer.style.height = '200px';
+        cropperContainer.style.marginBottom = '20px';
+        
+        // Create cropped image
+        const croppedImg = document.createElement('img');
+        croppedImg.src = '';
+        croppedImg.id = `croppedImg${selectedImages.length + 1}`;
+        croppedImg.alt = '';
+        
+        // Create save button
+        const saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.id = `saveButton${selectedImages.length + 1}`;
+        saveButton.classList.add('btn-sm', 'btn-primary');
+        saveButton.textContent = 'Save';
+        
+        // Assemble elements
+        cardBody.appendChild(imgView);
+        cardBody.appendChild(input);
+        
+        cropperContainer.appendChild(croppedImg);
+        cropperContainer.appendChild(saveButton);
+        
+        newRow.appendChild(cardBody);
+        newRow.appendChild(cropperContainer);
+        
+        imageContainer.appendChild(newRow);
+    }
+
+    // Modify the form validation to check all dynamically added images
+    function validateForm() {
+        clearErrorMessages();
+        // ... (previous validation code)
+
+        // Check if at least one image is uploaded
+        const imageInputs = document.querySelectorAll('input[name="images"]');
+        let hasImage = false;
+        imageInputs.forEach(input => {
+            if (input.files.length > 0) {
+                hasImage = true;
+            }
+        });
+
+        if (!hasImage) {
+            displayErrorMessage("images-error", 'Please select at least one image.');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // Add a button to dynamically add more image uploads
+    function createAddImageButton() {
+        const imageContainer = document.querySelector('.card.mb-2 .border.row');
+        const addButton = document.createElement('button');
+        addButton.type = 'button';
+        addButton.classList.add('btn', 'btn-secondary', 'mt-3');
+        addButton.textContent = 'Add Another Image';
+        addButton.onclick = addImageUploadInput;
+        
+        imageContainer.appendChild(addButton);
+    }
+
+    // Call this when the page loads
+    document.addEventListener('DOMContentLoaded', createAddImageButton);
+
+
     function handleFileSelect(event) {
         const addedImagesContainer = document.getElementById("addedImagesContainer");
         addedImagesContainer.innerHTML = "";
@@ -317,7 +424,7 @@
                 const color = document.getElementsByName('color')[0].value;
                 const category = document.getElementsByName('category')[0].value;
                 const images = document.getElementById('input1')
-                const quantity=document.getElementsByName('quantity')
+                const quantity=document.getElementById('quantity').textContent
                 let isValid = true
                 if (name.trim() === "") {
         displayErrorMessage('productName-error', 'Please enter a product name.');
@@ -335,7 +442,7 @@
         isValid = false;
     }
     
-                if ( parseInt(quantity) < 0) {
+                if ( parseInt(quantity) < 0||quantity=="") {
                     displayErrorMessage('quantity-error', 'Please enter a valid non-negative quantity.');
                     isValid = false;
                 }

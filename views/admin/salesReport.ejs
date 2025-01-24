@@ -1,542 +1,510 @@
 <%- include('../partials/admin/header') %>
+
 <style>
-  /* Modern Dashboard Layout */
-.content-wrapper {
-    margin-left: 250px;
-    padding: 30px;
-    background: #f8fafc;
-    min-height: 100vh;
-    transition: all 0.3s ease;
-}
+    /* Global Container */
+    .card-body {
+        background-color: #f8fafc;
+        padding: 2rem;
+        border-radius: 16px;
+        max-width: 100%;
+        margin: 2rem auto;
+        overflow-x: hidden;
+    }
 
-/* Header Styling */
-.heading {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
-}
+    /* Ensure content doesn't overlap with sidebar */
+    @media (min-width: 768px) {
+        .card-body {
+            margin-left: 250px; /* Adjust this value to match your sidebar width */
+        }
+    }
 
-/* Export Buttons */
-.export-buttons .btn {
-    padding: 10px 20px;
-    font-weight: 500;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+    /* Header Section */
+    .d-flex.justify-content-between {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
 
-.btn-primary {
-    background: #3b82f6;
-    border: none;
-}
+    h4 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+    }
 
-.btn-primary:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-}
+    /* Export Buttons */
+    .export-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
 
-.btn-success {
-    background: #22c55e;
-    border: none;
-}
+    .export-buttons .btn {
+        border-radius: 8px;
+        padding: 0.75rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
 
-.btn-success:hover {
-    background: #16a34a;
-    transform: translateY(-1px);
-}
+    /* Date Filter Section */
+    .d-flex.justify-content-around {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        margin-bottom: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: space-between;
+    }
 
-/* Date Filter Section */
-.form-select, .form-control {
-    padding: 12px 16px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    background-color: white;
-}
+    .form-control {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.625rem;
+        transition: border-color 0.2s ease;
+        width: 100%;
+        max-width: 200px;
+    }
 
-.form-select:focus, .form-control:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
+    /* Summary Cards */
+    .row.mb-4 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
 
-.form-label {
-    font-weight: 500;
-    color: #64748b;
-    margin-bottom: 8px;
-}
+    .col-lg-3.col-md-6 {
+        width: 100%;
+    }
 
-/* Summary Cards */
-.summary-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    transition: all 0.3s ease;
-}
+    .card.card-body.mb-4 {
+        background: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-.summary-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.04);
-}
+    .card.card-body.mb-4:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
 
-.icon-wrapper {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    transition: all 0.3s ease;
-}
+    .icontext {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
 
-.icon-wrapper.blue {
-    background: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-}
+    .icon.icon-sm {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
 
-.icon-wrapper.green {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
-}
+    .text h6 {
+        color: #64748b;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
 
-.icon-wrapper.yellow {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308;
-}
+    .text span {
+        color: #1e293b;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
 
-.icon-wrapper.purple {
-    background: rgba(168, 85, 247, 0.1);
-    color: #a855f7;
-}
+    /* Custom Colors for Icons */
+    .bg-primary-light { background-color: #eff6ff; }
+    .bg-success-light { background-color: #f0fdf4; }
+    .bg-warning-light { background-color: #fefce8; }
+    .bg-info-light { background-color: #f0f9ff; }
 
-.summary-card .content h6 {
-    color: #64748b;
-    margin-bottom: 8px;
-    font-size: 15px;
-    font-weight: 500;
-}
+    .text-primary { color: #3b82f6; }
+    .text-success { color: #22c55e; }
+    .text-warning { color: #eab308; }
+    .text-info { color: #0ea5e9; }
 
-.summary-card .content h3 {
-    color: #1e293b;
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-}
 
-/* Table Styling */
-.card {
-    background: white;
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-    margin-top: 30px;
-}
 
-.table {
-    margin: 0;
-}
+/* Filter Section Styles */
+.filter-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+    }
 
-.table thead th {
-    background: #f8fafc;
-    font-weight: 600;
-    color: #64748b;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    padding: 16px;
-    border-bottom: 2px solid #f1f5f9;
-}
+    .filter-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-.table tbody td {
-    padding: 16px;
-    vertical-align: middle;
-    color: #334155;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 14px;
-}
+    .date-range-select {
+        min-width: 200px;
+    }
 
-/* Remove bullets from lists in table cells */
-.table tbody td ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+    .date-inputs {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
 
-.table tbody td ul li {
-    padding: 2px 0;
-}
+    .input-group {
+        min-width: 250px;
+    }
 
-/* Remove default list styling for all lists in table */
-.table tbody td > div {
-    margin: 2px 0;
-}
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        color: #6c757d;
+        font-weight: 500;
+    }
 
-.table tbody tr:hover {
-    background-color: #f8fafc;
-}
+    .form-select, .form-control {
+        border: 1px solid #dee2e6;
+        padding: 0.5rem;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
 
-.text-danger {
-    color: #ef4444 !important;
-}
-
-.text-success {
-    color: #22c55e !important;
-}
-
-/* Pagination */
-.pagination {
-    gap: 6px;
-    margin-top: 30px;
-}
-
-.pagination .page-link {
-    padding: 10px 16px;
-    border-radius: 8px;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.pagination .page-link:hover {
-    background: #f8fafc;
-    color: #3b82f6;
-    border-color: #e2e8f0;
-}
-
-.pagination .page-item.active .page-link {
-    background: #3b82f6;
-    border-color: #3b82f6;
-    color: white;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .content-wrapper {
-        margin-left: 0;
-        padding: 20px;
+    /* Summary Cards Styles */
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
     }
 
     .summary-card {
-        padding: 20px;
-        margin-bottom: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .icon-wrapper {
-        width: 50px;
-        height: 50px;
-        font-size: 24px;
+    .summary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
-    .summary-card .content h3 {
-        font-size: 24px;
+    .card-content {
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
 
-    .heading {
-        font-size: 28px;
-    }
-}
-
-/* Additional Enhancements */
-.table-responsive {
-    border-radius: 16px;
-}
-
-.bi {
-    line-height: 1;
-}
-
-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-/* Animation for cards */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.summary-card {
-    animation: fadeIn 0.5s ease forwards;
-}
-
-.summary-card:nth-child(1) { animation-delay: 0.1s; }
-.summary-card:nth-child(2) { animation-delay: 0.2s; }
-.summary-card:nth-child(3) { animation-delay: 0.3s; }
-.summary-card:nth-child(4) { animation-delay: 0.4s; }
-
-
-.table tbody td {
-    padding: 16px;
-    vertical-align: middle;
-    color: #334155;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 14px;
-}
-
-.table tbody tr:hover {
-    background-color: #f8fafc;
-}
-
-.text-danger {
-    color: #ef4444 !important;
-}
-
-.text-success {
-    color: #22c55e !important;
-}
-
-/* Pagination */
-.pagination {
-    gap: 6px;
-    margin-top: 30px;
-}
-
-.pagination .page-link {
-    padding: 10px 16px;
-    border-radius: 8px;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.pagination .page-link:hover {
-    background: #f8fafc;
-    color: #3b82f6;
-    border-color: #e2e8f0;
-}
-
-.pagination .page-item.active .page-link {
-    background: #3b82f6;
-    border-color: #3b82f6;
-    color: white;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .content-wrapper {
-        margin-left: 0;
-        padding: 20px;
+    .icon-container {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .summary-card {
-        padding: 20px;
-        margin-bottom: 20px;
+    .card-details {
+        flex: 1;
     }
 
-    .icon-wrapper {
-        width: 50px;
-        height: 50px;
-        font-size: 24px;
+    .card-details h6 {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin: 0 0 0.5rem 0;
+        font-weight: 500;
     }
 
-    .summary-card .content h3 {
-        font-size: 24px;
+    .amount {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2d3748;
     }
 
-    .heading {
-        font-size: 28px;
+    /* Custom Colors */
+    .bg-primary-light { background-color: #e3f2fd; }
+    .bg-success-light { background-color: #e8f5e9; }
+    .bg-warning-light { background-color: #fff8e1; }
+    .bg-info-light { background-color: #e1f5fe; }
+
+    .text-primary { color: #1976d2; }
+    .text-success { color: #2e7d32; }
+    .text-warning { color: #f57f17; }
+    .text-info { color: #0288d1; }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .filter-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .date-inputs {
+            flex-direction: column;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+        .summary-cards {
+            grid-template-columns: 1fr;
+        }
     }
-}
 
-/* Additional Enhancements */
-.table-responsive {
-    border-radius: 16px;
-}
-
-.bi {
-    line-height: 1;
-}
-
-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-/* Animation for cards */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+    /* Table Styles */
+    .table-responsive {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .table {
+        width: 100%;
+        min-width: 800px;
     }
+
+    .table thead th {
+        background-color: #f8fafc;
+        color: #64748b;
+        font-weight: 600;
+        padding: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .table tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        color: #334155;
+    }
+
+    /* Pagination */
+    .pagination-area {
+        margin-top: 2rem;
+    }
+    .table tbody td ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 0;
 }
 
-.summary-card {
-    animation: fadeIn 0.5s ease forwards;
-}
+    .pagination {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        list-style-type: none;
+        padding-left: 0;
+    }
 
-.summary-card:nth-child(1) { animation-delay: 0.1s; }
-.summary-card:nth-child(2) { animation-delay: 0.2s; }
-.summary-card:nth-child(3) { animation-delay: 0.3s; }
-.summary-card:nth-child(4) { animation-delay: 0.4s; }
-    </style>
-<div class="content-wrapper">
-    <div class="container-fluid">
-        <!-- Header with Title and Export Buttons -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="heading">Sales Report</h2>
-            <div class="export-buttons">
-                <button class="btn btn-primary me-2" onclick="exportToPDF()">
-                    <i class="bi bi-file-pdf me-1"></i> Export PDF
-                </button>
-                <button class="btn btn-success" onclick="exportToExcel()">
-                    <i class="bi bi-file-excel me-1"></i> Export Excel
-                </button>
-            </div>
-        </div>
+    .pagination .page-item {
+        margin: 0;
+    }
 
-    <!-- Date filter section -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="form-group">
-                <select class="form-select" name="dateRange" id="dateRangeSelect">
-                    <option value="">Select Date Range</option>
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                    <option value="year">This Year</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="d-flex gap-3">
-                <div class="form-group">
-                    <label for="startDate" class="form-label">Start Date</label>
-                    <input type="date" id="startDate" class="form-control" placeholder="mm/dd/yyyy">
-                </div>
-                <div class="form-group">
-                    <label for="endDate" class="form-label">End Date</label>
-                    <input type="date" id="endDate" class="form-control" placeholder="mm/dd/yyyy">
-                </div>
-            </div>
+    .pagination .page-link {
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        color: #64748b;
+        transition: all 0.2s ease;
+    }
+
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .d-flex.justify-content-around {
+            flex-direction: column;
+        }
+
+        .export-buttons {
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .row.mb-4 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .table-responsive {
+            padding: 0.5rem;
+        }
+
+        .table thead th,
+        .table tbody td {
+            padding: 0.75rem;
+            font-size: 0.875rem;
+        }
+    }
+</style>
+
+<div class="card-body">
+    <!-- Header section with export buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4>Sales Report</h4>
+        <div class="export-buttons">
+            <button class="btn btn-primary me-2" onclick="exportToPDF()">
+                <i class="material-icons md-file_download"></i> Export PDF
+            </button>
+            <button class="btn btn-success" onclick="exportToExcel()">
+                <i class="material-icons md-file_download"></i> Export Excel
+            </button>
         </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="row mb-4">
-        <div class="col-lg-3 col-md-6">
-            <div class="summary-card">
-                <div class="icon-wrapper blue">
-                    <i class="bi bi-currency-dollar"></i>
-                </div>
-                <div class="content">
-                    <h6>Total Sales</h6>
-                    <h3>₹<%= typeof totalSales !== 'undefined' ? totalSales.toLocaleString() : '0' %></h3>
-                </div>
-            </div>
+<!-- Date Filter Section -->
+<div class="filter-section mb-4">
+    <div class="filter-container">
+        <div class="date-range-select">
+            <select class="form-select" name="dateRange" id="dateRangeSelect">
+                <option value="">Select Date Range</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+                <option value="year">This Year</option>
+            </select>
         </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="summary-card">
-                <div class="icon-wrapper green">
-                    <i class="bi bi-cart"></i>
-                </div>
-                <div class="content">
-                    <h6>Total Orders</h6>
-                    <h3><%= count %></h3>
-                </div>
+        <div class="date-inputs">
+            <div class="input-group">
+                <!-- <span class="input-group-text">Start Date</span> -->
+                <input type="date" id="startDate" name="startDate" class="form-control">
             </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="summary-card">
-                <div class="icon-wrapper yellow">
-                    <i class="bi bi-tag"></i>
-                </div>
-                <div class="content">
-                    <h6>Total Discount</h6>
-                    <h3>₹<%= typeof totalDiscount !== 'undefined' ? totalDiscount.toLocaleString() : '0' %></h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="summary-card">
-                <div class="icon-wrapper purple">
-                    <i class="bi bi-people"></i>
-                </div>
-                <div class="content">
-                    <h6>Total Customers</h6>
-                    <h3><%= typeof uniqueCustomers !== 'undefined' ? uniqueCustomers : '0' %></h3>
-                </div>
+            <div class="input-group">
+                <!-- <span class="input-group-text">End Date</span> -->
+                <input type="date" id="endDate" name="endDate" class="form-control">
             </div>
         </div>
     </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="summary-cards">
+    <div class="summary-card">
+        <div class="card-content">
+            <div class="icon-container bg-primary-light">
+                <i class="material-icons md-monetization_on text-primary"></i>
+            </div>
+            <div class="card-details">
+                <h6>Total Sales</h6>
+                <span class="amount">₹<%= typeof totalSales !== 'undefined' ? totalSales.toLocaleString() : '0' %></span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="card-content">
+            <div class="icon-container bg-success-light">
+                <i class="material-icons md-shopping_bag text-success"></i>
+            </div>
+            <div class="card-details">
+                <h6>Total Orders</h6>
+                <span class="amount"><%= count %></span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="card-content">
+            <div class="icon-container bg-warning-light">
+                <i class="material-icons md-loyalty text-warning"></i>
+            </div>
+            <div class="card-details">
+                <h6>Total Discount</h6>
+                <span class="amount">₹<%= typeof totalDiscount !== 'undefined' ? totalDiscount.toLocaleString() : '0' %></span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="summary-card">
+        <div class="card-content">
+            <div class="icon-container bg-info-light">
+                <i class="material-icons md-person text-info"></i>
+            </div>
+            <div class="card-details">
+                <h6>Total Customers</h6>
+                <span class="amount"><%= typeof uniqueCustomers !== 'undefined' ? uniqueCustomers : '0' %></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
     <!-- Table section -->
-    <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="salesTable">
-                        <thead>
-                            <tr>
-                                <th>Sl No</th>
-                                <th>User Name</th>
-                                <th>Products</th>
-                                <th>Quantity</th>
-                                <th>Date</th>
-                                <th>Discount</th>
-                                <th>Final Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% orders.forEach((order, index) => { %>
-                            <tr>
-                                <td><%= ((currentPage - 1) * limit) + index + 1 %></td>
-                                <td><%= order.user.name %></td>
-                                <td>
-                                    <% order.orderedItems.forEach(item => { %>
-                                        <div><%= item.product.productName %></div>
-                                    <% }) %>
-                                </td>
-                                <td>
-                                    <% order.orderedItems.forEach(item => { %>
-                                        <div><%= item.quantity %></div>
-                                    <% }) %>
-                                </td>
-                                <td><%= order.createdOn.toLocaleDateString() %></td>
-                                <td class="text-danger">₹<%= order.discount.toLocaleString() %></td>
-                                <td class="text-success">₹<%= order.finalAmount.toLocaleString() %></td>
-                            </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-hover" id="salesTable">
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>User Name</th>
+                    <th>Products</th>
+                    <th>Quantity</th>
+                    <th>Date</th>
+                    <th>Discount Amount</th>
+                    <th>Final Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach((order, index) => { %>
+                    <tr>
+                        <td><%= ((currentPage - 1) * limit) + index + 1 %></td>
+                        <td><%= order.user.name %></td>
+                        <td>
+                            <ul>
+                                <% order.orderedItems.forEach(item => { %>
+                                    <li><%= item.product.productName %></li>
+                                <% }) %>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <% order.orderedItems.forEach(item => { %>
+                                    <li><%= item.quantity %></li>
+                                <% }) %>
+                            </ul>
+                        </td>
+                        <td><%= order.createdOn.toLocaleDateString() %></td>
+                        <td>₹<%= order.discount.toLocaleString() %></td>
+                        <td>₹<%= order.finalAmount.toLocaleString() %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
 
-
-    <!-- Updated Pagination section -->
-    <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Sales Pagination">
-            <ul class="pagination" id="pagination">
-                <!-- Pagination will be dynamically generated -->
+    <!-- Pagination section -->
+    <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Sales Pagination" class="mt-4">
+            <ul class="pagination justify-content-center" id="pagination">
+                <!-- Pagination buttons will be dynamically generated -->
             </ul>
         </nav>
     </div>
-</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -545,112 +513,110 @@ button {
 
 <script>
     function exportToPDF() {
-    const startDateInput = document.getElementById('startDate');
-    const endDateInput = document.getElementById('endDate');
-    const dateRangeSelect = document.getElementById('dateRangeSelect');
-
-    const today = new Date(); // Correct initialization
-    let startDate = startDateInput.value ? new Date(startDateInput.value) : new Date();
-    let endDate = endDateInput.value ? new Date(endDateInput.value) : today;
-
-    switch (dateRangeSelect.value) {
-        case 'today':
-            startDate = new Date(today); // Set startDate as today
-            endDate = new Date(today); // Set endDate as today
-            break;
-        case 'week':
-            startDate.setDate(today.getDate() - 7); // 7 days before today
-            break;
-        case 'month':
-            startDate.setMonth(today.getMonth() - 1); // 1 month before today
-            break;
-        case 'year':
-            startDate.setFullYear(today.getFullYear() - 1); // 1 year before today
-            break;
-        default:
-            startDate = '';
-            endDate = '';
-            break;
-    }
-    if(startDate!=''){
-        startDate=startDate.toISOString()
-
-    }else if(endDate!=''){
-        endDate=endDate.toISOString()
-
-    }
-
-    // Ensure the startDate and endDate are in ISO string format for URL parameters
-    const params = new URLSearchParams({
-        start: startDate,
-        end: endDate
-    });
-
-    fetch(`/admin/salesReportPDF?${params.toString()}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch the PDF');
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            // Create a blob URL
-            const url = window.URL.createObjectURL(blob);
-
-            // Create a temporary link element
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'salesReport.pdf'; // Specify the file name
-            document.body.appendChild(a);
-
-            // Trigger the download
-            a.click();
-
-            // Cleanup
-            a.remove();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            console.error('Error downloading the PDF:', error);
-            alert('Failed to download the sales report. Please try again.');
-        });
-}
-
-
-    function exportToExcel() {
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
         const dateRangeSelect = document.getElementById('dateRangeSelect');
 
-        const today = new Date(); // Correct initialization
+        const today = new Date();
         let startDate = startDateInput.value ? new Date(startDateInput.value) : new Date();
         let endDate = endDateInput.value ? new Date(endDateInput.value) : today;
 
         switch (dateRangeSelect.value) {
             case 'today':
-                startDate = new Date(today); // Set startDate as today
-                endDate = new Date(today); // Set endDate as today
+                startDate = new Date(today);
+                endDate = new Date(today);
                 break;
             case 'week':
-                startDate.setDate(today.getDate() - 7); // 7 days before today
+                startDate.setDate(today.getDate() - 7);
                 break;
             case 'month':
-                startDate.setMonth(today.getMonth() - 1); // 1 month before today
+                startDate.setMonth(today.getMonth() - 1);
                 break;
             case 'year':
-                startDate.setFullYear(today.getFullYear() - 1); // 1 year before today
+                startDate.setFullYear(today.getFullYear() - 1);
                 break;
             default:
                 startDate = '';
                 endDate = '';
                 break;
         }
-        if(startDate!=''){
-            startDate=startDate.toISOString()
 
-        }else if(endDate!=''){
-            endDate=endDate.toISOString()
+        if(startDate != ''){
+            startDate = startDate.toISOString();
+        }
+        if(endDate != ''){
+            endDate = endDate.toISOString();
+        }
 
+        // Ensure the startDate and endDate are in ISO string format for URL parameters
+        const params = new URLSearchParams({
+            start: startDate,
+            end: endDate
+        });
+
+        fetch(`/admin/salesReportPDF?${params.toString()}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch the PDF');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Create a blob URL
+                const url = window.URL.createObjectURL(blob);
+
+                // Create a temporary link element
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'salesReport.pdf'; // Specify the file name
+                document.body.appendChild(a);
+
+                // Trigger the download
+                a.click();
+
+                // Cleanup
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error downloading the PDF:', error);
+                alert('Failed to download the sales report. Please try again.');
+            });
+    }
+
+    function exportToExcel() {
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const dateRangeSelect = document.getElementById('dateRangeSelect');
+
+        const today = new Date();
+        let startDate = startDateInput.value ? new Date(startDateInput.value) : new Date();
+        let endDate = endDateInput.value ? new Date(endDateInput.value) : today;
+
+        switch (dateRangeSelect.value) {
+            case 'today':
+                startDate = new Date(today);
+                endDate = new Date(today);
+                break;
+            case 'week':
+                startDate.setDate(today.getDate() - 7);
+                break;
+            case 'month':
+                startDate.setMonth(today.getMonth() - 1);
+                break;
+            case 'year':
+                startDate.setFullYear(today.getFullYear() - 1);
+                break;
+            default:
+                startDate = '';
+                endDate = '';
+                break;
+        }
+        if(startDate != ''){
+            startDate = startDate.toISOString();
+        }
+        if(endDate != ''){
+            endDate = endDate.toISOString();
         }
 
         // Ensure the startDate and endDate are in ISO string format for URL parameters
@@ -788,8 +754,6 @@ button {
             }
         }
 
-        
-
         function handleDateRangeSelection(e) {
             e.preventDefault();
 
@@ -826,7 +790,6 @@ button {
             filterTable(1);
         }
 
-
         dateRangeSelect.addEventListener('change', handleDateRangeSelection);
         startDateInput.addEventListener('change', filterTable);
         endDateInput.addEventListener('change', filterTable);
@@ -836,6 +799,211 @@ button {
 
     document.addEventListener('DOMContentLoaded', initializeDateFilter);
 
+    // Sales Report Table Management
+    document.addEventListener('DOMContentLoaded', () => {
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const dateRangeSelect = document.getElementById('dateRangeSelect');
+        const itemsPerPage = 10; // Items per page
+
+        // Function to filter and paginate table
+        async function filterTable(page = 1) {
+            try {
+                // Get filter values
+                const dateRange = dateRangeSelect.value;
+                const startDate = startDateInput.value;
+                const endDate = endDateInput.value;
+
+                // Prepare query parameters
+                const params = new URLSearchParams({
+                    page: page,
+                    limit: itemsPerPage
+                });
+
+                // Add date filters if they exist
+                if (dateRange) params.append('dateRange', dateRange);
+                if (startDate) params.append('startDate', startDate);
+                if (endDate) params.append('endDate', endDate);
+
+                // Fetch filtered data
+                const response = await fetch(`/admin/filterSales?${params.toString()}`);
+                if (!response.ok) throw new Error('Failed to fetch data');
+                
+                const data = await response.json();
+                
+                // Update table content
+                updateTableContent(data.orders, page);
+                
+                // Update pagination
+                updatePagination(data.totalPages, page);
+                
+                // Update summary cards if the data includes them
+                if (data.summary) {
+                    updateSummaryCards(data.summary);
+                }
+            } catch (error) {
+                console.error('Error during filtering:', error);
+                alert('Failed to filter data. Please try again.');
+            }
+        }
+
+        // Function to update table content
+        function updateTableContent(orders, currentPage) {
+            const tableBody = document.querySelector('#salesTable tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            orders.forEach((order, index) => {
+                const row = document.createElement('tr');
+                
+                // Calculate the correct serial number based on pagination
+                const serialNumber = ((currentPage - 1) * itemsPerPage) + index + 1;
+                
+                row.innerHTML = `
+                    <td>${serialNumber}</td>
+                    <td>${order.user?.name || 'Unknown User'}</td>
+                    <td>
+                        <ul>
+                            ${order.orderedItems.map(item => 
+                                `<li>${item.product?.productName || 'Unknown Product'}</li>`
+                            ).join('')}
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            ${order.orderedItems.map(item => 
+                                `<li>${item.quantity || 0}</li>`
+                            ).join('')}
+                        </ul>
+                    </td>
+                    <td>${new Date(order.createdOn).toLocaleDateString()}</td>
+                    <td>₹${(order.discount || 0).toLocaleString()}</td>
+                    <td>₹${(order.finalAmount || 0).toLocaleString()}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to update pagination
+        function updatePagination(totalPages, currentPage) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            // Add Previous button
+            addPaginationButton('Previous', currentPage > 1 ? currentPage - 1 : null);
+
+            // Calculate range of pages to show
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+
+            // Always show first page
+            if (startPage > 1) {
+                addPaginationButton(1);
+                if (startPage > 2) {
+                    pagination.appendChild(createEllipsis());
+                }
+            }
+
+            // Add page numbers
+            for (let i = startPage; i <= endPage; i++) {
+                addPaginationButton(i, i, i === currentPage);
+            }
+
+            // Always show last page
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    pagination.appendChild(createEllipsis());
+                }
+                addPaginationButton(totalPages);
+            }
+
+            // Add Next button
+            addPaginationButton('Next', currentPage < totalPages ? currentPage + 1 : null);
+
+            function addPaginationButton(text, page = text, isActive = false) {
+                const li = document.createElement('li');
+                li.className = `page-item ${isActive ? 'active' : ''} ${page === null ? 'disabled' : ''}`;
+                
+                const button = document.createElement('button');
+                button.className = 'page-link';
+                button.textContent = text;
+                
+                if (page !== null) {
+                    button.addEventListener('click', () => filterTable(page));
+                }
+                
+                li.appendChild(button);
+                pagination.appendChild(li);
+            }
+
+            function createEllipsis() {
+                const li = document.createElement('li');
+                li.className = 'page-item disabled';
+                li.innerHTML = '<span class="page-link">...</span>';
+                return li;
+            }
+        }
+
+        // Function to update summary cards
+        function updateSummaryCards(summary) {
+            if (summary.totalSales) {
+                document.querySelector('.total-sales').textContent = 
+                    `₹${summary.totalSales.toLocaleString()}`;
+            }
+            if (summary.totalOrders) {
+                document.querySelector('.total-orders').textContent = 
+                    summary.totalOrders.toString();
+            }
+            if (summary.totalDiscount) {
+                document.querySelector('.total-discount').textContent = 
+                    `₹${summary.totalDiscount.toLocaleString()}`;
+            }
+            if (summary.totalCustomers) {
+                document.querySelector('.total-customers').textContent = 
+                    summary.totalCustomers.toString();
+            }
+        }
+
+        // Function to handle date range selection
+        function handleDateRangeSelection() {
+            const today = new Date();
+            let startDate = new Date(today);
+
+            switch (dateRangeSelect.value) {
+                case 'today':
+                    startDateInput.value = today.toISOString().split('T')[0];
+                    endDateInput.value = today.toISOString().split('T')[0];
+                    break;
+                case 'week':
+                    startDate.setDate(today.getDate() - 7);
+                    startDateInput.value = startDate.toISOString().split('T')[0];
+                    endDateInput.value = today.toISOString().split('T')[0];
+                    break;
+                case 'month':
+                    startDate.setMonth(today.getMonth() - 1);
+                    startDateInput.value = startDate.toISOString().split('T')[0];
+                    endDateInput.value = today.toISOString().split('T')[0];
+                    break;
+                case 'year':
+                    startDate.setFullYear(today.getFullYear() - 1);
+                    startDateInput.value = startDate.toISOString().split('T')[0];
+                    endDateInput.value = today.toISOString().split('T')[0];
+                    break;
+                default:
+                    startDateInput.value = '';
+                    endDateInput.value = '';
+                    break;
+            }
+            filterTable(1); // Reset to first page when changing date range
+        }
+
+        // Set up event listeners
+        dateRangeSelect.addEventListener('change', handleDateRangeSelection);
+        startDateInput.addEventListener('change', () => filterTable(1));
+        endDateInput.addEventListener('change', () => filterTable(1));
+
+        // Initial load
+        filterTable(1);
+    });
 </script>
 
 <%- include('../partials/admin/footer') %>

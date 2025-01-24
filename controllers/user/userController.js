@@ -26,10 +26,7 @@ function generateReferalCode(length) {
 const LoadHomepage = async (req, res) => {
     try {
         // const user = req.user;
-        const userId = req.session.user
-
-
-
+        const userId = req.session.user ? req.session.user._id : null;
 
         const category = await Category.find({ isListed: true })
         let productData = await Product.find({
@@ -42,10 +39,6 @@ const LoadHomepage = async (req, res) => {
 
         productData.sort((a, b) => new Date(a.createdOn) - new Date(b.createOn)).reverse()
 
-
-
-
-
         if (userId) {
             const userData = await User.findOne({ _id: userId })
             res.render("home", { user: userData, productData })
@@ -54,7 +47,7 @@ const LoadHomepage = async (req, res) => {
         }
 
     } catch (error) {
-        console.log("home page not found")
+        console.log("home page not found",error)
         res.status(500).send("server error")
     }
 }
@@ -73,6 +66,9 @@ const pageNotFound = async (req, res) => {
 
 const Loadsignup = async (req, res) => {
     try {
+        if(req.session.user){
+            return res.redirect('/')
+        }
         return res.render('signup')
 
     } catch (error) {
@@ -283,15 +279,16 @@ const resendOtp = async (req, res) => {
 
 const LoadLogin = async (req, res) => {
     try {
+        const message = req.query.message;
         if (req.session.user) {
-            const user = await User.findById(req.session.user);
+            const user = await User.findById(req.session.user._id);
             if (user && user.isBlocked) {
                 req.session.user = null;
                 return res.render("login", { message: "User is blocked" });
             }
             return res.redirect("/");
         } else {
-            return res.render("login", { message: '' });
+            return res.render("login", { message: message ||null});
         }
     } catch (error) {
         res.redirect('/pageNotFound')
@@ -308,18 +305,18 @@ const  login = async (req, res) => {
 
         const findUser = await User.findOne({ isAdmin: 0, email: email });
         if (!findUser) {
-            return res.render('login', { message: "User not found" });
+            return res.redirect('/login?message=Invalid email or password');
         }
 
 
         if (findUser.isBlocked) {
-            return res.render("login", { message: "User is blocked by admin" });
+            return res.redirect('/login?message=Your account is blocked. Please contact support.');
         }
 
 
         const passwordMatch = await bcrypt.compare(password, findUser.password);
         if (!passwordMatch) {
-            return res.render('login', { message: "Password does not match" });
+            return res.redirect('/login?message=Invalid email or password');
         }
 
         req.session.user = findUser;

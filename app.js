@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const passport = require("./config/passport");
+const nocache = require("nocache");
 
 const dotenv = require("dotenv").config();
 const session = require("express-session");
@@ -10,7 +11,7 @@ const userRouter = require("./routes/userRouter");
 const adminRouter=  require('./routes/adminRouter')
 
 db();
-
+app.use(nocache());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,18 +22,18 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 30 * 60 * 1000 } // 30 minutes
-  }));
-  
+    }));
+    
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use((req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
     next();
-});
+})
 
 app.set("view engine", "ejs");
 app.set("views", [path.join(__dirname, "views/user"), path.join(__dirname, "views/admin")]);

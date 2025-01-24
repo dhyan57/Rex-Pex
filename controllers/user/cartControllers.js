@@ -109,7 +109,7 @@ const getShowCart=async (req,res)=>{
         }
         const user = await User.findById(userId._id)
         const cartData= await Cart.findOne({userId:userId._id}).populate('items.productId')
-        console.log('cartdata',cartData)
+        
         
         if(!cartData){
             return res.render('cart',{cart:null,products:[],totalAmt:0,user:user})
@@ -134,7 +134,7 @@ const removeCart=async(req,res)=>{
         console.log("user",user)
         
         const id=req.query.id;
-        console.log("cid",id);
+        
 
         if(!id){
             return res.status(400).redirect("/pageerror")

@@ -22,21 +22,20 @@ const categoryInfo = async (req, res) => {
                 isListed: true,
                 $or: [ 
                     { name: { $regex: ".*" + search + ".*", $options: "i" } },
-                    { email: { $regex: ".*" + search + ".*", $options: "i" } },
                 ],
             })
                 .limit(limit)
                 .skip((page - 1) * limit)
                 .exec();
-           return res.json({ categoryData, totalPages, page })
+                console.log("categoryData",categoryData);
+                return res.json({ categoryData, totalPages, page })
         }else{  
             const totalCategories = await Category.countDocuments();
             const totalPages = Math.ceil(totalCategories / limit);
             const categoryData = await Category.find({
-                isListed: true,
                 $or: [
                     { name: { $regex: ".*" + search + ".*", $options: "i" } },
-                    { email: { $regex: ".*" + search + ".*", $options: "i" } },
+        
                 ],
             })
                 .limit(limit)

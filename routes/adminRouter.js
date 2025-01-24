@@ -6,7 +6,7 @@ const customerController = require("../controllers/admin/customerController")
 const categoryController = require('../controllers/admin/categoryController');
 const brandController=require("../controllers/admin/brandController")
 const productController=require("../controllers/admin/productController")
-const orderControllers=require("../controllers/admin/orderControllers")
+const orderControllers=require("../controllers/admin/orderControllers")  
 const couponControllers=require("../controllers/admin/couponController")
 const multer=require("multer")
 const storage=require("../helpers/multer")
@@ -87,6 +87,9 @@ router.get('/filterSales',orderControllers.getSaleReportFilter)
 router.get('/salesReportPDF',orderControllers.pdfGenerate)
 router.get('/salesReportExcel',orderControllers.excelGenerate)
 
+
+
+// router.get("/salesReport",orderControllers.getSalesReport)
 
 
 

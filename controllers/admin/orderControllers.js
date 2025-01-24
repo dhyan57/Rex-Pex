@@ -144,7 +144,6 @@ const returnRequest= async (req,res)=>{
 const pdfGenerate = async (req, res) => {
     try {
         const { start, end } = req.query;
-        console.log(req.query || 'nott');
         const filter = {};
 
         if (start || end) {
@@ -153,23 +152,32 @@ const pdfGenerate = async (req, res) => {
             if (end) filter.createdOn.$lte = new Date(end);
         }
 
+        // Fetch orders with populated fields
         const orders = await Order.find(filter)
             .populate('user')
-            .populate('orderedItems.product');
-        
-        if (orders.length === 0) {
+            .populate('orderedItems.product')
+            .lean()  // Convert to plain JavaScript objects
+            .exec();
+
+        if (!orders || orders.length === 0) {
             return res.status(404).send('No orders found for the given period.');
         }
 
-        const totalSales = orders.reduce((sum, order) => sum + order.finalAmount, 0);
+        // Calculate totals with null checks
+        const totalSales = orders.reduce((sum, order) => sum + (order.finalAmount || 0), 0);
         const totalOrders = orders.length;
-        const totalDiscount = orders.reduce((sum, order) => sum + order.discount, 0);
-        const totalCustomers = new Set(orders.map(order => order.user.name)).size;
+        const totalDiscount = orders.reduce((sum, order) => sum + (order.discount || 0), 0);
+        const totalCustomers = new Set(
+            orders
+                .filter(order => order.user && order.user.name)
+                .map(order => order.user.name)
+        ).size;
 
         const doc = new PDFDocument({ margin: 30, size: 'A4' });
+        
+        // Set response headers
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename=salesReport.pdf');
-
         doc.pipe(res);
 
         // Title
@@ -194,14 +202,12 @@ const pdfGenerate = async (req, res) => {
         // Table Setup
         const headers = ['Sl No', 'User Name', 'Products', 'Quantity', 'Date', 'Discount', 'Final Amount'];
         const columnWidths = [30, 80, 120, 50, 60, 60, 70];
-        const ROW_HEIGHT = 50; // Increased row height
+        const ROW_HEIGHT = 50;
         const tableTop = doc.y;
 
-        // Table Header
+        // Draw table header
         doc.font('Helvetica-Bold').fontSize(10);
         doc.lineWidth(0.5);
-
-        // Draw table header background
         doc.fillColor('#E0E0E0').rect(30, tableTop, 540, ROW_HEIGHT).fill();
         doc.fillColor('black');
 
@@ -224,154 +230,245 @@ const pdfGenerate = async (req, res) => {
         doc.font('Helvetica').fontSize(9);
         let currentY = tableTop + ROW_HEIGHT;
 
+        // Process each order with error handling
         orders.forEach((order, index) => {
-            // Check if the next row fits in the page, else add a new page
-            if (currentY > doc.page.height - 100) {
-                doc.addPage();
-                currentY = 30;
+            try {
+                // Check for new page
+                if (currentY > doc.page.height - 100) {
+                    doc.addPage();
+                    currentY = 30;
+                }
+
+                // Row background
+                const rowColor = index % 2 === 0 ? '#FFFFFF' : '#F5F5F5';
+                const rowY = currentY;
+
+                doc.fillColor(rowColor)
+                    .rect(30, rowY, 540, ROW_HEIGHT)
+                    .fill();
+                doc.fillColor('black');
+
+                // Calculate total quantity with null check
+                const totalQuantity = order.orderedItems
+                    ? order.orderedItems.reduce((sum, item) => sum + (item.quantity || 0), 0)
+                    : 0;
+
+                // Prepare product details with null checks
+                const productDetails = order.orderedItems
+                    ? order.orderedItems
+                        .filter(item => item && item.product)
+                        .map(item => `${item.product?.productName || 'Unknown Product'} (x${item.quantity || 0})`)
+                        .join(', ')
+                    : 'No products';
+
+                // Reset x position for new row
+                xPos = 30;
+
+                // Row data with null checks
+                const rowData = [
+                    `${index + 1}`,
+                    order.user?.name || 'Unknown User',
+                    productDetails || 'No products',
+                    totalQuantity.toString(),
+                    order.createdOn ? new Date(order.createdOn).toLocaleDateString() : 'No date',
+                    `Rs. ${(order.discount || 0).toFixed(2)}`,
+                    `Rs. ${(order.finalAmount || 0).toFixed(2)}`
+                ];
+
+                // Fill row data
+                rowData.forEach((data, i) => {
+                    doc.text(data, xPos, rowY + 10, {
+                        width: columnWidths[i],
+                        align: i === 2 ? 'left' : 'center'  // Left align products, center align others
+                    });
+                    xPos += columnWidths[i];
+                });
+
+                currentY += ROW_HEIGHT;
+
+            } catch (err) {
+                console.error(`Error processing order ${index + 1}:`, err);
+                // Add error row
+                xPos = 30;
+                doc.fillColor('#FFEBEE').rect(30, currentY, 540, ROW_HEIGHT).fill();
+                doc.fillColor('red').text(
+                    `Error processing order ${index + 1}`,
+                    xPos, currentY + 10,
+                    { width: 540, align: 'center' }
+                );
+                doc.fillColor('black');
+                currentY += ROW_HEIGHT;
             }
-
-            // Alternate row background
-            const rowColor = index % 2 === 0 ? '#FFFFFF' : '#F5F5F5'; 
-            const rowY = currentY;
-
-            // Row background
-            doc.fillColor(rowColor)
-                .rect(30, rowY, 540, ROW_HEIGHT)
-                .fill();
-
-            // Reset to black for text
-            doc.fillColor('black');
-
-            // Calculate total quantity
-            const totalQuantity = order.orderedItems.reduce((sum, item) => sum + item.quantity, 0);
-
-            // Prepare product details
-            const productDetails = order.orderedItems
-                .map(item => `${item.product.productName} (x${item.quantity})`)
-                .join(', ');
-
-            // Reset x position
-            xPos = 30;
-
-            // Fill row data
-            doc.text(`${index + 1}`, xPos, rowY + 10, { 
-                width: columnWidths[0], 
-                align: 'center' 
-            });
-            xPos += columnWidths[0];
-
-            doc.text(order.user.name, xPos, rowY + 10, { 
-                width: columnWidths[1], 
-                align: 'center' 
-            });
-            xPos += columnWidths[1];
-
-            doc.text(productDetails, xPos, rowY + 10, { 
-                width: columnWidths[2], 
-                align: 'left' 
-            });
-            xPos += columnWidths[2];
-
-            doc.text(totalQuantity.toString(), xPos, rowY + 10, { 
-                width: columnWidths[3], 
-                align: 'center' 
-            });
-            xPos += columnWidths[3];
-
-            doc.text(new Date(order.createdOn).toLocaleDateString(), xPos, rowY + 10, { 
-                width: columnWidths[4], 
-                align: 'center' 
-            });
-            xPos += columnWidths[4];
-
-            doc.text(`Rs. ${order.discount.toFixed(2)}`, xPos, rowY + 10, { 
-                width: columnWidths[5], 
-                align: 'center' 
-            });
-            xPos += columnWidths[5];
-
-            doc.text(`Rs. ${order.finalAmount.toFixed(2)}`, xPos, rowY + 10, { 
-                width: columnWidths[6], 
-                align: 'center' 
-            });
-
-            currentY += ROW_HEIGHT;
         });
 
+        // Footer
+        doc.fontSize(8)
+            .text(
+                `Report generated on ${new Date().toLocaleString()}`,
+                30,
+                doc.page.height - 50,
+                { align: 'center' }
+            );
 
         doc.end();
+
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error generating PDF');
+        console.error('PDF generation error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error generating PDF',
+            error: error.message
+        });
     }
 };
 
 
-
-const excelGenerate=async (req, res) => {
+const excelGenerate = async (req, res) => {
     try {
-        const {start,end}=req.query;
-        console.log(req.query||'nott');
-        const filter={};
-        if(start||end){
-            filter.createdOn={};
-            if(start)filter.createdOn.$gte=new Date(start);
-            if(end)filter.createdOn.$lte=new Date(end)
-        }
-        const orders=await Order.find(filter).populate('user').populate('orderedItems.product','productName').exec();
-        const totalSales = orders.reduce((sum, order) => sum + order.finalAmount, 0);
-        const totalOrders = orders.length;
-        const totalDiscount = orders.reduce((sum, order) => sum + order.discount, 0);
-        const totalCustomers = new Set(orders.map(order => order.user.name)).size;
-
-        // Create a new Excel workbook and worksheet
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Sheet 1');
-    
-        // Define columns
+        const { start, end } = req.query;
+        const filter = {};
         
-       
+        if (start || end) {
+            filter.createdOn = {};
+            if (start) filter.createdOn.$gte = new Date(start);
+            if (end) filter.createdOn.$lte = new Date(end);
+        }
+
+        // Fetch orders with populated fields
+        const orders = await Order.find(filter)
+            .populate('user')
+            .populate('orderedItems.product', 'productName')
+            .lean()  // Convert to plain JavaScript objects
+            .exec();
+
+        // Calculate totals with null checks
+        const totalSales = orders.reduce((sum, order) => sum + (order.finalAmount || 0), 0);
+        const totalOrders = orders.length;
+        const totalDiscount = orders.reduce((sum, order) => sum + (order.discount || 0), 0);
+        const totalCustomers = new Set(
+            orders
+                .filter(order => order.user && order.user.name)
+                .map(order => order.user.name)
+        ).size;
+
+        // Create workbook and worksheet
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Sales Report');
+
+        // Define columns
         worksheet.columns = [
             { header: 'Sl No', key: 'Sno', width: 5 },
             { header: 'User Name', key: 'name', width: 15 },
-            { header: 'Products', key: 'Product', width: 50},
+            { header: 'Products', key: 'Product', width: 50 },
             { header: 'Quantity', key: 'Quantity', width: 5 },
-            { header: 'Date', key: 'Date', width: 15, style: { alignment: { horizontal: 'center' } } }, // Date column
-            { header: 'Discount Amount', key: 'Discount', width: 10, style: { numFmt: '#,##0.00' } }, // Format number
-            { header: 'Final Amount', key: 'Final', width: 10, style: { numFmt: '#,##0.00' } }, // Format number
+            { 
+                header: 'Date', 
+                key: 'Date', 
+                width: 15, 
+                style: { 
+                    alignment: { horizontal: 'center' },
+                    numFmt: 'dd/mm/yyyy'
+                } 
+            },
+            { 
+                header: 'Discount Amount', 
+                key: 'Discount', 
+                width: 12, 
+                style: { numFmt: '#,##0.00' }
+            },
+            { 
+                header: 'Final Amount', 
+                key: 'Final', 
+                width: 12, 
+                style: { numFmt: '#,##0.00' }
+            },
         ];
-    
-        // Add some rows of data
-        for(let i=0;i<orders.length;i++){
-            console.log(orders[i].orderedItems[0].product.productName||'prod');
-            const productDetails = orders[i].orderedItems
-                    .map((product) => `${product.product.productName} (x${product.quantity})`)
-                    .join(', ');
-            worksheet.addRow({ Sno: i+1, name: orders[i].user.name, Product: productDetails,Quantity:orders[i].orderedItems.reduce((sum, product) => sum + product.quantity, 0),Date:orders[i].createdOn,Discount:orders[i].discount,Final:orders[i].finalAmount});
-        }
-        worksheet.addRow({ Sno: '', name: '', Product: '',Quantity:'',Date:'',Discount:'',Final:''});
-        worksheet.addRow({ Sno: '', name: '', Product: '',Quantity:'',Date:'',Discount:'',Final:''});
-        worksheet.addRow({ Sno: '', name: 'Total Sales', Product: totalSales,Quantity:'',Date:'',Discount:'',Final:''});
-        worksheet.addRow({ Sno: '', name: ' Total Orders', Product: totalOrders,Quantity:'',Date:'',Discount:'',Final:''});
-        worksheet.addRow({ Sno: '', name: 'Total Discount', Product: totalDiscount,Quantity:'',Date:'',Discount:'',Final:''});
-        worksheet.addRow({ Sno: '', name: 'Total Customer', Product: totalCustomers,Quantity:'',Date:'',Discount:'',Final:''});
 
+        // Add data rows with error handling
+        orders.forEach((order, index) => {
+            try {
+                const productDetails = order.orderedItems
+                    .filter(item => item.product && item.product.productName)
+                    .map(item => `${item.product.productName || 'Unknown Product'} (x${item.quantity || 0})`)
+                    .join(', ') || 'No products';
 
-        
-     
-        // Set headers for the response to trigger a download
-        res.setHeader('Content-Disposition', 'attachment; filename=generated-file.xlsx');
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    
-        // Send the Excel file as a response
+                const totalQuantity = order.orderedItems
+                    .reduce((sum, item) => sum + (item.quantity || 0), 0);
+
+                worksheet.addRow({
+                    Sno: index + 1,
+                    name: order.user?.name || 'Unknown User',
+                    Product: productDetails,
+                    Quantity: totalQuantity,
+                    Date: order.createdOn || new Date(),
+                    Discount: order.discount || 0,
+                    Final: order.finalAmount || 0
+                });
+            } catch (err) {
+                console.error(`Error processing order ${index + 1}:`, err);
+                // Add row with error indication
+                worksheet.addRow({
+                    Sno: index + 1,
+                    name: 'Error processing order',
+                    Product: 'Data error',
+                    Quantity: 0,
+                    Date: new Date(),
+                    Discount: 0,
+                    Final: 0
+                });
+            }
+        });
+
+        // Add empty rows
+        worksheet.addRow({});
+        worksheet.addRow({});
+
+        // Add summary rows
+        const summaryRows = [
+            { name: 'Total Sales', value: totalSales },
+            { name: 'Total Orders', value: totalOrders },
+            { name: 'Total Discount', value: totalDiscount },
+            { name: 'Total Customers', value: totalCustomers }
+        ];
+
+        summaryRows.forEach(({ name, value }) => {
+            worksheet.addRow({
+                name,
+                Product: value,
+            });
+        });
+
+        // Style improvements
+        worksheet.getRow(1).font = { bold: true };
+        worksheet.getRow(1).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE0E0E0' }
+        };
+
+        // Set response headers
+        res.setHeader(
+            'Content-Disposition', 
+            'attachment; filename=sales-report.xlsx'
+        );
+        res.setHeader(
+            'Content-Type', 
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        );
+
+        // Write workbook to response
         await workbook.xlsx.write(res);
         res.end();
+
     } catch (error) {
-        console.error(error);
-        
+        console.error('Excel generation error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error generating Excel file',
+            error: error.message
+        });
     }
-}
+};
 
 
 
@@ -445,6 +542,24 @@ const  getOrderDetail= async (req,res)=>{
 
 
 
+// const getSalesReport = async (req,res) => {
+//     try {
+//         const page= (req.query.page) || 1;
+//         const limit = 10;
+//         const skip = (page-1)*limit;
+//         const orderData = await Order.find().populate("userId").populate("orderedItems.product").sort({createdOn:-1}).skip(skip).limit(limit);
+//         console.log(orderData)
+//         const count = await Order.countDocuments();
+//         const totalPages =Math.ceil(count/limit);
+//         if(orderData){
+//             res.render("salesreport",{orders:orderData,activePage:"sales-report",count:count,totalPages,page})
+//         }
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
+
+
 
 
 
@@ -453,7 +568,7 @@ const  getOrderDetail= async (req,res)=>{
 module.exports={
     getReturnPage,
     getAllorders,
-    updateOrderStatus,
+    updateOrderStatus,   
     getSaleReport,
     returnRequest,
     pdfGenerate,

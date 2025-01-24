@@ -1,8 +1,8 @@
 const User = require('../../models/userSchema');
-const mongoose=require('mongoose')
-const bcrypt=require('bcrypt')
-const Order=require('../../models/orderSchema')
-const Product=require('../../models/productSchema')
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const Order = require('../../models/orderSchema')
+const Product = require('../../models/productSchema')
 
 
 
@@ -12,44 +12,52 @@ const Product=require('../../models/productSchema')
 
 
 
-const pageerror=async(req,res)=>{
+const pageerror = async (req, res) => {
     res.render("admin-error")
-} 
+}
 
-const loginPage = async (req,res)=>{
+const loginPage = async (req, res) => {
     try {
-        return res.render('admin-login')
+        const message = req.query.message
+        if (req.session.admin) {
+            return res.redirect("/admin/dashboard")
+        }
+        return res.render('admin-login',{message: message||null})
     } catch (error) {
         console.log(error)
-        return res.status(500).json({message:'loggin failed'})
-        
+        return res.status(500).json({ message: 'loggin failed' })
+
     }
 }
 
 
-const login=async(req,res)=>{
+const login = async (req, res) => {
     try {
-        const {email,password}=req.body
-        const admin=await User.findOne({email,isAdmin:true})
-        if(admin){
-            const passwordMatch=bcrypt.compare(password,admin.password)
-            if(passwordMatch){
-                req.session.admin=true
+        const { email, password } = req.body
+        const admin = await User.findOne({ email, isAdmin: true })
+        if (admin) {
+            const passwordMatch = bcrypt.compare(password, admin.password)
+            if (passwordMatch) {
+                req.session.admin = true
                 return res.redirect("/admin/dashboard")
-            }else{
-                return res.redirect("/admin/login")
+            } else {
+                return res.redirect("/admin/login?message=Invalid email or password")
             }
+        }else{
+            return res.redirect("/admin/login?message=Invalid email or password")
         }
     } catch (error) {
-        console.log("login error",error)
-    return  res.redirect ("/pageerror")
+        console.log("login error", error)
+        return res.redirect("/pageerror")
     }
 }
 
-const loadDashboard=async (req,res)=>{
-    if(req.session.admin){
+const loadDashboard = async (req, res) => {
+    if (req.session.admin) {
+
+
         try {
-            
+
 
             const salesData = await getTotalSales();
             const products = await getMostSellingProducts();
@@ -59,19 +67,21 @@ const loadDashboard=async (req,res)=>{
             const totalProducts = await Product.countDocuments()
 
 
-            res.render('dashboard', { 
-                salesData: JSON.parse(JSON.stringify(salesData)), 
-                products: JSON.parse(JSON.stringify(products)), 
-                categories: JSON.parse(JSON.stringify(categories)), 
+            res.render('dashboard', {
+                salesData: JSON.parse(JSON.stringify(salesData)),
+                products: JSON.parse(JSON.stringify(products)),
+                categories: JSON.parse(JSON.stringify(categories)),
                 brands: JSON.parse(JSON.stringify(brands)),
                 totalOrders,
                 totalProducts
             });
+
         } catch (error) {
             res.redirect('/pageerror')
-            
+
         }
     }
+
 }
 
 async function getTotalSales() {
@@ -104,7 +114,7 @@ async function getTotalSales() {
             {
                 $match: {
                     createdOn: {
-                        $gte: new Date(new Date().getFullYear(), 0, 1) 
+                        $gte: new Date(new Date().getFullYear(), 0, 1)
                     }
                 }
             },
@@ -126,11 +136,11 @@ async function getTotalSales() {
                 $sort: { "_id": 1 }
             },
             {
-                $limit: 5 
+                $limit: 5
             }
         ]);
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        const totalWeeks=52
+        const totalWeeks = 52
         const weeklyData = {
             labels: Array.from({ length: totalWeeks }, (_, i) => `Week ${i + 1}`),
             data: Array(totalWeeks).fill(0)
@@ -180,10 +190,10 @@ async function getTotalSales() {
             monthly: { labels: [], data: [] },
             yearly: { labels: [], data: [] }
         };
-    
-        
+
+
     }
-    
+
 
 }
 
@@ -317,17 +327,17 @@ async function getMostSellingBrands() {
 
 
 
-const logout=async(req,res)=>{
+const logout = async (req, res) => {
     try {
-        req.session.destroy(err=>{
-            if(err){
-            console.log("error destroying sessio",err)
-            return res.redirect("/pageerror")
-        }
-        res.redirect("/admin/login")
+        req.session.destroy(err => {
+            if (err) {
+                console.log("error destroying sessio", err)
+                return res.redirect("/pageerror")
+            }
+            res.redirect("/admin/login")
         })
     } catch (error) {
-        console.log(("ubexpected error during logout",error))
+        console.log(("ubexpected error during logout", error))
         res.redirect("/pageerror")
     }
 }
@@ -338,7 +348,7 @@ const logout=async(req,res)=>{
 
 
 
-module.exports={
+module.exports = {
     loginPage,
     login,
     loadDashboard,

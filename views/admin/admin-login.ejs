@@ -14,6 +14,11 @@
 </head>
 <body>
   <div class="login-container">
+    <% if(message) {%>
+      <div class="alert alert-danger" role="alert">
+        <%= message %>
+      </div>
+    <% } %>
     <h2 class="text-center">Admin Login</h2>
     <form id="adminLoginForm" method="post" action="/admin/login">
       <div class="form-group">
