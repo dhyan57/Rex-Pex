@@ -80,7 +80,7 @@ const getOrderDetails= async (req,res)=>{
 const getOrderCancel= async (req,res)=>{
     try {
         const userId=req.session.user;
-        if(!userId){
+        if(!userId){      
             console.log('user not found');
             return res.redirect('/login')
         }
@@ -161,7 +161,7 @@ const applyCoupon=async (req,res)=>{
         if(coupon.userId.includes(userId)){
             return res.json({ success: false, message: "coupon is already used by you" });
 
-        }
+        }    
         const discount = parseFloat(coupon.offerPrice);
         if (isNaN(discount)) {
             return res.status(400).json({ success: false, message: "Invalid discount value" });
@@ -396,7 +396,7 @@ const getCoupons=async (req,res)=>{
         return res.redirect('/login');
         }
         const currentDate = new Date(); 
-
+        
         const coupons = await Coupon.find({
         isList: true,
         userId: { $ne: user },
@@ -411,10 +411,10 @@ const getCoupons=async (req,res)=>{
 }
 
 module.exports={
-    getCoupons,
     getOrders,
     getOrderDetails,
     getOrderCancel,
+    getCoupons,
     applyCoupon,
     removeCoupon,
     downloadInvoice,

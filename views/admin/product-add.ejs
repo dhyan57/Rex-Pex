@@ -424,7 +424,7 @@
                 const color = document.getElementsByName('color')[0].value;
                 const category = document.getElementsByName('category')[0].value;
                 const images = document.getElementById('input1')
-                const quantity=document.getElementById('quantity').textContent
+                const quantity=document.getElementById('quantity').value
                 let isValid = true
                 if (name.trim() === "") {
         displayErrorMessage('productName-error', 'Please enter a product name.');
@@ -447,7 +447,7 @@
                     isValid = false;
                 }
     
-    
+            
     
     
                 if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {

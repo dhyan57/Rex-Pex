@@ -285,7 +285,7 @@
                                     <tr >
                                         <td onclick="orderPage('<%=orders[i]._id%>')"><%=orders[i].orderId%></td>
                                         <td><%=orders[i].createdOn.toLocaleDateString()%></td>
-                                        <td><b><%= orders[i].user ? orders[i].user.username : 'User not found' %></b></td>
+                                        <td><b><%=orders[i].user ? orders[i].user.username : 'User not found' %></b></td>
                                         <td>
                                             <ul style="padding-left: 15px; margin: 0;">
                                                 <% orders[i].orderedItems.forEach(item => { %>
@@ -294,9 +294,9 @@
                                             </ul>
                                         </td>
                                         <td>
-                                            <ul>
+                                            <ul> 
                                                 <%orders[i].orderedItems.forEach(item => {%>
-                                                   <li><%= item.quantity %></li> 
+                                                <li><%= item.quantity %></li> 
                                                 <%})%>
                                             </ul>
                                         </td>

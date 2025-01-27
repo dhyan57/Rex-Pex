@@ -66,7 +66,9 @@ const pageNotFound = async (req, res) => {
 
 const Loadsignup = async (req, res) => {
     try {
-        if(req.session.user){
+        console.log(req.session.userData)
+        if(req.session.userData){
+            
             return res.redirect('/')
         }
         return res.render('signup')

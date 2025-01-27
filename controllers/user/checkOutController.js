@@ -66,6 +66,9 @@ const  checkout = async (req, res) => {
         res.render('page-404')
     }
 }
+
+
+
 const verifyPayment = async (req, res) => {
     try {
         const {
@@ -145,46 +148,46 @@ const PostCheckOut = async (req, res) => {
     try {
         const { payment_method, cartproducts, addressId, totalPrice, finalPrice, CouponCode } = req.body;
         console.log(req.body);
-
+        
         // Check if user is logged in
         const userId = req.session.user;
         if (!userId) {
             console.log('User not found');
             return res.redirect('/login');
         }
-
+        
         // Retrieve the user's cart
         const cart = await Cart.findOne({ userId }).populate('items.productId');
-
+        
         let code = ''
         if (CouponCode) {
             code = CouponCode
         }
         const couponApplied = Boolean(CouponCode && CouponCode.trim() !== '')
-
+        
         // Prepare ordered items
         const orderedItems = [];
         for (const item of cart.items) {
             const product = await Product.findById(item.productId);
-
+            
             if (!product || product.isBlocked) {
                 console.error(`Product is blocked or not found: ${item.productId}`);
                 return res.status(400).send(`Product not available for purchase: ${item.productId}`);
             }
-
+            
             orderedItems.push({
                 product: item.productId,
                 quantity: item.quantity,
                 price: item.totalPrice / item.quantity,
             });
-        }
-        console.log('workk')
+        } 
+        
         // Check if required fields are present
         if (!finalPrice || !addressId || !payment_method) {
             console.log('Missing required fields');
             return res.status(400).send('Incomplete checkout information');
         }
-
+    
 
         // Create the order
         const createOrder = new Order({

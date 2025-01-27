@@ -43,13 +43,11 @@ const addToWishlist= async (req,res)=>{
     }
 }
 const getWishlist=async (req, res) => {
-    console.log('workk999');
     try {
         const userId = req.session.user; 
         if (!userId) {
             return res.redirect('/login');
         }
-        console.log('workiii');
 
         const wishlist = await Wishlist.findOne({ userId }).populate('products.productId');
 
