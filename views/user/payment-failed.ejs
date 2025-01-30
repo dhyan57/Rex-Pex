@@ -1,0 +1,283 @@
+<%- include('../partials/user/header') %>
+
+    <style>
+        .page-confirmation {
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+            background-color: #f8d7da;
+        }
+
+        .confirmation-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .confirmation-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            text-align: center;
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-icon {
+            font-size: 64px;
+            color: #dc3545;
+            margin-bottom: 25px;
+            display: inline-block;
+            animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+        }
+
+        .error-circle {
+            width: 100px;
+            height: 100px;
+            background: #f8d7da;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .order-number {
+            color: #dc3545;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+
+        .confirmation-title {
+            color: #333;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .confirmation-message {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .action-button {
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            min-width: 180px;
+            text-align: center;
+        }
+
+        .btn-home {
+            background-color: #dc3545;
+            color: white;
+            border: 2px solid #dc3545;
+        }
+
+        .btn-home:hover {
+            background-color: #c82333;
+            border-color: #c82333;
+            color: white;
+        }
+
+        .btn-retry {
+            background-color: white;
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+
+        .btn-retry:hover {
+            background-color: #f8d7da;
+            color: #c82333;
+            border-color: #c82333;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translateX(-1px);
+            }
+
+            20%,
+            80% {
+                transform: translateX(2px);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translateX(-4px);
+            }
+
+            40%,
+            60% {
+                transform: translateX(4px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .confirmation-card {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+
+            .confirmation-title {
+                font-size: 1.8em;
+            }
+
+            .confirmation-message {
+                font-size: 1em;
+            }
+
+            .error-circle {
+                width: 80px;
+                height: 80px;
+            }
+
+            .error-icon {
+                font-size: 48px;
+            }
+        }
+    </style>
+
+    <main class="main page-confirmation">
+        <div class="confirmation-container">
+            <div class="confirmation-card">
+                <div class="card-content">
+                    <div class="error-circle">
+                        <span class="error-icon">✗</span>
+                    </div>
+
+                    <h1 class="confirmation-title">Payment Failed</h1>
+
+                    <p class="confirmation-message">
+                        We’re sorry, but your payment could not be processed. <br>
+                        Please try again or contact support if the issue persists. <br>
+                        <br>
+                        <button id="continuePaymentButton" class="btn btn-sm btn-primary"
+                            onclick="retryPayment('<%= orderId %>')">
+                            Retry
+                        </button>
+                    </p>
+
+                    <div class="action-buttons">
+                        <!-- <a href="/" class="action-button btn-home">Back To Home</a>  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/user/footer') %>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+            async function retryPayment(orderId) {
+                try {
+                    const response = await fetch('/retry-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ orderId })
+                    });
+
+                    const data = await response.json();
+                    if (!data.success) {
+                        throw new Error(data.message || 'Failed to initialize retry payment');
+                    }
+
+                    const options = {
+                        key: data.razorpayKey,
+                        amount: data.amount,
+                        currency: data.currency,
+                        order_id: data.razorpayOrderId,
+                        handler: async function (response) {
+                            try {
+                                const verifyResponse = await fetch('/verify-payment', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        orderId: orderId,
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_signature: response.razorpay_signature
+                                    })
+                                });
+
+                                const verifyData = await verifyResponse.json();
+                                if (!verifyData.success) throw new Error(verifyData.message || 'Payment verification failed');
+
+                                const finalOrderResponse = await fetch('/place-order', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        orderId: orderId,
+                                        paymentSuccess: true,
+                                        paymentDetails: {
+                                            razorpay_payment_id: response.razorpay_payment_id,
+                                            razorpay_order_id: response.razorpay_order_id,
+                                            razorpay_signature: response.razorpay_signature
+                                        }
+                                    })
+                                });
+
+                                const finalOrderData = await finalOrderResponse.json();
+                                if (!finalOrderData.success) throw new Error(finalOrderData.message || 'Failed to finalize order');
+
+                                window.location.href = `/order-confirmation?id=${orderId}`;
+                            } catch (error) {
+                                Swal.fire({ title: 'Order Error', text: error.message || 'Failed to complete order', icon: 'error' });
+                            }
+                        },
+                        modal: {
+                            ondismiss: function () {
+                                Swal.fire({
+                                    title: 'Payment Cancelled',
+                                    text: 'Your payment was cancelled. You can retry payment from the order details page.',
+                                    icon: 'info'
+                                });
+                            }
+                        }
+                    };
+
+                    const razorpay = new Razorpay(options);
+                    razorpay.open();
+                } catch (error) {
+                    Swal.fire({ title: 'Payment Error', text: error.message || 'Failed to retry payment', icon: 'error' });
+                }
+            }
+
+        </script> 
