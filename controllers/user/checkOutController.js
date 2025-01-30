@@ -471,15 +471,61 @@ const orderConfirm = async (req, res) => {
         }
     };
 
+    const paymentFailed = async (req, res) => {
+        try {
+    
+            const { errorReference, message } = req.query;
+            const orderId = req.query.id;
+            res.render('payment-failed', { errorReference, message, orderId });
+    
+        } catch (error) {
+    
+        }
+    }
+    const retryPayment = async (req, res) => {
+        const orderId = req.body.orderId || req.query.orderId;
+    
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+    
+        try {
+            const razorpayOrder = await razorpay.orders.create({
+                amount: order.finalAmount * 100,
+                currency: order.currency,
+                receipt: `order_rcptid_${order.id}`,
+            });
+    
+            req.session.razorpayOrderId = razorpayOrder.id;
+            req.session.razorpayOrderExpiry = Date.now() + (30 * 60 * 1000);
+    
+            res.json({
+                success: true,
+                razorpayOrderId: razorpayOrder.id,
+                razorpayKey: process.env.RAZORPAY_KEY_ID,
+                amount: order.finalAmount,
+                currency: order.currency
+            });
+        } catch (error) {
+            console.error(error)
+            res.status(500).json({ success: false, message: 'Failed to create Razorpay order' });
+        }
+    }
+    
+    
+
 
 
 module.exports = {
     checkout,
-    placeOrderInitial,
+    placeOrderInitial, 
     orderConfirm,
     PostCheckOut,
     verifyPayment,
     createOrder,
-    placeOrder
+    placeOrder,
+    retryPayment,
+    paymentFailed
 
 }

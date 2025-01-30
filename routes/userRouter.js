@@ -72,6 +72,10 @@ router.post('/verify-payment',userAuth,checkOutControllers.verifyPayment)
 router.get('/order-confirmation',userAuth,checkOutControllers.orderConfirm)
 router.post('/create-order',checkOutControllers.createOrder);
 router.post('/place-order',checkOutControllers.placeOrder);
+router.post('/retry-payment',checkOutControllers.retryPayment)
+router.get('/payment-failed',userAuth,checkOutControllers.paymentFailed);
+
+
 
 //shop
 router.get('/shop',headerData,userAuth,productController.shop)
@@ -88,6 +92,7 @@ router.get('/download-invoice',userAuth,orderControllers.downloadInvoice)
 router.post('/apply-coupon',userAuth,orderControllers.applyCoupon)
 router.post('/remove-coupon',userAuth,orderControllers.removeCoupon);
 router.get('/coupons',userAuth,orderControllers.getCoupons)
+
 
 
 
