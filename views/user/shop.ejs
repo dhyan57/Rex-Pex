@@ -293,9 +293,65 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+
+function addToWishlist(productId) {
+    if (!productId) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Action',
+            text: 'Product ID is missing!',
+            confirmButtonColor: '#3085d6'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Adding to Wishlist...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch(`/addtoWishlist?id=${productId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist!',
+                    text: data.message,
+                    showConfirmButton: true,
+                    confirmButtonColor: '#3085d6',
+                    timer: 2000
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Notice',
+                    text: data.message,
+                    confirmButtonColor: '#3085d6'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong. Please try again later.',
+                confirmButtonColor: '#3085d6'
+            });
+        });
+}
+
+
+
         async function addtocart(id) {
         try {
-            const response = await fetch(`/addToCart?id=${id}`, {
+            const response = await fetch(`/addToCart?productId=${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -416,7 +472,7 @@
                         </div>
                         <h2 class="product-title">${product.productName}</h2>
                         <div class="rating-result" title="90%">
-                            <span>${product.productOffer}% OFF</span>
+                            <span>${product.productOffer||product.category.categoryOffer}% OFF</span>
                         </div>
                         <div class="product-price">
                             <span>₹${product.salePrice}</span>
@@ -426,8 +482,14 @@
                             ${product.quantity<=0 ? '<p>Instock</p>' : '<p>Stock </p>'}
                         </div>
                         <div class="product-action-1">
+                            
                             <button class="action-btn" onclick="addtocart('${product._id}')">
                                 Add to Cart
+                            </button>
+                        </div><br>
+                        <div class="product-action-1">
+                            <button class="action-btn" onclick="addToWishlist('${product._id}')">
+                                Add to Wishlist
                             </button>
                         </div>
                     </div>

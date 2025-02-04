@@ -76,7 +76,7 @@ const loadDashboard = async (req, res) => {
                 totalProducts
             });
 
-        } catch (error) {
+        } catch (error) {  
             res.redirect('/pageerror')
 
         }

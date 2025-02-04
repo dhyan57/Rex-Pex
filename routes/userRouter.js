@@ -74,6 +74,7 @@ router.post('/create-order',checkOutControllers.createOrder);
 router.post('/place-order',checkOutControllers.placeOrder);
 router.post('/retry-payment',checkOutControllers.retryPayment)
 router.get('/payment-failed',userAuth,checkOutControllers.paymentFailed);
+router.post('/wallet-payment',userAuth,checkOutControllers.walletPayment)
 
 
 
@@ -107,6 +108,7 @@ router.delete('/removeFromWishlist',userAuth,wishlistControllers.removeWishlist)
 router.get('/wallet',userAuth, walletControllers.loadWallet);
 router.post('/create-wallet',userAuth,walletControllers.createWallet)
 router.post('/verify-wallet',userAuth,walletControllers.verifyWallet)
+;
 
 
 module.exports=router

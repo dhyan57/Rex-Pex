@@ -243,9 +243,10 @@ const applyCoupon=async (req,res)=>{
 };
 
 const generateHeader = (doc) => {
-    // const logoPath = path.join(__dirname, '../public/evara-frontend/assets/imgs/theme/logo.jpg');
+    
     doc
-        // .image('C:/ameer ali/ecommerce project/public/evara-frontend/assets/imgs/theme/logo.jpg', 50, 45, { width: 50 })
+
+    
         .fillColor('#444444')
         .fontSize(20)
         .text('REX_PEX', 110, 57)

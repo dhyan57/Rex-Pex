@@ -21,7 +21,7 @@ const loadWallet = async (req, res) => {
         const skip = (page - 1) * limit;
 
         // Fetch wallet details
-        const wallet = await Wallet.findOne({ userId }).sort({createdOn:1}).populate('transactions.orderId').lean();
+        const wallet = await Wallet.findOne({ userId }).sort({createdAt:-1}).populate('transactions.orderId').lean();
 
         if (!wallet) {
             return res.render('wallet', {

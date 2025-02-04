@@ -558,6 +558,5 @@ module.exports={
     excelGenerate,
     getSaleReportFilter,
     getOrderDetail
-
 }
 

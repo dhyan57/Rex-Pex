@@ -60,18 +60,30 @@ async function sendVerificationEmail(email, otp) {
 }
 
 
-const getForgotPassPage=async(req,res)=>{
+const getForgotPassPage = async (req, res) => {
     try {
-        res.render("forgot-password",{message:null})
+        if (req.session.user) {
+            return res.redirect("/");
+        }
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+        res.render("forgot-password", { message: null });
     } catch (error) {
-        res.render("pageerror")
+        res.render("pageerror");
     }
-}
+};
+
 // In your controller
 const forgotPassword = async (req, res) => {
     try {
+        if(req.session.userData){
+            
+            return res.redirect('/')
+        }
         const { email } = req.body;
         const user = await User.findOne({ email: email });
+        
         
         if (!user) {
             res.render("forgot-password",{message:'Email not found'})
@@ -100,6 +112,10 @@ const forgotPassword = async (req, res) => {
 
 const verifyForgotPassOtp =async(req,res)=>{
     try {
+        if(req.session.userData){
+            
+            return res.redirect('/')
+        }
         const enteredOtp=req.body.otp
         if(enteredOtp===req.session.otp){
             res.json({success:true,redirectUrl:"/reset-password"})

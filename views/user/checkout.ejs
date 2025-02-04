@@ -321,6 +321,19 @@
                                         </label>
                                         <div class="payment-description">Pay securely with Razorpay</div>
                                     </div>
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" id="wallet" value="Wallet">
+                                        <label for="wallet">
+                                            Pay with Wallet
+                                            <svg class="payment-icon" width="24" height="24" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                                <line x1="2" y1="10" x2="22" y2="10" />
+                                            </svg>
+                                        </label>
+                                        <div class="payment-description">Pay with your wallet balance</div>
+                                    </div>
                                 </div> 
 
                                 <!-- Hidden Fields -->
@@ -562,7 +575,7 @@
                 } else if (paymentMethod === 'Online') {
                     await processOnlinePayment(formData);
                 } else {
-                    // await processWalletPayment(formData)
+                    await processWalletPayment(formData)
                 }
             } catch (error) {
                 
@@ -694,6 +707,31 @@
                 window.location.href = `/payment-failed?error=${encodeURIComponent(error.message)}`;
             }
         } 
+
+        async function processWalletPayment(formData) {
+            try {
+                const response = await fetch('/wallet-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Failed to process wallet payment.');
+                }
+
+                window.location.href = `/order-confirmation?id=${result.orderId}`;
+            } catch (error) {
+                console.error('Wallet payment error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message || 'Failed to process wallet payment. Please try again.',
+                    icon: 'error'
+                });
+            }
+        }
 
 
 
