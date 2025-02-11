@@ -1,6 +1,192 @@
 <%- include("../../views/partials/user/header") %>
 
 <style>
+    /* Wishlist Table Styles */
+.wishlist-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 1rem;
+}
+
+/* Product Image Cell */
+.product-thumbnail {
+    width: 120px;
+    padding: 1rem;
+}
+
+.product-thumbnail img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.product-thumbnail img:hover {
+    transform: scale(1.05);
+}
+
+/* Table Row Styles */
+.wishlist-table tr {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.wishlist-table tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Cell Styles */
+.wishlist-table td {
+    padding: 1.5rem 1rem;
+    vertical-align: middle;
+    border: none;
+}
+
+/* Product Description Styles */
+.product-des {
+    max-width: 300px;
+}
+
+.product-name {
+    margin-bottom: 0.5rem;
+}
+
+.product-name a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.product-name a:hover {
+    color: #007bff;
+}
+
+.font-xs {
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Price Styles */
+.price span {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+/* Stock Status Styles */
+.color3 {
+    color: #28a745;
+}
+
+.text-danger {
+    color: #dc3545;
+}
+
+/* Button Styles */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-sm i {
+    font-size: 1rem;
+}
+
+/* Add to Cart Button */
+.btn-sm {
+    background: #007bff;
+    color: white;
+}
+
+.btn-sm:hover {
+    background: #0056b3;
+}
+
+/* Out of Stock Button */
+.btn-secondary {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Remove Button Styles */
+.action button {
+    border: none;
+    background: none;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.action a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #dc3545;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.action a:hover {
+    color: #c82333;
+}
+
+/* Empty Wishlist Message */
+.wishlist-table tr td[colspan="6"] {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .product-thumbnail {
+        width: 80px;
+        padding: 0.5rem;
+    }
+    
+    .product-thumbnail img {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .product-des {
+        max-width: 200px;
+    }
+    
+    .font-xs {
+        display: none;
+    }
+    
+    .wishlist-table td {
+        padding: 1rem 0.5rem;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 576px) {
+    .product-des {
+        max-width: 150px;
+    }
+    
+    .product-name h5 {
+        font-size: 0.9rem;
+    }
+}
     /* Button Base Styles */
 .shopping-summery .action button,
 .shopping-summery .btn-sm {

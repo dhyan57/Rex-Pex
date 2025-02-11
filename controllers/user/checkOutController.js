@@ -469,10 +469,10 @@ const orderConfirm = async (req, res) => {
 
     const paymentFailed = async (req, res) => {
         try {
-    
+            const user = req.session.user;
             const { errorReference, message } = req.query;
             const orderId = req.query.id;
-            res.render('payment-failed', { errorReference, message, orderId });
+            res.render('payment-failed', { errorReference, message, orderId ,user:user});
     
         } catch (error) {
     
@@ -509,14 +509,17 @@ const orderConfirm = async (req, res) => {
         }
     }
 
+
         const walletPayment = async (req, res) => {
             try {
+                
                 const { cart, totalPrice, addressId, singleProduct, finalPrice, coupon, discount } = req.body;
                 const userId = req.session.user;
         
                 if (!userId || !finalPrice || (!cart && !singleProduct)) {
                     return res.status(400).json({ success: false, message: 'Missing required fields.' });
                 }
+                
         
                 const wallet = await Wallet.findOne({ userId });
                 if (!wallet) {

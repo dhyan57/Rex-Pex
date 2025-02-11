@@ -1,4 +1,115 @@
 <%-include("../../views/partials/user/header")%>
+<style>
+    /* Product Grid Layout */
+.product-list {
+    padding: 2rem 0;
+}
+
+.single-product-item {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.single-product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Product Image Container */
+.single-product-item figure {
+    position: relative;
+    margin: 0;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    overflow: hidden;
+}
+
+.single-product-item figure img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.single-product-item figure:hover img {
+    transform: scale(1.05);
+}
+
+/* New Product Badge */
+.p-status {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: #ff4757;
+    color: white;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 1;
+}
+
+/* Product Text Content */
+.product-text {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.product-text h6 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.product-text p {
+    margin: 0;
+    color: #ff4757;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .col-lg-3 {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Optional: Add hover effect for better interactivity */
+.single-product-item a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Optional: Add a sale badge style */
+.p-status.sale {
+    background: #2ecc71;
+}
+
+/* Optional: Add product details hover overlay */
+.product-details-overlay {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem;
+    transition: bottom 0.3s ease;
+}
+
+.single-product-item:hover .product-details-overlay {
+    bottom: 0;
+}
+</style>
     <!-- Hero Slider Begin -->
     <section class="hero-slider">
         <div class="hero-items owl-carousel">
@@ -6,9 +117,9 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h1>2024</h1>
+                            <h1>2025</h1>
                             <h2>Lookbook.</h2>
-                            <a href="#" class="primary-btn">See More</a>
+                            <a href="/shop" class="primary-btn">See More</a>
                         </div>
                     </div>
                 </div>
@@ -17,9 +128,9 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h1>2024</h1>
+                            <h1>2025</h1>
                             <h2>Lookbook.</h2>
-                            <a href="#" class="primary-btn">See More</a>
+                            <a href="/shop" class="primary-btn">See More</a>
                         </div>
                     </div>
                 </div>
@@ -30,7 +141,7 @@
                         <div class="col-lg-12">
                             <h1>2024</h1>
                             <h2>Lookbook.</h2>
-                            <a href="#" class="primary-btn">See More</a>
+                            <a href="/shop" class="primary-btn">See More</a>
                         </div>
                     </div>
                 </div>
@@ -48,24 +159,26 @@
                         <div class="single-features-ads first">
                             <img src="img/icons/f-delivery.png" alt="">
                             <h4>Free shipping</h4>
-                            <p>Fusce urna quam, euismod sit amet mollis quis, vestibulum quis velit. Vesti bulum mal
-                                esuada aliquet libero viverra cursus. </p>
+                            <p>"Our online e-commerce website offers a seamless shopping experience with free shipping on all orders! We prioritize customer 
+                                satisfaction by ensuring fast, hassle-free deliveries at no extra cost. Shop with confidence and enjoy a smooth,
+                                cost-effective shopping journey!" </p>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="single-features-ads second">
                             <img src="img/icons/coin.png" alt="">
                             <h4>100% Money back </h4>
-                            <p>Urna quam, euismod sit amet mollis quis, vestibulum quis velit. Vesti bulum mal esuada
-                                aliquet libero viverra cursus. </p>
+                            <p>"Our online e-commerce website ensures a 100% money-back guarantee for a risk-free shopping experience!
+                                If you're not satisfied with your purchase, we offer a full refund with a hassle-free process.
+                                Shop with confidence, knowing your satisfaction is our top priority!" </p>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="single-features-ads">
                             <img src="img/icons/chat.png" alt="">
                             <h4>Online support 24/7</h4>
-                            <p>Urna quam, euismod sit amet mollis quis, vestibulum quis velit. Vesti bulum mal esuada
-                                aliquet libero viverra cursus. </p>
+                            <p>"Our online e-commerce website offers 24/7 customer support to assist you anytime! Whether you have questions or need help with 
+                                your order, our team is always available to provide quick and reliable assistance. Shop with confidence, knowing we're here for you!"</p>
                         </div>
                     </div>
                 </div>
@@ -153,16 +266,19 @@
                 <div class="col-lg-4 offset-lg-1">
                     <div class="lookbok-left">
                         <div class="section-title">
-                            <h2>2024 <br />#lookbook</h2>
+                            <h2>2025 <br />#lookbook</h2>
                         </div>
-                        <p>Fusce urna quam, euismod sit amet mollis quis, vestibulum quis velit. Vestibulum malesuada
-                            aliquet libero viverra cursus. Aliquam erat volutpat. Morbi id dictum quam, ut commodo
-                            lorem. In at nisi nec arcu porttitor aliquet vitae at dui. Sed sollicitudin nulla non leo
-                            viverra scelerisque. Phasellus facilisis lobortis metus, sit amet viverra lectus finibus ac.
-                            Aenean non felis dapibus, placerat libero auctor, ornare ante. Morbi quis ex eleifend,
-                            sodales nulla vitae, scelerisque ante. Nunc id vulputate dui. Suspendisse consectetur rutrum
-                            metus nec scelerisque. s</p>
-                        <a href="#" class="primary-btn look-btn">See More</a>
+                        <p>At REXPEX, we bring you the latest designs and fashion-forward 
+                            glasses and frames, ensuring you stay stylish with every look. 
+                            Our collection is carefully curated to match modern trends while 
+                            offering quality, comfort, and durability. We believe eyewear is 
+                            more than just vision—it’s a statement!
+
+                            With free shipping, a 100% money-back guarantee, and 24/7 customer 
+                            support, shopping at REXPEX is hassle-free and secure. Explore our 
+                            wide range of trendy frames and elevate your style with confidence. 
+                            Your perfect pair is just a click away!</p>
+                        <a href="/shop" class="primary-btn look-btn">See More</a>
                     </div>
                 </div>
                 <div class="col-lg-5 offset-lg-1">

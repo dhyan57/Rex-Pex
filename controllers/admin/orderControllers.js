@@ -152,18 +152,17 @@ const pdfGenerate = async (req, res) => {
             if (end) filter.createdOn.$lte = new Date(end);
         }
 
-        // Fetch orders with populated fields
         const orders = await Order.find(filter)
             .populate('user')
             .populate('orderedItems.product')
-            .lean()  // Convert to plain JavaScript objects
+            .lean()  
             .exec();
 
         if (!orders || orders.length === 0) {
             return res.status(404).send('No orders found for the given period.');
         }
 
-        // Calculate totals with null checks
+        
         const totalSales = orders.reduce((sum, order) => sum + (order.finalAmount || 0), 0);
         const totalOrders = orders.length;
         const totalDiscount = orders.reduce((sum, order) => sum + (order.discount || 0), 0);
@@ -175,7 +174,6 @@ const pdfGenerate = async (req, res) => {
 
         const doc = new PDFDocument({ margin: 30, size: 'A4' });
         
-        // Set response headers
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename=salesReport.pdf');
         doc.pipe(res);
@@ -279,7 +277,7 @@ const pdfGenerate = async (req, res) => {
                 rowData.forEach((data, i) => {
                     doc.text(data, xPos, rowY + 10, {
                         width: columnWidths[i],
-                        align: i === 2 ? 'left' : 'center'  // Left align products, center align others
+                        align: i === 2 ? 'left' : 'center'  
                     });
                     xPos += columnWidths[i];
                 });

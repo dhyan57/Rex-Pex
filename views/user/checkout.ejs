@@ -1,5 +1,163 @@
 <%- include("../../views/partials/user/header") %>
     <style>
+        /* Checkout Table Styles */
+.checkout-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+/* Product Row Styles */
+.checkout-table tr {
+    border-bottom: 1px solid #eee;
+}
+
+/* Image Container Styles */
+.product-thumbnail {
+    width: 80px;
+    padding: 0.75rem;
+}
+
+.product-thumbnail img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Details Styles */
+.product-row {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 1rem;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-details h5 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.product-details p {
+    margin: 0.25rem 0;
+    color: #666;
+}
+
+/* Product Name and Quantity Styles */
+.product-qty {
+    color: #666;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+/* Summary Section Styles */
+.checkout-table th {
+    padding: 1rem;
+    text-align: left;
+    color: #333;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+}
+
+.checkout-table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* Price Styles */
+.product-subtotal {
+    font-weight: 600;
+    color: #333;
+}
+
+em {
+    font-style: normal;
+    color: #666;
+}
+
+/* Total Price Highlight */
+.font-xl.text-brand.fw-900 {
+    font-size: 1.25rem;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .product-row {
+        padding: 0.75rem;
+    }
+
+    .product-image,
+    .product-thumbnail img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .product-thumbnail {
+        width: 60px;
+        padding: 0.5rem;
+    }
+
+    .product-details h5 {
+        font-size: 0.9rem;
+    }
+
+    .checkout-table th,
+    .checkout-table td {
+        padding: 0.75rem;
+    }
+
+    .font-xl.text-brand.fw-900 {
+        font-size: 1.1rem;
+    }
+}
+
+/* Animation for Better UX */
+.product-row {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Price Summary Section */
+tr:last-child {
+    border-top: 2px solid #eee;
+}
+
+tr:last-child .product-subtotal {
+    padding-top: 1.5rem;
+}
+
+/* Discount Highlight */
+#discountDisplay {
+    color: #28a745;
+}
+
+/* Shipping Info */
+tr:nth-last-child(2) td em {
+    color: #666;
+}
         .d-none {
             display: none;
         }

@@ -3,6 +3,170 @@
 <br><br><br><br>
 
     <style>
+        /* Cart Table Styles */
+.cart-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 1rem;
+}
+
+/* Product Image Cell */
+.product-thumbnail {
+    width: 120px;
+    padding: 1rem;
+}
+
+.product-thumbnail img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Row Styles */
+.cart-table tr {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.cart-table tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Cell Styles */
+.cart-table td {
+    padding: 1.5rem 1rem;
+    vertical-align: middle;
+}
+
+/* Product Name Styles */
+.product-name {
+    margin: 0;
+}
+
+.product-name a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.product-name a:hover {
+    color: #007bff;
+}
+
+/* Price and Subtotal Styles */
+.price span,
+.subtotal span {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Quantity Control Styles */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-quantity {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-quantity:hover {
+    background: #f8f9fa;
+    border-color: #c8c9ca;
+}
+
+.quantity-display {
+    min-width: 40px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Remove Button Styles */
+.action button {
+    border: none;
+    background: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #dc3545;
+    transition: color 0.2s ease;
+}
+
+.action button:hover {
+    color: #c82333;
+}
+
+/* Empty Cart Styles */
+.text-center h2 {
+    color: #6c757d;
+    margin: 2rem 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+/* Clear Cart Link Styles */
+.text-end a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.text-end a:hover {
+    color: #dc3545;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .product-thumbnail {
+        width: 80px;
+        padding: 0.5rem;
+    }
+    
+    .product-thumbnail img {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .cart-table td {
+        padding: 1rem 0.5rem;
+    }
+    
+    .product-name h5 {
+        font-size: 0.9rem;
+    }
+}
         .cart-container {
             display: flex;
             flex-wrap: wrap;

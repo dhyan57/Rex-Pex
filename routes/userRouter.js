@@ -26,6 +26,8 @@ router.get('/auth/google/callback',passport.authenticate('google',{failureRedire
 router.get('/login',userController.LoadLogin)
 router.post('/login',userController.login)
 router.get('/logout',userController.logout)
+router.get("/about",userAuth,userController.loadAbout)
+router.get("/contact",userAuth,userController.loadContact)
 
 
 
@@ -66,12 +68,16 @@ router.get('/showCart/clearCart',userAuth,cartControllers.clearCart)
 
 //checkout
 router.get('/checkout',userAuth,checkOutControllers.checkout)
+
 router.post('/postCheckOut',userAuth,checkOutControllers.PostCheckOut)
 router.post('/place-order-initial',userAuth,checkOutControllers.placeOrderInitial)
 router.post('/verify-payment',userAuth,checkOutControllers.verifyPayment)
+
 router.get('/order-confirmation',userAuth,checkOutControllers.orderConfirm)
+
 router.post('/create-order',checkOutControllers.createOrder);
 router.post('/place-order',checkOutControllers.placeOrder);
+
 router.post('/retry-payment',checkOutControllers.retryPayment)
 router.get('/payment-failed',userAuth,checkOutControllers.paymentFailed);
 router.post('/wallet-payment',userAuth,checkOutControllers.walletPayment)

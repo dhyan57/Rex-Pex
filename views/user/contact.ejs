@@ -1,0 +1,221 @@
+<%- include("../../views/partials/user/header") %>
+    <title>Contact REPEX</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/api/placeholder/1200/400');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 50px;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #34495e;
+        }
+
+        .contact-info {
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .contact-card {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .contact-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .contact-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .map-section {
+            margin-top: 50px;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 400px;
+            background: #f8f9fa;
+        }
+
+        .store-hours {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .store-hours span {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section" data-aos="fade">
+        <div class="contact-container">
+            <h1>Contact Us</h1>
+            <p>We're here to help with all your eyewear needs</p>
+        </div>
+    </div>
+
+    <div class="contact-container">
+        <div class="contact-grid">
+            <div class="contact-form" data-aos="fade-right">
+                <h2>Send Us a Message</h2>
+                <form action="/contact" method="POST">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+
+            <div class="contact-info" data-aos="fade-left">
+                <div class="contact-card">
+                    <h3>Visit Our Store</h3>
+                    <p>123 Fashion Street<br>Style District<br>New York, NY 10001</p>
+                    <div class="store-hours">
+                        <span>Mon - Fri:</span>
+                        <span>9:00 AM - 8:00 PM</span>
+                        <span>Saturday:</span>
+                        <span>10:00 AM - 6:00 PM</span>
+                        <span>Sunday:</span>
+                        <span>11:00 AM - 5:00 PM</span>
+                    </div>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Get in Touch</h3>
+                    <p>Email: info@repex.com<br>
+                    Phone: (555) 123-4567<br>
+                    Customer Service: 1-800-REPEX</p>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Customer Support</h3>
+                    <p>Our dedicated team is available 24/7 to assist you with any queries about our products or services.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-section" data-aos="fade-up">
+            <!-- Replace this div with your actual map integration -->
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #eee;">
+                <p>Map Integration Goes Here</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+</body>
+<%- include("../../views/partials/user/footer") %>

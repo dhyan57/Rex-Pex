@@ -27,5 +27,8 @@
     "pdfkit": "^0.15.2",
     "razorpay": "^2.9.5",
     "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
   }
 }

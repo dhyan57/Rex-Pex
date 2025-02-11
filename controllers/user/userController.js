@@ -52,6 +52,33 @@ const LoadHomepage = async (req, res) => {
     }
 }
 
+const loadAbout= async(req,res)=>{
+    try {
+        const user =req.session.user
+        if(req.session.user){
+            res.render("about",{user:user})
+        }else{
+            res.redirect('/login')
+        }
+    } catch (error) {
+        
+    }
+}
+
+const loadContact= async(req,res)=>{
+    try {
+        const user =req.session.user
+        if(req.session.user){
+            res.render("contact",{user:user})
+        }else{
+            res.redirect('/login')
+        }
+    } catch (error) {
+        
+    }
+}
+
+
 
 const pageNotFound = async (req, res) => {
     try {
@@ -100,6 +127,8 @@ async function sendVerificationEmail(email, otp) {
             }
         })
 
+        console.log(process.env.NODEMAILER_EMAIL, process.env.NODEMAILER_PASSWORD)
+
         const info = await transporter.sendMail({
             from: process.env.NODEMAILER_EMAIL,
             to: email,
@@ -114,6 +143,8 @@ async function sendVerificationEmail(email, otp) {
 
     } catch (error) {
         console.error("Error sendng email", error)
+        console.log("actula error")
+        console.log(error.message)
         return false;
     }
 }
@@ -122,6 +153,7 @@ async function sendVerificationEmail(email, otp) {
 
 const signup = async (req, res) => {
     try {
+        console.log("jjjjjjjjjjjjjjjjjjj)")
         const { name, phone, email, password, cpassword, referal } = req.body;
 
         if (password != cpassword) {
@@ -450,6 +482,8 @@ const getFilterData = async (req, res) => {
 
 module.exports = {
     LoadHomepage,
+    loadAbout,
+    loadContact,
     pageNotFound,
     Loadsignup,
     signup,

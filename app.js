@@ -9,14 +9,14 @@ const session = require("express-session");
 const db = require("./config/db");
 const userRouter = require("./routes/userRouter");
 const adminRouter=  require('./routes/adminRouter')
-
+const morgan=require('morgan')
 db();
 app.use(nocache());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+app.use(morgan('dev'))
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
