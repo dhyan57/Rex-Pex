@@ -131,6 +131,9 @@ const verifyForgotPassOtp =async(req,res)=>{
 
 const getResetPassPage=async(req,res)=>{
     try {
+        if(req.session.user){
+            return res.redirect('/')
+        }
         res.render("reset-password")
     } catch (error) {
         res.redirect("/pageerror")
