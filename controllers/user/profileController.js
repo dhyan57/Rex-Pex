@@ -239,7 +239,7 @@ const addAddress=async(req,res)=>{
     try {
         const user=req.session.user;
     
-        res.render("add-Address",{user:user})
+        res.render("add-address",{user:user})
     } catch (error) {
         res.redirect("/pageerror")
     }
