@@ -8,9 +8,16 @@ const wishlistControllers=require('../controllers/user/wishlistController')
 const checkOutControllers = require('../controllers/user/checkOutController');
 const orderControllers = require('../controllers/user/orderController');
 const walletControllers=require('../controllers/user/walletController');
+const User = require('../models/userSchema');
 
 const passport=require("passport")
 const { userAuth,headerData } = require('../middlewares/auth')
+
+router.use(async(req, res, next) => {
+    const userData = await User.findById(req.session.user);
+    res.locals.user = userData || null;
+    next();
+});
 
 router.get("/", userController.LoadHomepage) 
 router.get('/signup',userController.Loadsignup)
