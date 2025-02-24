@@ -70,18 +70,13 @@ const createWallet = async (req, res) => {
             receipt: "order_rcptid_11", // Use dynamic receipt id
             payment_capture: 1
         };
-        console.log('    17');
 
         razorpay.orders.create(options, (err, order) => {
             if (err) {
                 return res.status(500).json({ message: 'Error creating order', error: err });
             }
-            
-        console.log('    16');
             // Save the amount to session or pass it to the front end
             req.session.amount = amount;  // Store amount in session (you can use other ways to store it)
-            
-        console.log('    15');
             res.json({ orderId: order.id, amount: order.amount });
         });
     } catch (error) {
@@ -94,20 +89,17 @@ const createWallet = async (req, res) => {
 const verifyWallet = async (req, res) => {
     try {
         const { paymentId, orderId, signature } = req.body;
-        console.log('Step 1: Extracted payment details');
         
-        const userId = req.session.user;
-        const amount = req.session.amount/100;  // Retrieve the stored amount
-        console.log('Step 2: Retrieved user session data');
+        const userId = req.session.user._id;
+        const amount = req.session.amount/100;  // Retrieve the stored amoun
+        console.log(userId)
 
         // Generate the HMAC signature for verification
         const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
         hmac.update(orderId + "|" + paymentId);
         const generatedSignature = hmac.digest('hex');
-        console.log('Step 3: Generated HMAC signature');
 
         if (generatedSignature === signature) {
-            console.log('Step 4: Signature verified successfully');
 
             // Prepare the transaction object
             const transaction = {
@@ -123,19 +115,19 @@ const verifyWallet = async (req, res) => {
                 {
                     $inc: { balance: amount }, // Increment the balance
                     $push: { transactions: transaction } // Add transaction to array
+                },{
+                    upsert: true,
+                    new: true
                 }
             )
                 .then(() => {
                     req.session.amount = null; // Clear the session amount after success
-                    console.log('Step 5: Wallet updated successfully');
                     res.status(200).send({ message: 'Payment successful' });
                 })
                 .catch((err) => {
-                    console.error('Step 6: Error updating wallet:', err);
                     res.status(500).send({ message: 'Error updating wallet', error: err });
                 });
         } else {
-            console.log('Step 7: Signature verification failed');
             res.status(400).send({ message: 'Payment verification failed' });
         }
     } catch (error) {

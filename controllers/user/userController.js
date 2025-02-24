@@ -153,7 +153,7 @@ async function sendVerificationEmail(email, otp) {
 
 const signup = async (req, res) => {
     try {
-        console.log("jjjjjjjjjjjjjjjjjjj)")
+        
         const { name, phone, email, password, cpassword, referal } = req.body;
 
         if (password != cpassword) {

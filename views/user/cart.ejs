@@ -1,172 +1,173 @@
 <%- include("../partials/user/header") %>
 
-<br><br><br><br>
+    <br><br><br><br>
 
     <style>
         /* Cart Table Styles */
-.cart-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 1rem;
-}
+        .cart-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 1rem;
+        }
 
-/* Product Image Cell */
-.product-thumbnail {
-    width: 120px;
-    padding: 1rem;
-}
+        /* Product Image Cell */
+        .product-thumbnail {
+            width: 120px;
+            padding: 1rem;
+        }
 
-.product-thumbnail img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+        .product-thumbnail img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-/* Product Row Styles */
-.cart-table tr {
-    background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-    transition: transform 0.2s ease;
-}
+        /* Product Row Styles */
+        .cart-table tr {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
 
-.cart-table tr:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+        .cart-table tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-/* Table Cell Styles */
-.cart-table td {
-    padding: 1.5rem 1rem;
-    vertical-align: middle;
-}
+        /* Table Cell Styles */
+        .cart-table td {
+            padding: 1.5rem 1rem;
+            vertical-align: middle;
+        }
 
-/* Product Name Styles */
-.product-name {
-    margin: 0;
-}
+        /* Product Name Styles */
+        .product-name {
+            margin: 0;
+        }
 
-.product-name a {
-    color: #333;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s ease;
-}
+        .product-name a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
 
-.product-name a:hover {
-    color: #007bff;
-}
+        .product-name a:hover {
+            color: #007bff;
+        }
 
-/* Price and Subtotal Styles */
-.price span,
-.subtotal span {
-    font-weight: 600;
-    color: #2c3e50;
-}
+        /* Price and Subtotal Styles */
+        .price span,
+        .subtotal span {
+            font-weight: 600;
+            color: #2c3e50;
+        }
 
-/* Quantity Control Styles */
-.quantity-control {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
+        /* Quantity Control Styles */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
 
-.btn-quantity {
-    width: 30px;
-    height: 30px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
+        .btn-quantity {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-.btn-quantity:hover {
-    background: #f8f9fa;
-    border-color: #c8c9ca;
-}
+        .btn-quantity:hover {
+            background: #f8f9fa;
+            border-color: #c8c9ca;
+        }
 
-.quantity-display {
-    min-width: 40px;
-    text-align: center;
-    font-weight: 500;
-}
+        .quantity-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 500;
+        }
 
-/* Remove Button Styles */
-.action button {
-    border: none;
-    background: none;
-    padding: 0.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #dc3545;
-    transition: color 0.2s ease;
-}
+        /* Remove Button Styles */
+        .action button {
+            border: none;
+            background: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #dc3545;
+            transition: color 0.2s ease;
+        }
 
-.action button:hover {
-    color: #c82333;
-}
+        .action button:hover {
+            color: #c82333;
+        }
 
-/* Empty Cart Styles */
-.text-center h2 {
-    color: #6c757d;
-    margin: 2rem 0;
-}
+        /* Empty Cart Styles */
+        .text-center h2 {
+            color: #6c757d;
+            margin: 2rem 0;
+        }
 
-.btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
 
-.btn:hover {
-    background: #0056b3;
-}
+        .btn:hover {
+            background: #0056b3;
+        }
 
-/* Clear Cart Link Styles */
-.text-end a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    color: #6c757d;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
+        /* Clear Cart Link Styles */
+        .text-end a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            color: #6c757d;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
 
-.text-end a:hover {
-    color: #dc3545;
-}
+        .text-end a:hover {
+            color: #dc3545;
+        }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .product-thumbnail {
-        width: 80px;
-        padding: 0.5rem;
-    }
-    
-    .product-thumbnail img {
-        width: 70px;
-        height: 70px;
-    }
-    
-    .cart-table td {
-        padding: 1rem 0.5rem;
-    }
-    
-    .product-name h5 {
-        font-size: 0.9rem;
-    }
-}
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .product-thumbnail {
+                width: 80px;
+                padding: 0.5rem;
+            }
+
+            .product-thumbnail img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .cart-table td {
+                padding: 1rem 0.5rem;
+            }
+
+            .product-name h5 {
+                font-size: 0.9rem;
+            }
+        }
+
         .cart-container {
             display: flex;
             flex-wrap: wrap;
@@ -194,118 +195,119 @@
                 margin: 0 auto;
             }
         }
+
         /* Base button styles */
-.btn, 
-button.text-muted,
-.cart-action .btn,
-.cart-totals .btn {
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    padding: 10px 20px;
-    border-radius: 5px;
-}
+        .btn,
+        button.text-muted,
+        .cart-action .btn,
+        .cart-totals .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
 
-/* Primary button style (Proceed to Checkout) */
-.cart-totals .btn {
-    background: #088178;
-    color: white;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+        /* Primary button style (Proceed to Checkout) */
+        .cart-totals .btn {
+            background: #088178;
+            color: white;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-.cart-totals .btn:hover {
-    background: #066661;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+        .cart-totals .btn:hover {
+            background: #066661;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-.cart-totals .btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+        .cart-totals .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-/* Continue Shopping button */
-.cart-action .btn {
-    background: #f1f1f1;
-    color: #333;
-    border: 1px solid #ddd;
-}
+        /* Continue Shopping button */
+        .cart-action .btn {
+            background: #f1f1f1;
+            color: #333;
+            border: 1px solid #ddd;
+        }
 
-.cart-action .btn:hover {
-    background: #e1e1e1;
-    color: #000;
-    transform: translateY(-2px);
-}
+        .cart-action .btn:hover {
+            background: #e1e1e1;
+            color: #000;
+            transform: translateY(-2px);
+        }
 
-.cart-action .btn:active {
-    transform: translateY(0);
-}
+        .cart-action .btn:active {
+            transform: translateY(0);
+        }
 
-/* Remove and Clear Cart buttons */
-button.text-muted,
-a.text-muted {
-    color: #dc3545 !important;
-    background: transparent;
-    border: none;
-    padding: 5px 10px;
-    opacity: 0.7;
-}
+        /* Remove and Clear Cart buttons */
+        button.text-muted,
+        a.text-muted {
+            color: #dc3545 !important;
+            background: transparent;
+            border: none;
+            padding: 5px 10px;
+            opacity: 0.7;
+        }
 
-button.text-muted:hover,
-a.text-muted:hover {
-    opacity: 1;
-    color: #c82333 !important;
-    background: rgba(220, 53, 69, 0.1);
-    border-radius: 4px;
-}
+        button.text-muted:hover,
+        a.text-muted:hover {
+            opacity: 1;
+            color: #c82333 !important;
+            background: rgba(220, 53, 69, 0.1);
+            border-radius: 4px;
+        }
 
-/* Quantity control buttons */
-.quantity-control .btn-quantity {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: #f1f1f1;
-    border: 1px solid #ddd;
-    transition: all 0.2s ease;
-}
+        /* Quantity control buttons */
+        .quantity-control .btn-quantity {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f1f1f1;
+            border: 1px solid #ddd;
+            transition: all 0.2s ease;
+        }
 
-.quantity-control .btn-quantity:hover {
-    background: #e1e1e1;
-    transform: scale(1.1);
-}
+        .quantity-control .btn-quantity:hover {
+            background: #e1e1e1;
+            transform: scale(1.1);
+        }
 
-.quantity-control .btn-quantity:active {
-    transform: scale(0.95);
-}
+        .quantity-control .btn-quantity:active {
+            transform: scale(0.95);
+        }
 
-/* Add ripple effect to main buttons */
-.cart-totals .btn::after,
-.cart-action .btn::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s ease, height 0.3s ease;
-}
+        /* Add ripple effect to main buttons */
+        .cart-totals .btn::after,
+        .cart-action .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
 
-.cart-totals .btn:active::after,
-.cart-action .btn:active::after {
-    width: 200px;
-    height: 200px;
-    opacity: 0;
-}
+        .cart-totals .btn:active::after,
+        .cart-action .btn:active::after {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+        }
     </style>
 
     <main class="main">
-    
+
         <section class="mt-50 mb-50">
-            <div class="">
+            <div class>
                 <div class="cart-container">
                     <div class="cart-details col-12">
                         <div class="table-responsive">
@@ -321,76 +323,85 @@ a.text-muted:hover {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (products && products.length > 0) { %>
-                                        <% for (let i = products.length - 1; i >= 0; i--) { %>
-                                            <% const product = products[i]; %>
-                                            <tr data-product-id="<%= product.productId._id %>"
-                                                data-stock="<%= product.productId.quantity %>">
-                                                <td class="image product-thumbnail">
-                                                    <img src="/uploads/re-image/<%= product.productId.productImage[0] %>"
-                                                        alt="<%= product.productId.productName %>">
-                                                </td>
-                                                <td class="product-des product-name">
-                                                    <h5 class="product-name">
-                                                        <a href="/productDetails?id=<%= product.productId._id %>">
-                                                            <%= product.productId.productName %>
-                                                        </a>
-                                                    </h5>
-                                                </td>
-                                                <td class="price" data-title="Price"><span>₹<%= product.productId.salePrice %></span></td>
-                                                <td class="text-center" data-title="Quantity">
-                                                    <% if (product.productId.quantity > 0) { %>
-                                                        <div class="quantity-control">
-                                                            <button type="button"
-                                                                onclick="updateQuantity('<%= product.productId._id %>', -1, '<%= product.productId.quantity %>')"
-                                                                class="btn-quantity">-</button>
-                                                            <span id="quantity-<%= product.productId._id %>" class="quantity-display">
-                                                                <%= product.quantity %>
-                                                            </span>
-                                                            <button type="button"
-                                                                onclick="updateQuantity('<%= product.productId._id %>', 1, '<%= product.productId.quantity %>')"
-                                                                class="btn-quantity">+</button>
-                                                        </div>
+                                    <% if (products && products.length> 0) { %>
+                                        <% for (let i=products.length - 1; i>= 0;
+                                            i--) { %>
+                                            <% const product=products[i]; %>
+                                                <tr data-product-id="<%= product.productId._id %>"
+                                                    data-stock="<%= product.productId.quantity %>">
+                                                    <td class="image product-thumbnail">
+                                                        <img src="/uploads/re-image/<%= product.productId.productImage[0] %>"
+                                                            alt="<%= product.productId.productName %>">
+                                                    </td>
+                                                    <td class="product-des product-name">
+                                                        <h5 class="product-name">
+                                                            <a href="/productDetails?id=<%= product.productId._id %>">
+                                                                <%= product.productId.productName %>
+                                                            </a>
+                                                        </h5>
+                                                    </td>
+                                                    <td class="price" data-title="Price"><span>₹<%=
+                                                                product.productId.salePrice %></span></td>
+                                                    <td class="text-center" data-title="Quantity">
+                                                        <% if (product.productId.quantity> 0) {
+                                                            %>
+                                                            <div class="quantity-control">
+                                                                <button type="button"
+                                                                    onclick="updateQuantity('<%= product.productId._id %>', -1, '<%= product.productId.quantity %>')"
+                                                                    class="btn-quantity">-</button>
+                                                                <span id="quantity-<%= product.productId._id %>"
+                                                                    class="quantity-display">
+                                                                    <%= product.quantity %>
+                                                                </span>
+                                                                <button type="button"
+                                                                    onclick="updateQuantity('<%= product.productId._id %>', 1, '<%= product.productId.quantity %>')"
+                                                                    class="btn-quantity">+</button>
+                                                            </div>
+                                                            <% } else { %>
+                                                                <span class="text-danger">Out of
+                                                                    stock</span>
+                                                                <% } %>
+                                                    </td>
+                                                    <td class="text-right subtotal" data-title="Subtotal">
+                                                        <span id="subtotal-<%= product.productId._id %>">₹<%=
+                                                                product.totalPrice.toLocaleString() %></span>
+                                                    </td>
+                                                    <td class="action" data-title="Remove">
+                                                        <button class="text-muted"
+                                                            onclick="removeFromCart('<%= product.productId._id %>')">Remove
+                                                            <i class="fi-rs-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                                    <tr>
+                                                        <td colspan="6" class="text-end">
+                                                            <a href="/showCart/clearCart" onclick="return confirmClear()"
+                                                                class="text-muted">
+                                                                <i class="fi-rs-cross-small"></i>
+                                                                Clear Cart
+                                                            </a>
+                                                        </td>
+                                                    </tr>
                                                     <% } else { %>
-                                                        <span class="text-danger">Out of stock</span>
-                                                    <% } %>
-                                                </td>
-                                                <td class="text-right subtotal" data-title="Subtotal">
-                                                    <span id="subtotal-<%= product.productId._id %>">₹<%= product.totalPrice.toLocaleString() %></span>
-                                                </td>
-                                                <td class="action" data-title="Remove">
-                                                    <button class="text-muted"
-                                                        onclick="removeFromCart('<%= product.productId._id %>')">Remove
-                                                        <i class="fi-rs-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        <% } %>
-                                        <tr>
-                                            <td colspan="6" class="text-end">
-                                                <a href="/showCart" onclick="return confirmClear()" class="text-muted">
-                                                    <i class="fi-rs-cross-small"></i> Clear Cart
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <% } else { %>
-                                        <tr>
-                                            <td colspan="6" class="text-center">
-                                                <h2>Your Cart is Empty</h2>
-                                                <br>
-                                                <a class="btn mr-10 mb-sm-15" href="/">
-                                                    <i></i> Add Products
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <% } %>
-                                    
+                                                        <tr>
+                                                            <td colspan="6" class="text-center">
+                                                                <h2>Your Cart is Empty</h2>
+                                                                <br>
+                                                                <a class="btn mr-10 mb-sm-15" href="/">
+                                                                    <i></i> Add Products
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <% } %>
+
                                 </tbody>
                             </table>
                         </div>
 
                         <div class="cart-action text-end">
-                            <a href="/" class="btn"><i class="fi-rs-shopping-bag mr-10"></i> Continue Shopping</a>
+                            <a href="/" class="btn"><i class="fi-rs-shopping-bag mr-10"></i> Continue
+                                Shopping</a>
                         </div>
                     </div>
 
@@ -404,7 +415,8 @@ a.text-muted:hover {
                                 <table class="table">
                                     <tbody>
                                         <tr>
-                                            <td class="cart_total_label">Cart Subtotal</td>
+                                            <td class="cart_total_label">Cart
+                                                Subtotal</td>
                                             <td class="cart_total_amount">
                                                 <span id="cartTotal" class="font-lg fw-900 text-brand">₹<%= totalAmt %>
                                                 </span>
@@ -412,13 +424,15 @@ a.text-muted:hover {
                                         </tr>
                                         <tr>
                                             <td class="cart_total_label">Shipping</td>
-                                            <td class="cart_total_amount"><i class="ti-gift mr-5"></i> Free Shipping
+                                            <td class="cart_total_amount"><i class="ti-gift mr-5"></i> Free
+                                                Shipping
                                             </td>
                                         </tr>
                                         <tr>
                                             <td class="cart_total_label">Total</td>
                                             <td class="cart_total_amount">
-                                                <strong><span id="grandTotal" class="font-xl fw-900 text-brand">₹<%=totalAmt %></span></strong>
+                                                <strong><span id="grandTotal" class="font-xl fw-900 text-brand">₹
+                                                        <%=totalAmt %></span></strong>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -435,88 +449,100 @@ a.text-muted:hover {
         </section>
     </main>
 
-
-
-        <script>
-            function removeFromCart(productId) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to remove this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        fetch(`/removeCart?id=${productId}`, {
-                            method: 'GET',
-                        })
-                            .then(response => {
-                                if (response.redirected) {
-                                    window.location.href = response.url;
-                                }
-                            })
-                            .catch(error => {
-                                console.error("Error removing item from cart:", error);
-                            });
-                    }
-                });
-            }
-
-            function updateQuantity(productId, change, availableQuantity) {
-                const quantityElement = document.getElementById(`quantity-${productId}`);
-                const currentQuantity = parseInt(quantityElement.textContent);
-
-                const maxQuantity = Math.min(availableQuantity, 5);
-
-                if (currentQuantity + change < 1) {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Minimum Quantity Reached",
-                        text: "The minimum quantity is 1.",
-                    });
-                    return;
-                } else if (currentQuantity + change > maxQuantity) {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Maximum Quantity Reached",
-                    });
-                    return;
-                }
-
-                fetch("/updateQuantity", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ productId, change }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            quantityElement.textContent = data.newQuantity;
-                            document.getElementById(`subtotal-${productId}`).textContent = `₹${data.newSubtotal.toLocaleString()}`;
-                            document.getElementById("cartTotal").textContent = `₹${data.totalPrice.toLocaleString()}`;
-                            document.getElementById("grandTotal").textContent = `₹${data.totalPrice.toLocaleString()}`;
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error",
-                                text: data.message,
-                            });
-                        }
+    <script>
+        function removeFromCart(productId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to remove this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/removeCart?id=${productId}`, {
+                        method: 'GET',
                     })
-                    .catch(error => {
-                        console.error("Error updating quantity:", error);
-                    });
+                        .then(response => {
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error removing item from cart:", error);
+                        });
+                }
+            });
+        }
+
+        function updateQuantity(productId, change, availableQuantity) {
+            const quantityElement = document.getElementById(`quantity-${productId}`);
+            const currentQuantity = parseInt(quantityElement.textContent);
+
+            const maxQuantity = Math.min(availableQuantity, 5);
+
+            if (currentQuantity + change < 1) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Minimum Quantity Reached",
+                    text: "The minimum quantity is 1.",
+                });
+                return;
+            } else if (currentQuantity + change > maxQuantity) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Maximum Quantity Reached",
+                });
+                return;
             }
-        </script>
 
-<br><br><br><br><br><br><br><br><br><br><br>
+            fetch("/updateQuantity", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ productId, change }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        quantityElement.textContent = data.newQuantity;
+                        document.getElementById(`subtotal-${productId}`).textContent = `₹${data.newSubtotal.toLocaleString()}`;
+                        document.getElementById("cartTotal").textContent = `₹${data.totalPrice.toLocaleString()}`;
+                        document.getElementById("grandTotal").textContent = `₹${data.totalPrice.toLocaleString()}`;
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: data.message,
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error updating quantity:", error);
+                });
+        }
 
 
+        function confirmClear() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to clear your cart?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, clear it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '/showCart/clearCart';
+        }
+    });
+    return false; // Always return false to prevent the default link behavior
+}
+    </script>
 
+    <br><br><br><br><br><br><br><br><br><br><br>
 
-
-<%-include("../../views/partials/user/footer")%>
+    <%-include("../partials/user/footer")%>

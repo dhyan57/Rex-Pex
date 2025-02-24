@@ -471,6 +471,7 @@ const excelGenerate = async (req, res) => {
 
 
 const getSaleReportFilter=async (req, res) => {
+    console.log(req.query);
     const { dateRange, startDate, endDate ,page=1,limit=10} = req.query;
     const filter = {};
 
@@ -488,15 +489,16 @@ const getSaleReportFilter=async (req, res) => {
             const endOfDay = new Date();
             endOfDay.setHours(23, 59, 59, 999);
 
-            filter.createdOn = { $gte: startOfDay, $lt: endOfDay };
+            filter.createdOn = { $gte: startOfDay, $lte: endOfDay };
         } else if (dateRange === 'week') {
-            filter.createdOn = { $gte: new Date(today.setDate(today.getDate() - 7)) };
+            filter.createdOn = { $gte: new Date(today.setDate(today.getDate() - 7)), $lte: today };
         } else if (dateRange === 'month') {
-            filter.createdOn = { $gte: new Date(today.setMonth(today.getMonth() - 1)) };
+            filter.createdOn = { $gte: new Date(today.setMonth(today.getMonth() - 1)), $lte: today };
         } else if (dateRange === 'year') {
-            filter.createdOn = { $gte: new Date(today.setFullYear(today.getFullYear() - 1)) };
+            filter.createdOn = { $gte: new Date(today.setFullYear(today.getFullYear() - 1)), $lte: today };
         }
     }
+    console.log(filter);
 
     // Fetch orders based on the filter
     const skip = (page - 1) * limit;
@@ -507,6 +509,7 @@ const getSaleReportFilter=async (req, res) => {
 
     const totalOrders = await Order.countDocuments(filter);
     const totalPages = Math.ceil(totalOrders / limit);
+    console.log(orders);
 
     res.json({ orders, totalPages });
 }

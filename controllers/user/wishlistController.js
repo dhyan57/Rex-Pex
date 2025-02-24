@@ -69,7 +69,7 @@ const getWishlist=async (req, res) => {
 
         console.log(wishlistItems);
 
-        res.render('wishlist', { wishlistItems,user:userId});
+        res.render('wishlist', { wishlistItems, user: userId });
     } catch (error) { 
         console.error('Error fetching wishlist:', error);
         res.status(500).send('Internal server error');

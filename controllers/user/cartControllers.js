@@ -199,31 +199,29 @@ const updateQuantity = async (req, res) => {
 };
 
 
-const clearCart= async (req,res)=>{
+const clearCart = async (req, res) => {
     try {
-        const userId=req.session.user;
-        if(!userId){
+        const userId = req.session.user;
+        if (!userId) {
             return res.redirect('/login')
         }
-        const cart=await Cart.findOne({userId:userId})
-        if(cart){
-            cart.items=[];
-            await cart.save()
-            res.redirect('/showCart')
         
-        }else{
-            res.redirect('/')
+        // Changed findById to findOne
+        const cart = await Cart.findOne({ userId: userId._id })
+        
+        if (cart) {
+            cart.items = [];
+            await cart.save()
+            return res.redirect('/showCart') // Added return
+        } else {
+            return res.redirect('/') // Added return
         }
-
-
 
     } catch (error) {
         console.error(error);
-        res.render('page-404')
-        
+        return res.render('page-404') // Added return
     }
-}
-
+}   
 
 module.exports = {
     addToCart,

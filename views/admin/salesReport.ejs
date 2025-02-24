@@ -303,10 +303,10 @@
         margin-top: 2rem;
     }
     .table tbody td ul {
-  list-style-type: none;
-  padding-left: 0;
-  margin-bottom: 0;
-}
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    }
 
     .pagination {
         display: flex;
@@ -457,6 +457,11 @@
 
     <!-- Table section -->
     <div class="table-responsive">
+        
+        <div class="d-flex justify-content-between mb-4">
+            <h4>Sales Report</h4>
+
+    
         <table class="table table-hover" id="salesTable">
             <thead>
                 <tr>
@@ -473,7 +478,7 @@
                 <% orders.forEach((order, index) => { %>
                     <tr>
                         <td><%= ((currentPage - 1) * limit) + index + 1 %></td>
-                        <td><%= order.user.name %></td>
+                        <td><%= order.user.name %></td>5
                         <td>
                             <ul>
                                 <% order.orderedItems.forEach(item => { %>
